@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="0x00一下子看了太多，还是比较细地看的，因为是英文的文档如果不仔细读，感觉太容易左进右出了……现在来整理下能记住的，后面实际使用的时候再来完善。 现在 unity 在推新功能，可定位资源管理系统（ The Addresssable Asset System ），可以根据 Address 进行加载（本地或者服务器的）特定资源，并无缝连接多种资源管理模式。 Resources.Load 和 Asse">
+<meta name="keywords" content="untiy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity 资源管理（Assets，Resources，AssetBundles）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/07/12/UnityLoadAssets/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="0x00一下子看了太多，还是比较细地看的，因为是英文的文档如果不仔细读，感觉太容易左进右出了……现在来整理下能记住的，后面实际使用的时候再来完善。 现在 unity 在推新功能，可定位资源管理系统（ The Addresssable Asset System ），可以根据 Address 进行加载（本地或者服务器的）特定资源，并无缝连接多种资源管理模式。 Resources.Load 和 Asse">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.687Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity 资源管理（Assets，Resources，AssetBundles）">
+<meta name="twitter:description" content="0x00一下子看了太多，还是比较细地看的，因为是英文的文档如果不仔细读，感觉太容易左进右出了……现在来整理下能记住的，后面实际使用的时候再来完善。 现在 unity 在推新功能，可定位资源管理系统（ The Addresssable Asset System ），可以根据 Address 进行加载（本地或者服务器的）特定资源，并无缝连接多种资源管理模式。 Resources.Load 和 Asse">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2019/07/12/UnityLoadAssets/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Unity 资源管理（Assets，Resources，AssetBundles） | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2019/07/12/UnityLoadAssets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Unity 资源管理（Assets，Resources，AssetBundles）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-12 19:03:20" itemprop="dateCreated datePublished" datetime="2019-07-12T19:03:20+08:00">2019-07-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>一下子看了太多，还是比较细地看的，因为是英文的文档如果不仔细读，感觉太容易左进右出了……现在来整理下能记住的，后面实际使用的时候再来完善。</p>
+<p>现在 unity 在推新功能，可定位资源管理系统（ The Addresssable Asset System ），可以根据 Address 进行加载（本地或者服务器的）特定资源，并无缝连接多种资源管理模式。</p>
+<p>Resources.Load 和 AssetBundle（ AB 包 ）</p>
+<p>Resources 方法加载资源需要在 Asset/Resources 目录下，放置资源，加载时根据文件夹内部的路径进行加载。</p>
+<p>本想在官方文档看看关于这两者的具体区别，没想到误打误撞找到了 Unity Learn，但是看样子只有英文的教程，我先看看吼。</p>
+<p>这一篇是 <a href="https://learn.unity.com/tutorial/assets-resources-and-assetbundles" target="_blank" rel="noopener">Assets, Resources and AssetBundles</a></p>
+<p>加载资源的几种方式：</p>
+<ul>
+<li>直接引用</li>
+<li>Resources 目录加载</li>
+<li>AssetBundle 资源管理</li>
+</ul>
+<h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><p>直接引用说的就是，在脚本中定义一个显示在 Inspector 中的对象，将所需要的资源挂载上去的方法。</p>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>Resources 目录是 Unity 提供的一个特殊文件夹，用来管理资源，Resources 目录中的资源（文件，prefabs，图像，音频等等）可以在脚本中根据实际存放的目录结构（ path ）使用 Resources.Load(“path”) 来动态加载资源文件。</p>
+<p>但是使用 Resources 目录管理资源有很大的问题，官方直接给出的使用建议就是：别用。（实际上随着推出 Addressable Asset System 现在已经都被标记过时的了）在大型项目中使用会造成包体过大，构建的应用启动时间过长，内存管理也更困难。对于移动平台或需要热更新的场景下极不友好（无法进行增量更新 incremental content upgrades ），同时这种依赖资源名的调用方式很容易在替换资源时出现问题。</p>
+<p>原因是，Resources 目录下的全部资源文件都会在构建可执行文件时进行打包，而且是工程中的所有 Resources 文件夹都会合并成一个序列化的文件，这类似于将所有的资源打包成了一个 AssetBundle，同样包含索引信息（index）和资源数据（metadata）。而且，并不是所有的 Resources 资源都要在第一个场景中使用。</p>
+<p>但是这种方式贵在使用方便，而且在特定条件下也是有使用价值的，比如包含的资源文件体积很小，基本不会改动或是与平台设备等无关的内容。（比如：全局使用的单例 MonoBehaviour prefab，第三方组件的配置文件。）</p>
+<p>其实总结起来，不要用 Resources 的方法，但是项目足够小，可以用……快速的原型搭建都可以用，只是到了全面开发阶段，用 AssetBuddle 更好，提供了更多的灵活性。</p>
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><p><a href="https://connect.unity.com/doc/Manual/AssetBundles-Workflow" target="_blank" rel="noopener">中文文档</a></p>
+<p>反过来说 AssetBundle 就像是“被拆分开了的 Resouces 目录”。AssetBundle 由头文件（ Header ）和数据段（ Data Segment ）组成，数据段中包含着所有资源对象，而头文件中包含了 AssetBundle 的信息，此 AB 包的标识符（ Identifier ），压缩类型（ Compression Type，是否压缩，LZMA - 全包压缩，LZ4 - 单独压缩）以及数据清单（ Manifest，对象名作为 key 用来查找数据段位置）。</p>
+<p>对于使用 AssetBundle 的工程，工作流程则成了先将资源按照一定的方式打包成多个 AssetBundle（ BuildPipline.BuildAssetBundles 方法 ），然后将这些二进制文件放到 StreamingAssets 目录下（ 类似 Resources，但构建时不会进行打包的处理 ），在运行时加载需要的 AssetBundle（ 4 个 API，最快最好的是 AsseBundle.LoadFromFile ），之后使用 AssetBundle 中的资源对象（ 3 种 6个 API，LoadAllAssets 最快，LoadAsset，LoadAssetsWithSubAssets ）。</p>
+<p>对于 AssetBundle 的卸载需要有一定的讲究，因为两种卸载方式各有各的好处（坑？），卸载 AssetBundle 使用 API AssetBundle.Unload(bool)，参数表示是否卸载从此 AB 包中加载的资源对象实例。true 时，会立即卸载实例化的所有对象，造成的问题是如果场景中依然有对象对这些卸载了的资源的对象进行访问会出现 missing 的情况（确保不会再使用，比如场景切换时）；false 时，会在下次加载同样的 AB 包时，造成同样的资源对象重复的情况，因为先前加载的对象没有被卸载，并与 AB 包切断了联系，在重复加载时并不会修复这种联系，所以内存中有了重复的对象（对这些资源对象进行清理，如引用计数）。</p>
+<p>而为了便于开发，常会加入一个“模拟模式”，在编辑器下启动时，在模拟模式下，会将对 AssetBundle 的资源请求重定向到 Assets 目录中，直接调用源资源，节约了打包的时间，可以参考 <a href="https://bitbucket.org/Unity-Technologies/assetbundledemo/src/default/" target="_blank" rel="noopener">AssetBundle Manager</a>。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/untiy/" rel="tag"># untiy</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/11/Csharp.delegate.event/" rel="next" title="c# 事件和委托，再也不忘了">
+                <i class="fa fa-chevron-left"></i> c# 事件和委托，再也不忘了
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/14/Unity.Coroutine/" rel="prev" title="Unity 协程的执行逻辑">
+                Unity 协程的执行逻辑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00"><span class="nav-number">1.</span> <span class="nav-text">0x00</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01"><span class="nav-number">2.</span> <span class="nav-text">0x01</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">3.</span> <span class="nav-text">0x02</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03"><span class="nav-number">4.</span> <span class="nav-text">0x03</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

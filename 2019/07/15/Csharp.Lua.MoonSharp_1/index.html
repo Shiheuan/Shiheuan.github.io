@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="0x00MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过官网的教程来入门类库与 Lua。 如果有需要请配合我的代码食用。 现在，在 Visual Studio 中建立 c# 工程，并安装 MoonSharp 2.0：  新建工程 在 Nuget 程序包管理器控制台输入“Install-Package MoonSharp”安装 MoonShap  另外，如果在 Unit">
+<meta name="keywords" content="MoonSharp,c#,Lua">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoonSharp 从一知到半解（1）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="0x00MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过官网的教程来入门类库与 Lua。 如果有需要请配合我的代码食用。 现在，在 Visual Studio 中建立 c# 工程，并安装 MoonSharp 2.0：  新建工程 在 Nuget 程序包管理器控制台输入“Install-Package MoonSharp”安装 MoonShap  另外，如果在 Unit">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/草图1.png">
+<meta property="og:image" content="http://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/project.png">
+<meta property="og:image" content="http://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/cproject.png">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.098Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MoonSharp 从一知到半解（1）">
+<meta name="twitter:description" content="0x00MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过官网的教程来入门类库与 Lua。 如果有需要请配合我的代码食用。 现在，在 Visual Studio 中建立 c# 工程，并安装 MoonSharp 2.0：  新建工程 在 Nuget 程序包管理器控制台输入“Install-Package MoonSharp”安装 MoonShap  另外，如果在 Unit">
+<meta name="twitter:image" content="http://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/草图1.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MoonSharp 从一知到半解（1） | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MoonSharp 从一知到半解（1）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-15 20:04:20" itemprop="dateCreated datePublished" datetime="2019-07-15T20:04:20+08:00">2019-07-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过<a href="https://www.moonsharp.org/getting_started.html" target="_blank" rel="noopener">官网的教程</a>来入门类库与 Lua。</p>
+<p>如果有需要请配合我的<a href="https://github.com/Shiheuan/MoonSharpTutorial" target="_blank" rel="noopener">代码</a>食用。</p>
+<p>现在，在 Visual Studio 中建立 c# 工程，并安装 MoonSharp 2.0：</p>
+<ul>
+<li>新建工程</li>
+<li>在 Nuget 程序包管理器控制台输入“Install-Package MoonSharp”安装 MoonShap</li>
+</ul>
+<p>另外，如果在 Unity 中使用 MoonSharp 可以在 <a href="https://github.com/moonsharp-devs/moonsharp/tree/master/src/Unity" target="_blank" rel="noopener">Github</a> 找到示例。</p>
+<h2 id="0x01-执行-Lua-脚本"><a href="#0x01-执行-Lua-脚本" class="headerlink" title="0x01 执行 Lua 脚本"></a>0x01 执行 Lua 脚本</h2><p>在 MoonSharp 中，Lua 脚本的执行都是通过 Script 类来完成的，我们可以通过不同的方式来执行 Lua 脚本。熟悉 Lua 的小伙伴应该已经了解动态执行 Lua 代码的方式，MoonSharp 提供的方法与之类似，比如将 Lua 保存在字符串中执行：</p>
+<h3 id="1-通过静态方法执行字符串中的-Lua-脚本"><a href="#1-通过静态方法执行字符串中的-Lua-脚本" class="headerlink" title="1. 通过静态方法执行字符串中的 Lua 脚本"></a><em>1. 通过静态方法执行字符串中的 Lua 脚本</em></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public double MoonSharpFactorial()</span><br><span class="line">&#123;</span><br><span class="line">    string script = @&quot;</span><br><span class="line">        -- defines a factorial function</span><br><span class="line">        function fact (n)</span><br><span class="line">            if (n == 0) then</span><br><span class="line">                return 1</span><br><span class="line">            else</span><br><span class="line">                return n*fact(n-1)</span><br><span class="line">            end</span><br><span class="line">        end</span><br><span class="line"></span><br><span class="line">        return fact(5)&quot;;</span><br><span class="line">    DynValue res = Script.RunString(script);</span><br><span class="line">    return res.Number;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Lua 是动态类型的语言，在与 C# 这种静态语言交互时，需要解决的第一个问题就是，得到的对象是什么类型。在 Lua 的 C API 中，对于类型的处理是进行检查是否可以转换为某种类型，并返回，而非检查类型。在 MoonSharp 中，使用 DynValue 类来对应 Lua 中的基本类型，也就是说，无论是 string 还是 number，当 MoonSharp 拿到一个变量时，都会用 DynValue 来保存在 C# 中，以供后续使用。在示例中，我们的脚本返回了 fact(5) 的执行结果，即为一个浮点数，保存在了 res 变量中，最后我们使用对应浮点数的 Number 成员得到返回的值。</p>
+<p>Script 类是 MoonSharp 用来解释 Lua 脚本的类，这里用了 Script 类中的静态方法 RunString 来执行字符串中的脚本代码，同样我们也可以从文件中加载脚本，使用静态方法 RunFile。Script 类的其他功能和用法会在后面慢慢讲解。</p>
+<h3 id="2-通过实例执行字符串中的-Lua-脚本"><a href="#2-通过实例执行字符串中的-Lua-脚本" class="headerlink" title="2. 通过实例执行字符串中的 Lua 脚本"></a><em>2. 通过实例执行字符串中的 Lua 脚本</em></h3><p>不使用静态方法来运行脚本，可以创建一个 Script 实例，通过新建的实例来调用 DoString 方法，执行脚本。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public double MoonSharpFactorial()</span><br><span class="line">&#123;</span><br><span class="line">    string scriptCode = @&quot;</span><br><span class="line">        -- defines a factorial function</span><br><span class="line">        function fact (n)</span><br><span class="line">            if (n == 0) then</span><br><span class="line">                return 1</span><br><span class="line">            else</span><br><span class="line">                return n*fact(n-1)</span><br><span class="line">            end</span><br><span class="line">        end</span><br><span class="line"></span><br><span class="line">        --return fact(mynumber)&quot;;</span><br><span class="line">    Script script = new Script();</span><br><span class="line">    script.DoString(scriptCode);</span><br><span class="line">    DynValue luaFactFunction = script.Globals.Get(&quot;fact&quot;);</span><br><span class="line">    DynValue res = script.Call(luaFactFunction, 5);</span><br><span class="line">    return res.Number;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然我们可以创建很多 Script 的实例，但是在这些实例之间是不能直接共享数据的。我们保有一个 script 对象，就可以理解为保有了一个 Lua 的虚拟机，可以用来代表一个 Lua 环境，执行一些 Lua 脚本代码。在这个例子中，我们没有用脚本返回任何对象，而是使用了 script 实例主动去获取 Lua 脚本中定义的函数（了解 Lua 的小伙伴：我知道 Lua 的全局变量实质上就是一张表！），然后通过 Call 方法来调用获取到的 Lua 函数。</p>
+<h2 id="0x02-DynValue"><a href="#0x02-DynValue" class="headerlink" title="0x02 DynValue"></a>0x02 DynValue</h2><p><a href="https://www.moonsharp.org/dynvalue.html" target="_blank" rel="noopener">DynValue</a> 是 MoonSharp 用来处理“类型”的基本概念。在 MoonSharp 中，几乎所有的对象都是 DynValue 的实例，它可以代表 Lua 脚本中任何类型的值，比如 table，number，string，function 等等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DynValue luaFactFunction = script.Globals.Get(&quot;fact&quot;);</span><br><span class="line">DynValue res = script.Call(luaFactFunction, 5);</span><br></pre></td></tr></table></figure>
+<p>这是我们前面看到的使用方法，获得了方法，随后调用它。在上一节说到这里时，有小伙伴说过 Lua 的全局变量就是一张表，他说的没错，在 Lua 中“表（table）”这个唯一的数据结构，实际上是一种辅助数组（associative array），既可以使用数值作为索引，也可以使用字符串，甚至可以使用除 nil 外的任意类型的值作为索引（不了解 Lua 的小伙伴：也可以用一个表索引它自己？其他小伙伴：bingo）。</p>
+<p>因此，除了上面的方法，MoonSharp 也提供了索引器的方法来得到一个值，比如上面的 fact 方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">script.Globals[&quot;fact&quot;];</span><br></pre></td></tr></table></figure>
+<p>如果我们查看得到的对象，并不是一个 DynValue，而是具体的 MoonSharp.Interpreter.Closure，一个闭包，也就是 Lua 中的一个函数（从技术上讲，Lua 语言中只有闭包，没有函数）。<br>使用索引，自动地将对象转化为了 C# 中的 System.Object。</p>
+<h3 id="认识-DynValue"><a href="#认识-DynValue" class="headerlink" title="认识 DynValue"></a><em>认识 DynValue</em></h3><p>DynValue 中最重要的属性就是“类型（ Type ）”了。它是一个告诉我们 DynValue 中保存了什么类型数据的枚举类型。</p>
+<p>DynValue 的一些属性只有在特定类型下才是有意义的，比如 Number 属性，只有当 DynValue 的 Type 为 DataType.Number 时，才是有意义的值。因此在使用 DynValue 包含的属性值之前，要记得检查 DynValue 的类型。</p>
+<p>Lua （ 以及 python ）可以多值返回，为了处理这种特殊句法，MoonSharp 提供了特殊的 DynValue 类型，Tuple，一个 Tuple 就是一个 DynValue 数组，每个成员都是一个 DynValue，可以用索引来访问。</p>
+<h3 id="使用-DynValue"><a href="#使用-DynValue" class="headerlink" title="使用 DynValue"></a><em>使用 DynValue</em></h3><p>要使用 DynValue 创建新的对象，可以使用 DynValue 类中提供的工厂方法（factory methods），是一系列以 New 开头的方法（ NewString，NewNumber，NewBoolean 等等），来新建一个对应类型的对象。</p>
+<p>此外，也可以使用 FromObject 方法，通过一个 object 创建 DynValue。Script 类中的成员函数 Call 就是利用 FromObject 将传入的参数转换为 DynValue 再调用重载版本。</p>
+<h3 id="多返回值"><a href="#多返回值" class="headerlink" title="多返回值"></a><em>多返回值</em></h3><p>Lua 语言的一个特性是可以返回多个结果，但是在 C# 中只能返回单一结果。为了处理这种不一致，MoonSharp 提供了 Tuple 类，即为一个组合了多个 DynValue 的类型，其成员即为一个 DyValue 的数组。</p>
+<p>当我们在脚本中返回多个返回值，会自动将其类型保存为 Tuple。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DynValue ret = Script.RunString(&quot;return true, &apos;ciao&apos;, 2*3&quot;);</span><br></pre></td></tr></table></figure>
+<p>这里的得到的 ret 类型即为 Tuple，我们遍历其中的所有元素。</p>
+<h2 id="0x03-回调函数"><a href="#0x03-回调函数" class="headerlink" title="0x03 回调函数"></a>0x03 回调函数</h2><p>在前面我们可以理解为执行了脚本之后，将所有脚本中定义的对象（数值，表，函数）都保存在了内存之中，使用 DynValue 封装起来了，我们在 C# 端需要使用时，就可以通过 Script 的实例去内存中拿。实际应用中，更多的情况是我们想要<strong>在宿主语言中定义一些 API，让 Lua 脚本去访问和使用</strong>。这里，就要谈谈怎么实现这一目标。</p>
+<p>为了获得这种协同工作的能力，MoonSharp 使用回调函数（Calling back function）来封装 C# 函数，其本质就是一个 Func 委托，当我们需要将函数转换为委托，并在脚本的全局变量中设置对应的对象（不懂 Lua 的小伙伴：有点奇怪。其他小伙伴：Lua 中的函数是第一类值！）。</p>
+<p>Lua 中的函数可以作为变量传递，完全可以将函数名看作一个指向函数的变量。因此在定义好 API 后，可以将 API 方法作为全局变量定义到 Lua 的全局表中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">private static int Mul(int a, int b)</span><br><span class="line">&#123;</span><br><span class="line">    return a * b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public double CallbackTest()</span><br><span class="line">&#123;</span><br><span class="line">    string scriptCode = @&quot;    </span><br><span class="line">        -- defines a factorial function</span><br><span class="line">        function fact (n)</span><br><span class="line">            if (n == 0) then</span><br><span class="line">                return 1</span><br><span class="line">            else</span><br><span class="line">                return Mul(n, fact(n - 1))</span><br><span class="line">            end</span><br><span class="line">        end&quot;;</span><br><span class="line">    Script script = new Script();</span><br><span class="line">    script.Globals[&quot;Mul&quot;] = (Func&lt;int, int, int&gt;) Mul;   </span><br><span class="line">    script.DoString(scriptCode);</span><br><span class="line"></span><br><span class="line">    DynValue res = script.Call(script.Globals[&quot;fact&quot;], 4);</span><br><span class="line">    return res.Number;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个示例中，我们将 Mul 函数，强制转换为 Func 委托（Func&lt;int, int, int&gt;），并赋值给全局表中的“Mul“变量。暴露到了脚本中。最终得到的结果就是 C# 中定义的函数变成了脚本中的一个 function。</p>
+<p>这里我们的代码中将 Mul 方法显式转换为了委托。同样也可以转换 MoonSharp.Interpreter.CallbackFunction，再转换为脚本中的 function。</p>
+<p><img src="草图1.png" alt></p>
+<p>对于一个简单任务，将 1 到 10 累加的任务，可以使用：</p>
+<ol>
+<li>迭代器作为 API，传到 Lua 脚本中在泛型 for 循环中使用</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">private static IEnumerable&lt;int&gt; GetNumbers()</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 1; i &lt;= 10; i++)</span><br><span class="line">        yield return i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>使用 List 返回值自动转换为表</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">private static List&lt;int&gt; GetNumberList()</span><br><span class="line">&#123;</span><br><span class="line">    List&lt;int&gt; lst = new List&lt;int&gt;();</span><br><span class="line">    for (int i = 1; i &lt;= 10; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        lst.Add(i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return lst;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>使用 MoonSharp 提供的 Table 类构建一个 Lua 表，可以构建空表或使用 DynValue 初始化表</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">private static Table GetNumberTable(Script script)</span><br><span class="line">&#123;</span><br><span class="line">    Table tbl = new Table(script);</span><br><span class="line"></span><br><span class="line">    for (int i = 1; i &lt;= 10; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        tbl[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return tbl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>小插曲：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string scriptCode = @&quot;</span><br><span class="line">    return dosum &#123;1, 2, 3, 4, 5, 6, 7, 8, 9, 10&#125;</span><br><span class="line">&quot;;</span><br></pre></td></tr></table></figure>
+<p>上述代码中，返回了以表“{…}”作为参数调用 dosum 方法的结果。下面由熟悉 Lua 的小伙伴略微做一下讲解，<strong>当函数只有一个参数，且此参数为字符串常量或表构造器时，括号是可选的</strong>。</p>
+<p>在 lua 交互式模式下尝试一下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hi</span> <span class="params">(s)</span></span></span><br><span class="line">    <span class="built_in">print</span>(s)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">hi(<span class="string">"something"</span>) <span class="comment">-- something</span></span><br><span class="line">hi <span class="string">"something"</span> <span class="comment">-- something</span></span><br><span class="line"><span class="built_in">print</span> <span class="string">"something"</span> <span class="comment">-- something</span></span><br></pre></td></tr></table></figure>
+<p>这几种调用都是正确的，但是</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">"something"</span></span><br><span class="line"></span><br><span class="line">hi s <span class="comment">-- !error</span></span><br><span class="line"><span class="built_in">print</span> s <span class="comment">-- !error</span></span><br><span class="line">hi(s) <span class="comment">-- something</span></span><br></pre></td></tr></table></figure>
+<p>说到 return 多说一句：<strong>Lua 中的 return 必须紧跟 end 语句，否则会报错，但有一个特例，可以有 print 方法，并且 print 也会执行</strong>，如果非要逆着这个规矩来，就只能将 return 放在 do … end 中。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> i <span class="comment">-- !error</span></span><br><span class="line">    i = i + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> ... <span class="comment">-- correct</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">funtion foo1()</span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">do</span> <span class="keyword">return</span> i <span class="keyword">end</span> <span class="comment">-- correct</span></span><br><span class="line">    i = i + <span class="number">1</span> <span class="comment">-- cant reach</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo2</span><span class="params">()</span></span></span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> i <span class="comment">-- correct</span></span><br><span class="line">    <span class="built_in">print</span> (i+<span class="number">1</span>) <span class="comment">-- 1</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="0x04-类型转换"><a href="#0x04-类型转换" class="headerlink" title="0x04 类型转换"></a>0x04 类型转换</h2><p>CLR 与 Lua 类型的对应</p>
+<blockquote>
+<p>CLR （ Common Language Runtime ）公共语言运行库，与 Java 虚拟机一样是一个运行时环境，负责资源管理（内存分配和垃圾收集等），并保证应用和底层操作系统之间必要的分离。</p>
+</blockquote>
+<ul>
+<li>DynValue</li>
+<li>自定义转换器（ converter ）</li>
+</ul>
+<p>比使用自动转换更快。</p>
+<p>自定义转换器是全局的，对所有的脚本都会造成影响。只需要在 Script.GlobalOptions.CustomConverters 设置合适的回调函数即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// convert StringBuilder to uppercase strings</span><br><span class="line">Script.GlobalOptions.CustomConverters.SetClrToScriptCustomConversion&lt;StringBuilder&gt;(</span><br><span class="line">v =&gt; DynValue.NewString(v.ToString().ToUpper())</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">// convert Table which match a IList&lt;int&gt; to ...</span><br><span class="line">Script.GlobalOptions.CustomConverters.SetScriptToClrCustomConversion(DataType.Table, typeof(IList&lt;int&gt;),</span><br><span class="line">v =&gt; new List&lt;int&gt;() &#123; ... &#125;);</span><br></pre></td></tr></table></figure>
+<p>如果自定义转换器返回值为 null，Moonsharp 会使用自动转换。关于自动转换的规则可以参阅官方，或参考文末附录I。</p>
+<hr>
+<hr>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><h3 id="附录I"><a href="#附录I" class="headerlink" title="附录I"></a>附录I</h3><h4 id="（1）从-CLR-类型自动转换到-MoonSharp-类型"><a href="#（1）从-CLR-类型自动转换到-MoonSharp-类型" class="headerlink" title="（1）从 CLR 类型自动转换到 MoonSharp 类型"></a>（1）从 CLR 类型自动转换到 MoonSharp 类型</h4><p>转换时机：</p>
+<ul>
+<li>When returning an object from a function called by script</li>
+<li>When returning an object from a property in a user data</li>
+<li>When setting a value in a table using the indexing operator</li>
+<li>When calling DynValue.FromObject</li>
+<li>When using any overload of functions which takes a System.Object in place of a DynValue</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>CLR 类型</th>
+<th>C#</th>
+<th>Lua</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void</td>
+<td></td>
+<td>（no value）</td>
+<td>只能在作为方法的返回值时应用</td>
+</tr>
+<tr>
+<td>null</td>
+<td></td>
+<td>nil</td>
+<td>任何的 null 都会转换为 nil</td>
+</tr>
+<tr>
+<td>MoonSharp.Interpreter.DynValue</td>
+<td></td>
+<td>*</td>
+<td>不多说了</td>
+</tr>
+<tr>
+<td>System.SByte</td>
+<td>sbyte</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Byte</td>
+<td>byte</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Int16</td>
+<td>short</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.UInt16</td>
+<td>ushort</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Int32</td>
+<td>int</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.UInt32</td>
+<td>uint</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Int64</td>
+<td>long</td>
+<td>number</td>
+<td>这个转换会导致精度损失</td>
+</tr>
+<tr>
+<td>System.UInt64</td>
+<td>ulong</td>
+<td>number</td>
+<td>这个转换会导致精度损失</td>
+</tr>
+<tr>
+<td>System.Single</td>
+<td>float</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Decimal</td>
+<td>decimal</td>
+<td>number</td>
+<td>这个转换会导致精度损失</td>
+</tr>
+<tr>
+<td>System.Double</td>
+<td>double</td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Boolean</td>
+<td>bool</td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>System.String</td>
+<td>string</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Text.StringBuilder</td>
+<td></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Char</td>
+<td>char</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>MoonSharp.Interpreter.Table</td>
+<td></td>
+<td>table</td>
+<td></td>
+</tr>
+<tr>
+<td>MoonSharp.Interpreter.CallbackFunction</td>
+<td></td>
+<td>function</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Delegate</td>
+<td></td>
+<td>function</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Object</td>
+<td>object</td>
+<td>userdata</td>
+<td>当这个类型被注册为 userdata 时</td>
+</tr>
+<tr>
+<td>System.Type</td>
+<td></td>
+<td>userdata</td>
+<td>当这个类型被注册为 userdata 时，静态成员访问</td>
+</tr>
+<tr>
+<td>MoonSharp.Interpreter.Closure</td>
+<td></td>
+<td>function</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Reflection.MethodInfo</td>
+<td></td>
+<td>function</td>
+<td></td>
+</tr>
+<tr>
+<td>System.Collections.IList</td>
+<td></td>
+<td>table</td>
+<td>转换得到的 table 是从 1 开始索引的，所有值都会根据规则转换</td>
+</tr>
+<tr>
+<td>System.Collections.IDictionary</td>
+<td></td>
+<td>table</td>
+<td>所有的键和值都会根据规则转换</td>
+</tr>
+<tr>
+<td>System.Collections.IEnumerable</td>
+<td></td>
+<td>iterator</td>
+<td>所有的值都会根据规则转换</td>
+</tr>
+<tr>
+<td>System.Collections.IEnumerator</td>
+<td></td>
+<td>iterator</td>
+<td>所有的值都会根据规则转换</td>
+</tr>
+</tbody>
+</table>
+<p>无法进行转换的会抛出 ScriptRuntimeException 异常。</p>
+<h4 id="（2）从-MoonSharp-类型自动转换（Standard）到-CLR-类型"><a href="#（2）从-MoonSharp-类型自动转换（Standard）到-CLR-类型" class="headerlink" title="（2）从 MoonSharp 类型自动转换（Standard）到 CLR 类型"></a>（2）从 MoonSharp 类型自动转换（Standard）到 CLR 类型</h4><p>（ 比上一节更复杂，分成了 Standard 和 constrained 两种 ）每当要求将 DynValue 转换为对象而不指定实际要接收的内容时，使用 Standard 方法：</p>
+<ul>
+<li>当调用 DynValue.ToObject 方法时</li>
+<li>When retrieving values from a table using indexers</li>
+<li>In some specific subcase of the constrained conversion (see below)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>MoonSharp type</th>
+<th>CLR type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nil</td>
+<td>null</td>
+<td>所有这个一一对应啊</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>System.Boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>number</td>
+<td>System.Double</td>
+<td></td>
+</tr>
+<tr>
+<td>string</td>
+<td>System.String</td>
+<td></td>
+</tr>
+<tr>
+<td>function</td>
+<td>MoonSharp.Interpreter.Closure</td>
+<td>如果 DataType 是 Function</td>
+</tr>
+<tr>
+<td>function</td>
+<td>MoonSharp.Interpreter.CallbackFunction</td>
+<td>如果 DataType 是 ClrFunction.</td>
+</tr>
+<tr>
+<td>table</td>
+<td>MoonSharp.Interpreter.Table</td>
+<td></td>
+</tr>
+<tr>
+<td>tuple</td>
+<td>MoonSharp.Interpreter.DynValue[]</td>
+<td></td>
+</tr>
+<tr>
+<td>userdata</td>
+<td>(special)</td>
+<td>返回保存在 userdata 中的对象。如果是 “static” userdata 返回 Type。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="（3）从-MoonSharp-类型自动转换（Constrained）到-CLR-类型"><a href="#（3）从-MoonSharp-类型自动转换（Constrained）到-CLR-类型" class="headerlink" title="（3）从 MoonSharp 类型自动转换（Constrained）到 CLR 类型"></a>（3）从 MoonSharp 类型自动转换（Constrained）到 CLR 类型</h4><p>（更复杂的来了）MoonSharp 值必须保存在一个给定类型的 CLR 变量中，转换的方法有..很多…</p>
+<p>当：</p>
+<ul>
+<li>When calling DynValue.ToObject<t></t></li>
+<li>When converting a script value to a parameter in a CLR function call, or property set</li>
+</ul>
+<p>MoonSharp attempts very hard to convert values, but the conversion surely shows some limits, specially when tables are involved.</p>
+<p>In this case, the conversion is more a process than a simple table of mapping, so let’s analyze the target types one by one.</p>
+<p>特殊地：</p>
+<ul>
+<li>if the target is of type MoonSharp.Interpreter.DynValue it is not converted and the original value is returned.</li>
+<li>If the target is of type System.Object, the default conversion, detailed before, is applied.</li>
+<li>In case of a nil value to be mapped, null is mapped to reference types and nullable value types and an attempt to match a default value is used in some cases (for example function calls for which a default is specified) for non-nullable value types, otherwise an exception is thrown.</li>
+<li>In case of no value provided, the default value is used if possible.</li>
+</ul>
+<p><strong>Strings</strong></p>
+<p>Strings can be automatically converted to System.String, System.Text.StringBuilder or System.Char.</p>
+<p><strong>Booleans</strong></p>
+<p>Booleans can be automatically converted to System.Boolean and/or System.Nullable&lt;System.Boolean&gt;. They can also be converted to System.String, System.Text.StringBuilder or System.Char.</p>
+<p><strong>Numbers</strong></p>
+<p>Numbers can be automatically converted over System.SByte, System.Byte, System.Int16, System.UInt16, System.Int32, System.UInt32, System.Int64, System.UInt64, System.Single, System.Decimal, System.Double and their nullable counterparts. They can also be converted to System.String, System.Text.StringBuilder or System.Char.</p>
+<p><strong>Functions</strong></p>
+<p>Script functions are converted to MoonSharp.Interpreter.Closure or MoonSharp.Interpreter.ScriptFunctionDelegate. Callback functions are converted to MoonSharp.Interpreter.ClrFunction or System.Func&lt;ScriptExecutionContext, CallbackArguments, DynValue&gt;.</p>
+<p><strong>Userdata</strong></p>
+<p>Userdatas are converted only if they are not “static” (see the userdata section in the tutorials). They are converted if the desired type can be assigned with the object to be converted.</p>
+<p>They can also be converted to System.String, System.Text.StringBuilder or System.Char, by calling the object ToString() method.</p>
+<p><strong>Tables</strong></p>
+<p>Tables can be converted to:</p>
+<ul>
+<li>MoonSharp.Interpreter.Table - of course</li>
+<li>Types assignable from Dictionary&lt;DynValue, DynValue&gt;.</li>
+<li>Types assignable from Dictionary&lt;object, object&gt;. Keys and values are mapped using the default mapping.</li>
+<li>Types assignable from List<dynvalue>.</dynvalue></li>
+<li>Types assignable from List<object>. Elements are mapped using the default mapping.</object></li>
+<li>Types assignable from DynValue[].</li>
+<li>Types assignable from object[]. Elements are mapped using the default mapping.</li>
+<li>T[], IList<t>, List<t>, ICollection<t>, IEnumerable<t>, where T is a convertible type (including other lists, etc.)</t></t></t></t></li>
+<li>IDictionary&lt;K,V&gt;, Dictionary&lt;K,V&gt;, where K and V are a convertible type (including other lists, etc.)</li>
+</ul>
+<p>Note that conversion to generics and typed arrays have the following limitations:</p>
+<ul>
+<li>They are slower, as types are created at runtime through reflection</li>
+<li>If the item type is a value type, there is the potential that it will introduce incompatibilities with iOS and other platforms running in AOT mode. Do tests beforehand.</li>
+<li>To compensate with these problems, you can always add custom converters in a later stage of development!</li>
+</ul>
+<hr>
+<p><strong><em>发现了一个问题</em></strong>，当我使用 VS 打开 C++ 工程时，（项目-xxx属性 or 右键工程-属性）可以打开属性页；但是安装了 unity tool 后，c# 工程却只能打开一个与文件相似的页面，本不可以打开，需要对 unity tool 进行设置，将属性页打开，但为什么不是正常的属性页呢？</p>
+<p><img src="project.png" alt></p>
+<p><img src="cproject.png" alt></p>
+<p>为什么哟?</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MoonSharp/" rel="tag"># MoonSharp</a>
+          
+            <a href="/tags/c/" rel="tag"># c#</a>
+          
+            <a href="/tags/Lua/" rel="tag"># Lua</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/14/Unity.Coroutine/" rel="next" title="Unity 协程的执行逻辑">
+                <i class="fa fa-chevron-left"></i> Unity 协程的执行逻辑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/17/EventTrigger/" rel="prev" title="通过 EventTrigger 使用 c# 事件">
+                通过 EventTrigger 使用 c# 事件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00"><span class="nav-number">1.</span> <span class="nav-text">0x00</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-执行-Lua-脚本"><span class="nav-number">2.</span> <span class="nav-text">0x01 执行 Lua 脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-通过静态方法执行字符串中的-Lua-脚本"><span class="nav-number">2.1.</span> <span class="nav-text">1. 通过静态方法执行字符串中的 Lua 脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-通过实例执行字符串中的-Lua-脚本"><span class="nav-number">2.2.</span> <span class="nav-text">2. 通过实例执行字符串中的 Lua 脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-DynValue"><span class="nav-number">3.</span> <span class="nav-text">0x02 DynValue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#认识-DynValue"><span class="nav-number">3.1.</span> <span class="nav-text">认识 DynValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-DynValue"><span class="nav-number">3.2.</span> <span class="nav-text">使用 DynValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多返回值"><span class="nav-number">3.3.</span> <span class="nav-text">多返回值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-回调函数"><span class="nav-number">4.</span> <span class="nav-text">0x03 回调函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-类型转换"><span class="nav-number">5.</span> <span class="nav-text">0x04 类型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xff"><span class="nav-number">6.</span> <span class="nav-text">0xff</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#附录I"><span class="nav-number">6.1.</span> <span class="nav-text">附录I</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（1）从-CLR-类型自动转换到-MoonSharp-类型"><span class="nav-number">6.1.1.</span> <span class="nav-text">（1）从 CLR 类型自动转换到 MoonSharp 类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（2）从-MoonSharp-类型自动转换（Standard）到-CLR-类型"><span class="nav-number">6.1.2.</span> <span class="nav-text">（2）从 MoonSharp 类型自动转换（Standard）到 CLR 类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（3）从-MoonSharp-类型自动转换（Constrained）到-CLR-类型"><span class="nav-number">6.1.3.</span> <span class="nav-text">（3）从 MoonSharp 类型自动转换（Constrained）到 CLR 类型</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

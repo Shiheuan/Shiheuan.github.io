@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="0x00 相当难过先说说题外话 正常的 UI 事件是这样的（我的理解中）：在 UI 对象上挂载脚本，脚本中处理对应的逻辑，比如：在处理指针按下，要在脚本中处理实现一个 IPointerDown 的接口。这看起来很直接，但是在使用中会让逻辑很分散。这就是让我相当难受的做法。  而 EventTrigger 的做法类似，也是将一个实现了所有接口的脚本绑定在要触发事件的 UI 对象上，但是……他只触发一">
+<meta name="keywords" content="unity,foundations">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过 EventTrigger 使用 c# 事件">
+<meta property="og:url" content="http://shiheuan.github.io/2019/07/17/EventTrigger/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="0x00 相当难过先说说题外话 正常的 UI 事件是这样的（我的理解中）：在 UI 对象上挂载脚本，脚本中处理对应的逻辑，比如：在处理指针按下，要在脚本中处理实现一个 IPointerDown 的接口。这看起来很直接，但是在使用中会让逻辑很分散。这就是让我相当难受的做法。  而 EventTrigger 的做法类似，也是将一个实现了所有接口的脚本绑定在要触发事件的 UI 对象上，但是……他只触发一">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.137Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过 EventTrigger 使用 c# 事件">
+<meta name="twitter:description" content="0x00 相当难过先说说题外话 正常的 UI 事件是这样的（我的理解中）：在 UI 对象上挂载脚本，脚本中处理对应的逻辑，比如：在处理指针按下，要在脚本中处理实现一个 IPointerDown 的接口。这看起来很直接，但是在使用中会让逻辑很分散。这就是让我相当难受的做法。  而 EventTrigger 的做法类似，也是将一个实现了所有接口的脚本绑定在要触发事件的 UI 对象上，但是……他只触发一">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2019/07/17/EventTrigger/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>通过 EventTrigger 使用 c# 事件 | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2019/07/17/EventTrigger/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">通过 EventTrigger 使用 c# 事件
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-17 21:54:13" itemprop="dateCreated datePublished" datetime="2019-07-17T21:54:13+08:00">2019-07-17</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x00-相当难过"><a href="#0x00-相当难过" class="headerlink" title="0x00 相当难过"></a>0x00 相当难过</h2><p>先说说题外话</p>
+<p>正常的 UI 事件是这样的（我的理解中）：在 UI 对象上挂载脚本，脚本中处理对应的逻辑，比如：在处理指针按下，要在脚本中处理实现一个 IPointerDown 的接口。这看起来很直接，但是在使用中会让逻辑很分散。这就是让我相当难受的做法。 </p>
+<p>而 EventTrigger 的做法类似，也是将一个实现了所有接口的脚本绑定在要触发事件的 UI 对象上，但是……他只触发一个特定事件。</p>
+<p>我不确定从 UI 在 EventSystem 中的实现是不是通过事件的方式（我以为是，需要学习一下，搞搞清楚），之前我也是并不理解为什么要在事件触发的回调中触发另一个事件。</p>
+<h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><p>处理 UI 事件的 EventTrigger 是什么：</p>
+<blockquote>
+<p>接受从 EventSystem 触发的事件，并为每一个事件调用注册的回调函数。EventTrigger 可以用来指定为每个 EventSystem 事件调用的函数。可以将多个函数注册给单个事件，每当 EventTrigger 收到该事件时，都会按照这些函数的提供顺序调用它们。（这个组件要挂载到 GameObject 上使用，这会导致该对象拦截所有的事件，并且这些时间都不会传播到父对象上。）</p>
+</blockquote>
+<ol>
+<li>要挂上</li>
+<li>要实现</li>
+<li>要有注册的回调方法</li>
+</ol>
+<p>关于 EventTrigger 的原理这点，在<a href="https://shiheuan.github.io/2019/07/11/Csharp.delegate.event/">c#委托和事件</a>中有所介绍，在这里是通过 EventSystem 触发绑定在对象上脚本的处理函数，在处理函数中，再触发定义的事件，通过事件调用实际上要执行的逻辑代码。</p>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>在官网文档中，有介绍 EventTrigger 的两种使用方式：</p>
+<ol>
+<li>扩展 EventTrigger，重写（ override ）需要拦截的事件的函数：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line">public class EventTriggerExample : EventTrigger</span><br><span class="line">&#123;</span><br><span class="line">    public override void OnBeginDrag(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnBeginDrag called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...// 长，代码见附录I</span><br><span class="line"></span><br><span class="line">    public override void OnPointerClick(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnPointerClick called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实这里的用法，就和原本自己定义脚本实现接口的方式相同了，将处理的逻辑写在事件的处理函数中。在上面提出的让逻辑在统一的位置处理，可以在这里触发事件。像这样……（传了一个 <a href="https://gist.github.com/Shiheuan/70e8536a83d9cdd428ae479a1df18c15" target="_blank" rel="noopener">gist</a>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class UIEventListener : EventTrigger</span><br><span class="line">&#123;</span><br><span class="line">    public delegate void UIDelegate(GameObject go); </span><br><span class="line">    public event UIDelegate onPointerEnter;</span><br><span class="line">    public override void OnPointerEnter(PointerEventData eventData)</span><br><span class="line">        &#123;</span><br><span class="line">            if (null != onPointerEnter)</span><br><span class="line">            &#123;</span><br><span class="line">                // 传入挂载对象作为参数可以方便在主逻辑脚本中处理</span><br><span class="line">                onPointerEnter(gameObject);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样，这个脚本也要挂在对象上，但这里的逻辑只触发了自定义的事件，而事件就可以调用放在任意位置的逻辑代码了。但是手动挂脚本还是不怎么方便日后的修改与维护，所以添加一个静态方法用来获取特定对象的 UIEventListener 组件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public static UIEventListener GetListener(GameObject go)</span><br><span class="line">&#123;</span><br><span class="line">    UIEventListener listener = go.GetComponent&lt;UIEventListener&gt;();</span><br><span class="line"></span><br><span class="line">    if (null == listener)</span><br><span class="line">    &#123;// 如果找不到，那就挂一个</span><br><span class="line">        listener = go.AddComponent&lt;UIEventListener&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return listener;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样这个问题就解决了。</p>
+<ol start="2">
+<li>也可以指定单个委托：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line">public class EventTriggerDelegateExample : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    void Start()</span><br><span class="line">    &#123;</span><br><span class="line">        EventTrigger trigger = GetComponent&lt;EventTrigger&gt;();</span><br><span class="line">        EventTrigger.Entry entry = new EventTrigger.Entry(); // 保存有事件类型，和回调函数</span><br><span class="line">        entry.eventID = EventTriggerType.PointerDown;</span><br><span class="line">        entry.callback.AddListener((data) =&gt; &#123; OnPointerDownDelegate((PointerEventData)data); &#125;);</span><br><span class="line">        trigger.triggers.Add(entry); // triggers 是在 EventTrigger 中注册的所有函数</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // PointerEventData 是 EventSystem 定义的数据类型</span><br><span class="line">    public void OnPointerDownDelegate(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnPointerDownDelegate called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码，获取到了挂载的对象上的 EventTrigger 组件，然后监听对象的某个事件，执行特定的回调方法。</p>
+<p>当然也可以类似的将这段代码与自动添加组件一起封装一下再使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/// &lt;summary&gt;</span><br><span class="line">/// 添加EventTrigger的监听事件</span><br><span class="line">/// &lt;/summary&gt;</span><br><span class="line">/// &lt;param name=&quot;obj&quot;&gt;添加监听的对象&lt;/param&gt;</span><br><span class="line">/// &lt;param name=&quot;eventID&quot;&gt;添加的监听类型&lt;/param&gt;</span><br><span class="line">/// &lt;param name=&quot;action&quot;&gt;触发方法&lt;/param&gt;</span><br><span class="line">private void AddTriggersListener(GameObject obj, EventTriggerType eventID, UnityAction&lt;BaseEventData&gt; action)</span><br><span class="line">&#123;</span><br><span class="line">    EventTrigger trigger = obj.GetComponent&lt;EventTrigger&gt;();</span><br><span class="line">    if (trigger == null)</span><br><span class="line">    &#123;</span><br><span class="line">        trigger = obj.AddComponent&lt;EventTrigger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (trigger.triggers.Count == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        trigger.triggers = new List&lt;EventTrigger.Entry&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    UnityAction&lt;BaseEventData&gt; callback = new UnityAction&lt;BaseEventData&gt;(action);</span><br><span class="line">    EventTrigger.Entry entry = new EventTrigger.Entry();</span><br><span class="line">    entry.eventID = eventID;</span><br><span class="line">    entry.callback.AddListener(callback);</span><br><span class="line">    trigger.triggers.Add(entry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><p>在 PC 端与移动端处理 UI 事件会有所不同，可以通过实机调试就可以看出不同。比方说在 PC 端，通过鼠标来操作时，指针离开区域和指针放开的事件是可以明确区分的，但是在移动端，由于没有“指针”，在处理这两个事件时其实是同时的，如果在这两个事件之间处理逻辑，就不会符合预期了。</p>
+<p>关于前面抛出的问题，依旧占坑，先去改我费尽苦心写下的 bug 了，明明知道 update 执行是随机的，还在触发事件时用 static 对象来拼人品……</p>
+<p>（ps 好了，我“辛辛苦苦”改完了我“辛辛苦苦”写的bug……0点15了……</p>
+<p>（占坑以后聊 EventSystem</p>
+<h2 id="0xff-附录"><a href="#0xff-附录" class="headerlink" title="0xff 附录"></a>0xff 附录</h2><p>附录I</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line">public class EventTriggerExample : EventTrigger</span><br><span class="line">&#123;</span><br><span class="line">    public override void OnBeginDrag(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnBeginDrag called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnCancel(BaseEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnCancel called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnDeselect(BaseEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnDeselect called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnDrag(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnDrag called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnDrop(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnDrop called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnEndDrag(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnEndDrag called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnInitializePotentialDrag(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnInitializePotentialDrag called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnMove(AxisEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnMove called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnPointerClick(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnPointerClick called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnPointerDown(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnPointerDown called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnPointerEnter(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnPointerEnter called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnPointerExit(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnPointerExit called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnPointerUp(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnPointerUp called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnScroll(PointerEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnScroll called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnSelect(BaseEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnSelect called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnSubmit(BaseEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnSubmit called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnUpdateSelected(BaseEventData data)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;OnUpdateSelected called.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/unity/" rel="tag"># unity</a>
+          
+            <a href="/tags/foundations/" rel="tag"># foundations</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/15/Csharp.Lua.MoonSharp_1/" rel="next" title="MoonSharp 从一知到半解（1）">
+                <i class="fa fa-chevron-left"></i> MoonSharp 从一知到半解（1）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/24/DrawLineInUnity/" rel="prev" title="Unity 中绘制线段">
+                Unity 中绘制线段 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-相当难过"><span class="nav-number">1.</span> <span class="nav-text">0x00 相当难过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01"><span class="nav-number">2.</span> <span class="nav-text">0x01</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">3.</span> <span class="nav-text">0x02</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03"><span class="nav-number">4.</span> <span class="nav-text">0x03</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xff-附录"><span class="nav-number">5.</span> <span class="nav-text">0xff 附录</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

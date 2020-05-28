@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="0x00MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过官网的教程来入门类库与 Lua。 如果有需要请配合我的代码食用。 0x01 Proxy objects处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API">
+<meta name="keywords" content="MoonSharp,c#,Lua">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoonSharp 从一知到半解（3）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="0x00MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过官网的教程来入门类库与 Lua。 如果有需要请配合我的代码食用。 0x01 Proxy objects处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.119Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MoonSharp 从一知到半解（3）">
+<meta name="twitter:description" content="0x00MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过官网的教程来入门类库与 Lua。 如果有需要请配合我的代码食用。 0x01 Proxy objects处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API">
+<meta name="twitter:image" content="http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MoonSharp 从一知到半解（3） | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MoonSharp 从一知到半解（3）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-31 20:04:20" itemprop="dateCreated datePublished" datetime="2019-07-31T20:04:20+08:00">2019-07-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>MoonSharp 是一个支持使用 C# 调用 Lua 的类库，这个系列是通过<a href="https://www.moonsharp.org/getting_started.html" target="_blank" rel="noopener">官网的教程</a>来入门类库与 Lua。</p>
+<p>如果有需要请配合我的<a href="https://github.com/Shiheuan/MoonSharpTutorial" target="_blank" rel="noopener">代码</a>食用。</p>
+<h2 id="0x01-Proxy-objects"><a href="#0x01-Proxy-objects" class="headerlink" title="0x01 Proxy objects"></a>0x01 Proxy objects</h2><p>处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API 过于复杂，MoonSharp 提供了一种脚本 DTO，也就是 Proxy Objects.</p>
+<p>DTO（Data Transfer Object，数据传输模型），是一个在进程之间传递数据的对象，常用在与远程接口的通讯上（如 web 服务）（expensive operation）。</p>
+<p>这个概念非常简单。对于要封装的脚本所暴露的每种类型，必须提供“代理类型”类，它通过所封装的类型的一个实例类进行相关的操作。</p>
+<p>这个示例就是示例，Github 里可以直接执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// Declare a proxy class</span><br><span class="line">class MyProxy</span><br><span class="line">&#123;</span><br><span class="line">    MyType target;</span><br><span class="line"></span><br><span class="line">    [MoonSharpHidden]</span><br><span class="line">    public MyProxy(MyType p)</span><br><span class="line">    &#123;</span><br><span class="line">        this.target = p;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int GetValue() &#123; return target.GetValue(); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Register the proxy, using a function which creates a proxy from the target type</span><br><span class="line">UserData.RegisterProxyType&lt;MyProxy, MyType&gt;(r =&gt; new MyProxy(r));</span><br><span class="line"></span><br><span class="line">// Test with a script - only the proxy type is really exposed to scripts, yet everything it works</span><br><span class="line">// just as if the target type was actually used..</span><br><span class="line"></span><br><span class="line">Script S = new Script();</span><br><span class="line"></span><br><span class="line">S.Globals[&quot;mytarget&quot;] = new MyType(...);</span><br><span class="line">S.Globals[&quot;func&quot;] = (Action&lt;MyType&gt;)SomeFunction;</span><br><span class="line"></span><br><span class="line">S.DoString(@&quot;</span><br><span class="line">        x = mytarget.GetValue();</span><br><span class="line">        func(mytarget);</span><br><span class="line">&quot;);</span><br></pre></td></tr></table></figure>
+<p>稍微理解一下，这里其实是通过 MyProxy 通过一个实例转调了 MyType 的方法，在脚本中访问 MyType 实际上是通过 MyProxy 进行的。</p>
+<p>除了封装之外，可以使用“代理对象”完成一些巧妙的技巧。</p>
+<p>一个非常简单，但非常有用的例子是提供对值类型的正确访问;</p>
+<p>例如，你可以包装 Unity Transform 类——它完全由值类型组成，但本身是一个引用类型——使其具有不同的接口，并且可以正确保留引用！</p>
+<p>（哈？）</p>
+<h2 id="0x02-Error-handling"><a href="#0x02-Error-handling" class="headerlink" title="0x02 Error handling"></a>0x02 Error handling</h2><p>MoonSharp 从 InterpreterException 类型派生出了四种异常类型：</p>
+<ul>
+<li>InternalErrorException 解释器内部错误，脚本引擎致命错误，联系开发者吧？</li>
+<li>SyntaxErrorException 解释器无法解析脚本代码；</li>
+<li>ScriptRuntimeException 最常见的错误，引发 Lua 错误时会抛出，git 中有个例子，可以在 c# 中捕获异常，或向 lua 抛出异常（pcall 进行处理）。</li>
+<li>DynamicExpressionException 解释器遇到动态表达式（Dynamic expression，假装了解的样子……）错误时抛出。</li>
+</ul>
+<p>当然，也可能由于调用代码或 MoonSharp 代码导致其他的异常，但至少理论上不会由脚本产生。上面的异常类型还有一个包含错误信息的 DecorativeMessage 属性，它使用抛出异常的源码的引用进行修饰。</p>
+<h2 id="0x03-Script-Loaders"><a href="#0x03-Script-Loaders" class="headerlink" title="0x03 Script Loaders"></a>0x03 Script Loaders</h2><p>如何修改 MoonSharp 读取文件中脚本的方式。MoonSharp 旨在支持多平台，所以要适配用户选择的平台。因此 MoonSharp 提供了两个对象层级：</p>
+<ul>
+<li>Script loaders 用来自定义 API 如何从文件加载脚本，（emmmm，可以简单理解为用在 Script 类中咯）；</li>
+<li>Platform accessors 用来自定义如何完成对 OS 的低级访问。</li>
+</ul>
+<h3 id="预定义脚本加载器"><a href="#预定义脚本加载器" class="headerlink" title="预定义脚本加载器"></a>预定义脚本加载器</h3><p>根据使用的平台不同可以选择的脚本加载器：</p>
+<ul>
+<li>FileSystemScriptLoader：对文件系统上文件的原始访问，可以自定义，但是不支持可移植库；</li>
+<li>ReplInterpreterScriptLoader：与 FileSystemScriptLoader 相同，加上使用与 Lua 相同的逻辑来获取环境变量的路径（MOONSHARP_PATH，LUA_PATH 或 “?;?.lua”）；</li>
+<li>EmbeddedResourcesScriptLoader：提供对给定程序集的嵌入资源的访问，而非文件系统；</li>
+<li>InvalidScriptLoader：抛出异常；</li>
+<li>UnityAssetsScriptLoader：适用于 Unity3D，从文本资源加载脚本。</li>
+</ul>
+<p>如果不重定义，MoonSharp 会使用的默认脚本加载器：</p>
+<p>在 Unity 下，默认脚本加载器是 Assets/Resources/MoonSharp/Scripts 路径的 UnityAssetsScriptLoader，而文件名必须具有“.txt”扩展名，奇怪的 Unity 为什么只认识 txt。</p>
+<p>如果构建可移植类库，选择 InvalidScriptLoader（除非执行某些操作，否则无法从文件进行加载）。</p>
+<p>其他情况下，使用 FileSystemScriptLoade。</p>
+<h3 id="指定加载器"><a href="#指定加载器" class="headerlink" title="指定加载器"></a>指定加载器</h3><p>如果希望从当前程序集的嵌入资源加载，可以有两种方式（全局或局部）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 给定一个 script 实例，指定此实例的加载器</span><br><span class="line">script.Options.ScriptLoader = new EmbeddedResourcesScriptLoader();</span><br><span class="line">// 后续创建的所有新 script 的加载器</span><br><span class="line">Script.DefaultOptions.ScriptLoader = new EmbeddedResourcesScriptLoader();</span><br></pre></td></tr></table></figure>
+<h3 id="require-方法"><a href="#require-方法" class="headerlink" title="require 方法"></a>require 方法</h3><p>通常的需求是改变 require 方法使用的加载目录。脚本加载器扩展自 ScriptLoaderBase 类，通过修改 ModulePaths 属性即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// These two lines are equivalent:</span><br><span class="line">((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = new string[] &#123; &quot;MyPath/?&quot;, &quot;MyPath/?.lua&quot; &#125;;</span><br><span class="line">// 或者</span><br><span class="line">((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = ScriptLoaderBase.UnpackStringPaths(&quot;MyPath/?;MyPath/?.lua&quot;);</span><br></pre></td></tr></table></figure>
+<p>如果想忽略 LUA_PATH（全局变量），可以这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((ScriptLoaderBase)script.Options.ScriptLoader).IgnoreLuaPathGlobal = true;</span><br></pre></td></tr></table></figure>
+<h3 id="使用-EmbeddedResourcesScriptLoader"><a href="#使用-EmbeddedResourcesScriptLoader" class="headerlink" title="使用 EmbeddedResourcesScriptLoader"></a>使用 EmbeddedResourcesScriptLoader</h3><p>很简单，在 VS 里：</p>
+<ol>
+<li>在工程中创建一个“Scripts”文件夹；</li>
+<li>添加文本文件重命名为“test.lua”；</li>
+<li>写 Lua…</li>
+</ol>
+<p>将文件添加到工程（添加文件夹直接拖拽到工程中就好，我不知道你会不会，反正我刚会……），然后将开开“.lua”的属性，修改“生成操作（Build Action）”为“嵌入的资源（Embedded Resource）”如图。</p>
+<p><img src="embedded.png" alt></p>
+<p>然后，就是最喜欢的写两行代码环节：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static void EmbeddedResourceScriptLoader()</span><br><span class="line">&#123;</span><br><span class="line">    Script script = new Script();</span><br><span class="line">    script.Options.ScriptLoader = new EmbeddedResourcesScriptLoader();</span><br><span class="line">    script.DoFile(&quot;Scripts/Test.lua&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么，这种嵌入资源方式和直接读取文件有啥区别呢？</p>
+<h3 id="创建自己的脚本加载器"><a href="#创建自己的脚本加载器" class="headerlink" title="创建自己的脚本加载器"></a>创建自己的脚本加载器</h3><ul>
+<li>继承 ScriptLoaderBase（官方推荐）</li>
+<li>实现 IScriptLoader</li>
+</ul>
+<p>不言自明~</p>
+<h2 id="0x04-Platform-accessors"><a href="#0x04-Platform-accessors" class="headerlink" title="0x04 Platform accessors"></a>0x04 Platform accessors</h2><p>平台访问器与脚本加载器非常相似（是不是可以结束这一 part 了）。</p>
+<p>平台访问器提供了对操作系统 API 的访问，主要是 io，file 和 os 模块。</p>
+<ul>
+<li>StandardPlatformAccessor：实现所有相关方法；</li>
+<li>LimitedPlatformAccessor：禁用操作系统模块（构建可移植类库时默认使用）。</li>
+</ul>
+<p>要注意的是，修改了平台访问器会影响所有脚本。一旦创建了脚本，就不应该更改平台访问器了。</p>
+<p>类似地，要实现自己的平台访问器可以继承 PlatformAccessorBase 或实现 IPlatformAccessor。通常一些功能（打印输出重定向）都是可以通过脚本选项定制的。</p>
+<h2 id="0x05-Script-options"><a href="#0x05-Script-options" class="headerlink" title="0x05 Script options"></a>0x05 Script options</h2><p>Script 对象提供了选项来调整其行为，有全局和局部两种选项，放到附录请查阅。</p>
+<p>本地选项可以为每一个 Script 对象实例赋不同的值。而全局选项通过 Script.GlobalOptions 访问，对所有脚本有效。</p>
+<hr>
+<hr>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><h3 id="附录I"><a href="#附录I" class="headerlink" title="附录I"></a>附录I</h3><table>
+<thead>
+<tr>
+<th>局部选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ScriptLoader</td>
+<td>This is the IScriptLoader for this script. See the section on script loaders for more details.</td>
+</tr>
+<tr>
+<td>DebugPrint</td>
+<td>This is a Action<string> delegate which will be called everytime print is called by Lua code.</string></td>
+</tr>
+<tr>
+<td>DebugInput</td>
+<td>This is a Func&lt;string, string&gt; delegate which will be called everytime MoonSharp requires line-input from a console, for example in the case of debug.debug.</td>
+</tr>
+<tr>
+<td>UseLuaErrorLocations</td>
+<td>If this is set to true, locations in error messages will only include the line numbers instead of lines and columns. Use this for compatibility with legacy Lua code which parses error messages.</td>
+</tr>
+<tr>
+<td>Stdin, Stdout and Stderr</td>
+<td>Default streams to be used in io/file functions.</td>
+</tr>
+<tr>
+<td>TailCallOptimizationThreshold</td>
+<td>This is quite a complex option. Basically Lua uses a technique to drammatically reduce stack usage in certain scenarios at the expense of simplicity and ease of debugging. MoonSharp can behave the same way, but by default doesn’t until it’s needed. This defines the threshold. Refer to the reference help for more details.</td>
+</tr>
+<tr>
+<td>CheckThreadAccess</td>
+<td>Again a complex and unusual option. MoonSharp does some sanity checks to prevent scripts being used by multiple threads concurrently. For reasons detailed in the reference help, these checks can have false positives and false negatives. If you are experiencing false positives, you can disable the checks with this option. But please check that you are not calling MoonSharp execution concurrently from two threads as it is not supported.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>全局选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Platform</td>
+<td>the platform accessor we learned about in the previous chapter</td>
+</tr>
+<tr>
+<td>CustomConverters</td>
+<td>the collection of all custom converters</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MoonSharp/" rel="tag"># MoonSharp</a>
+          
+            <a href="/tags/c/" rel="tag"># c#</a>
+          
+            <a href="/tags/Lua/" rel="tag"># Lua</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/30/Csharp.Lua.MoonSharp_2/" rel="next" title="MoonSharp 从一知到半解（2）">
+                <i class="fa fa-chevron-left"></i> MoonSharp 从一知到半解（2）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/01/Csharp.Lua.MoonSharp_4/" rel="prev" title="MoonSharp 从一知到半解（4）">
+                MoonSharp 从一知到半解（4） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00"><span class="nav-number">1.</span> <span class="nav-text">0x00</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-Proxy-objects"><span class="nav-number">2.</span> <span class="nav-text">0x01 Proxy objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-Error-handling"><span class="nav-number">3.</span> <span class="nav-text">0x02 Error handling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-Script-Loaders"><span class="nav-number">4.</span> <span class="nav-text">0x03 Script Loaders</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#预定义脚本加载器"><span class="nav-number">4.1.</span> <span class="nav-text">预定义脚本加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定加载器"><span class="nav-number">4.2.</span> <span class="nav-text">指定加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#require-方法"><span class="nav-number">4.3.</span> <span class="nav-text">require 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-EmbeddedResourcesScriptLoader"><span class="nav-number">4.4.</span> <span class="nav-text">使用 EmbeddedResourcesScriptLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自己的脚本加载器"><span class="nav-number">4.5.</span> <span class="nav-text">创建自己的脚本加载器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Platform-accessors"><span class="nav-number">5.</span> <span class="nav-text">0x04 Platform accessors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-Script-options"><span class="nav-number">6.</span> <span class="nav-text">0x05 Script options</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0xff"><span class="nav-number">7.</span> <span class="nav-text">0xff</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#附录I"><span class="nav-number">7.1.</span> <span class="nav-text">附录I</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

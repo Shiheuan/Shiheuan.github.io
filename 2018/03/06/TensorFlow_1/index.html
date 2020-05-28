@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="〇、随便写的话 看到山崩地裂和天花乱坠，每天得道，每天可以没有明天。                          ——冯唐  这是我写在新年开始的箴言，2017待我不薄，寄希望2018这关键的一年自己也能把握住。毕竟“除了自渡与渡人，其他毫无所有，毫无所谓。” 虽然自认为做了一些事情，但是没有一件是坚持下来，要不就总在一些细枝末节的事情上纠结，要不就是单纯的懒，直到现在，越大，越怕。 201">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TensorFlow学习笔记【一】 基本使用">
+<meta property="og:url" content="http://shiheuan.github.io/2018/03/06/TensorFlow_1/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="〇、随便写的话 看到山崩地裂和天花乱坠，每天得道，每天可以没有明天。                          ——冯唐  这是我写在新年开始的箴言，2017待我不薄，寄希望2018这关键的一年自己也能把握住。毕竟“除了自渡与渡人，其他毫无所有，毫无所谓。” 虽然自认为做了一些事情，但是没有一件是坚持下来，要不就总在一些细枝末节的事情上纠结，要不就是单纯的懒，直到现在，越大，越怕。 201">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://shiheuan.github.io/2018/03/06/TensorFlow_1/2018.1.1朋友圈.png">
+<meta property="og:image" content="http://shiheuan.github.io/2018/03/06/TensorFlow_1/tensors_flowing.gif">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.386Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TensorFlow学习笔记【一】 基本使用">
+<meta name="twitter:description" content="〇、随便写的话 看到山崩地裂和天花乱坠，每天得道，每天可以没有明天。                          ——冯唐  这是我写在新年开始的箴言，2017待我不薄，寄希望2018这关键的一年自己也能把握住。毕竟“除了自渡与渡人，其他毫无所有，毫无所谓。” 虽然自认为做了一些事情，但是没有一件是坚持下来，要不就总在一些细枝末节的事情上纠结，要不就是单纯的懒，直到现在，越大，越怕。 201">
+<meta name="twitter:image" content="http://shiheuan.github.io/2018/03/06/TensorFlow_1/2018.1.1朋友圈.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2018/03/06/TensorFlow_1/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>TensorFlow学习笔记【一】 基本使用 | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2018/03/06/TensorFlow_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TensorFlow学习笔记【一】 基本使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-03-06 21:24:00" itemprop="dateCreated datePublished" datetime="2018-03-06T21:24:00+08:00">2018-03-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="〇、随便写的话"><a href="#〇、随便写的话" class="headerlink" title="〇、随便写的话"></a>〇、随便写的话</h2><blockquote>
+<p>看到山崩地裂和天花乱坠，每天得道，每天可以没有明天。<br>                          ——冯唐</p>
+</blockquote>
+<p>这是我写在新年开始的箴言，2017待我不薄，寄希望2018这关键的一年自己也能把握住。<br>毕竟“除了自渡与渡人，其他毫无所有，毫无所谓。”</p>
+<p>虽然自认为做了一些事情，但是没有一件是坚持下来，要不就总在一些细枝末节的事情上纠结，要不就是单纯的懒，直到现在，越大，越怕。</p>
+<p>2018到现在已经过去两个月了，而后面我只想……留下点痕迹吧。<br>话说我现在的体重估计能咋出个大坑，不只是痕迹…该减减了……</p>
+<h2 id><a href="#" class="headerlink" title></a><img src="2018.1.1朋友圈.png" alt></h2><h2 id="一、TensorFlow-学习准备"><a href="#一、TensorFlow-学习准备" class="headerlink" title="一、TensorFlow 学习准备"></a>一、TensorFlow 学习准备</h2><p>在 Windows 10 系统下，<br>IDE 是 PyCharm Community Edition 2017.2.4，<br>使用 python (3.5.4) 语言，<br>学习 TensorFlow (1.2.1).</p>
+<p>主要我也不觉得搭个虚拟机，就会比在 windows 上直接操练更好，所以就先保持现状学起来吧，入个门在考虑环境的问题。</p>
+<p>那么，第一个问题，<br>什么是 TensorFlow？<a href="http://www.tensorfly.cn/tfdoc/get_started/basic_usage.html" target="_blank" rel="noopener">TensorFlow中文社区</a></p>
+<blockquote>
+<p>TensorFlow 是一个编程系统，用<strong>图</strong>来表示计算任务，在<strong>Session（会话）</strong>中执行，计算过程使用的数据用<strong>tensor</strong>来表示，并通过<strong>variable（变量）</strong>来维护状态；</p>
+<p>所以，TensorFlow的计算过程就是：在 Session 中执行描述计算过程的 图 ，Session 将 图 中的 <strong>op（operetion，节点）</strong>分发到运算设备（CPU、GPU）上执行，产生 tensor 并返回。</p>
+<p>除此之外，TensorFlow 还有 <strong>feed</strong> 和 <strong>fetch</strong> 两大机制，分别用来为操作赋值或从操作用获取数据。</p>
+</blockquote>
+<p>通俗讲，TensorFlow 是一个通过数据流图（Data flow graphs）进行数值计算的软件库。</p>
+<p><img src="tensors_flowing.gif" alt></p>
+<p>来自<a href="http://www.tensorfly.cn/" target="_blank" rel="noopener">中文社区</a></p>
+<h2 id="二、TensorFlow-基本使用"><a href="#二、TensorFlow-基本使用" class="headerlink" title="二、TensorFlow 基本使用"></a>二、TensorFlow 基本使用</h2><p>使用 TensorFlow 的程序一般组织为两部分，构建阶段和执行阶段。</p>
+<ul>
+<li>构建阶段<blockquote>
+<p>创建一个图来表示和训练神经网络（此阶段在 Python 中较 C/C++ 更容易）;</p>
+</blockquote>
+</li>
+<li>执行阶段<blockquote>
+<p>反复执行图中的训练 op;</p>
+</blockquote>
+</li>
+</ul>
+<p>熟悉 TensorFlow 的基本操作 Python 程序如下：</p>
+<h3 id="1-test1-矩阵相乘"><a href="#1-test1-矩阵相乘" class="headerlink" title="1. test1 矩阵相乘"></a>1. test1 矩阵相乘</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个常量 op, 产生一个 1*2 的矩阵, 这个 op 作为一个节点,</span></span><br><span class="line"><span class="comment"># 加入到默认图中.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 构造器的返回值代表该常量 op 的返回值.</span></span><br><span class="line"></span><br><span class="line">matrix1 = tf.constant([[<span class="number">3.</span>, <span class="number">3.</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建另外一个常量 op, 产生一个 2*1 的矩阵.</span></span><br><span class="line">matrix2 = tf.constant([[<span class="number">2.</span>], [<span class="number">2.</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个矩阵乘法 matmul op, 把 matrix1 和 matrix2 作为输入,</span></span><br><span class="line"><span class="comment"># 返回值 product 作为矩阵乘法的结果.</span></span><br><span class="line">product = tf.matmul(matrix1, matrix2)</span><br><span class="line"></span><br><span class="line">print(product)</span><br><span class="line"><span class="comment"># ==&gt; Tensor("MatMul:0", shape=(1, 1), dtype=float32)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动默认图 无任何创建参数</span></span><br><span class="line">sess = tf.Session()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用 sess 的 run() 方法来执行矩阵乘法 op, 传入 'product' 作为参数,</span></span><br><span class="line"><span class="comment"># 上面提到, 'product' 代表了矩阵乘法 op 的输出, 传入它是向方法表明, 我们希望取回</span></span><br><span class="line"><span class="comment"># 矩阵乘法 op 的输出.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 整个执行过程是自动化的, 会话负责传递 op 所需的全部输入. op 通常是并发执行的.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 函数调用 'run(product)' 触发了图中三个 op (两个常量 op 和一个矩阵乘法 op) 的执行.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 返回值 'result' 是一个 numpy 'ndarray' 对象.</span></span><br><span class="line">result = sess.run(product)</span><br><span class="line">print(result)</span><br><span class="line"><span class="comment"># ==&gt; [[ 12.]]</span></span><br><span class="line"></span><br><span class="line">sess.close()</span><br><span class="line"><span class="comment"># 也可以使用 with 代码块自动完成关闭动作, 如 test02</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-test2-矩阵相乘（with代码块）"><a href="#2-test2-矩阵相乘（with代码块）" class="headerlink" title="2.test2 矩阵相乘（with代码块）"></a>2.test2 矩阵相乘（with代码块）</h3><p>Python中 with 语句是与异常处理相关的功能语句。适用于对资源进行访问的场合，确保在使用后执行必要的清理操作。<br>语法格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">with context_expression [as target(s)]:</span><br><span class="line">    with-body</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">matrix1 = tf.constant([[<span class="number">3.</span>, <span class="number">3.</span>]])</span><br><span class="line">matrix2 = tf.constant([[<span class="number">2.</span>], [<span class="number">2.</span>]])</span><br><span class="line">product = tf.matmul(matrix1, matrix2)</span><br><span class="line"></span><br><span class="line">print(product)</span><br><span class="line"><span class="comment"># ==&gt; Tensor("MatMul:0", shape=(1, 1), dtype=float32)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    result = sess.run([product])</span><br><span class="line">    print(result)</span><br><span class="line">    <span class="comment"># ==&gt; [[ 12.]]</span></span><br><span class="line"><span class="comment"># 也可以显式调用 close() 关闭以释放资源</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-test3-变量计数器"><a href="#3-test3-变量计数器" class="headerlink" title="3.test3 变量计数器"></a>3.test3 变量计数器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个变量, 初始化为标量 0.</span></span><br><span class="line">state = tf.Variable(<span class="number">0</span>, name=<span class="string">"counter"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个 op, 其作用是使 state 增加 1</span></span><br><span class="line"></span><br><span class="line">one = tf.constant(<span class="number">1</span>)</span><br><span class="line">new_value = tf.add(state, one)</span><br><span class="line">update = tf.assign(state, new_value)  <span class="comment"># 图所描绘的赋值</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动图后, 变量必须先经过`初始化` (init) op 初始化,</span></span><br><span class="line"><span class="comment"># 首先必须增加一个`初始化` op 到图中.</span></span><br><span class="line">init_op = tf.global_variables_initializer()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动图, 运行 op</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">  <span class="comment"># 运行 'init' op</span></span><br><span class="line">  sess.run(init_op)</span><br><span class="line">  <span class="comment"># 打印 'state' 的初始值</span></span><br><span class="line">  print(sess.run(state))</span><br><span class="line">  <span class="comment"># 运行 op, 更新 'state', 并打印 'state'</span></span><br><span class="line">  <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">3</span>):</span><br><span class="line">    sess.run(update)</span><br><span class="line">    print(sess.run(state))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出:</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 0</span></span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line"><span class="comment"># 3</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-test4-fetch-机制"><a href="#4-test4-fetch-机制" class="headerlink" title="4.test4 fetch 机制"></a>4.test4 fetch 机制</h3><p>向 run() 方法传入多个 tensor，以取回多个结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">input1 = tf.constant(<span class="number">3.0</span>)</span><br><span class="line">input2 = tf.constant(<span class="number">5.0</span>)</span><br><span class="line">input3 = tf.constant(<span class="number">2.0</span>)</span><br><span class="line">intermed = tf.add(input2, input3)</span><br><span class="line">mul = tf.multiply(input1, intermed)</span><br><span class="line"><span class="comment"># 这里没有 tensorflow.mul(), 但是文档里有啊?</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    result = sess.run([mul, intermed])</span><br><span class="line">    print(result)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ==&gt; [21.0, 7.0]</span></span><br></pre></td></tr></table></figure>
+<h3 id="5-test5-feed机制"><a href="#5-test5-feed机制" class="headerlink" title="5.test5 feed机制"></a>5.test5 feed机制</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 tf.placeholder() 方法创建占位符，将其指定为 'feed' 操作.</span></span><br><span class="line">input1 = tf.placeholder(tf.float32)</span><br><span class="line">input2 = tf.placeholder(tf.float32)</span><br><span class="line">output = tf.multiply(input1, input2)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    print(sess.run([output], feed_dict=&#123;input1:[<span class="number">7.</span>], input2:[<span class="number">2.</span>]&#125;))</span><br><span class="line">    <span class="comment"># ==&gt; [array([ 14.], dtype=float32)]</span></span><br><span class="line">    print(sess.run(output, feed_dict=&#123;input1: [<span class="number">7.</span>], input2: [<span class="number">2.</span>]&#125;))</span><br><span class="line">    <span class="comment"># ==&gt; [ 14.]</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/06/library_1/" rel="prev" title="个人电子图书馆【一】 通过豆瓣API获取图书详细信息">
+                个人电子图书馆【一】 通过豆瓣API获取图书详细信息 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#〇、随便写的话"><span class="nav-number">1.</span> <span class="nav-text">〇、随便写的话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、TensorFlow-学习准备"><span class="nav-number">3.</span> <span class="nav-text">一、TensorFlow 学习准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、TensorFlow-基本使用"><span class="nav-number">4.</span> <span class="nav-text">二、TensorFlow 基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-test1-矩阵相乘"><span class="nav-number">4.1.</span> <span class="nav-text">1. test1 矩阵相乘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-test2-矩阵相乘（with代码块）"><span class="nav-number">4.2.</span> <span class="nav-text">2.test2 矩阵相乘（with代码块）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-test3-变量计数器"><span class="nav-number">4.3.</span> <span class="nav-text">3.test3 变量计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-test4-fetch-机制"><span class="nav-number">4.4.</span> <span class="nav-text">4.test4 fetch 机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-test5-feed机制"><span class="nav-number">4.5.</span> <span class="nav-text">5.test5 feed机制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

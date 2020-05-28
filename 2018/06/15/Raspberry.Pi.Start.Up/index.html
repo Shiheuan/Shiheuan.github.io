@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="买了一台Raspberry Pi 3 B+玩一玩。 一、安装系统使用官方推荐的 Raspbian 系统，使用 Win32 Disk Imager 将下载好的系统烧录到 sd 卡中，插入树莓派的卡槽，接通电源自动开机。接下来就是熟悉的 Linux 了。 二、远程连接ssh 命令行连接树莓派中首先开启 shh 连接，在 win10 系统下载 PuTTY，用来连接树莓派。  显示器  通过显示器，树莓派">
+<meta name="keywords" content="Raspberry Pi,linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派入手安装二三事">
+<meta property="og:url" content="http://shiheuan.github.io/2018/06/15/Raspberry.Pi.Start.Up/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="买了一台Raspberry Pi 3 B+玩一玩。 一、安装系统使用官方推荐的 Raspbian 系统，使用 Win32 Disk Imager 将下载好的系统烧录到 sd 卡中，插入树莓派的卡槽，接通电源自动开机。接下来就是熟悉的 Linux 了。 二、远程连接ssh 命令行连接树莓派中首先开启 shh 连接，在 win10 系统下载 PuTTY，用来连接树莓派。  显示器  通过显示器，树莓派">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.386Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树莓派入手安装二三事">
+<meta name="twitter:description" content="买了一台Raspberry Pi 3 B+玩一玩。 一、安装系统使用官方推荐的 Raspbian 系统，使用 Win32 Disk Imager 将下载好的系统烧录到 sd 卡中，插入树莓派的卡槽，接通电源自动开机。接下来就是熟悉的 Linux 了。 二、远程连接ssh 命令行连接树莓派中首先开启 shh 连接，在 win10 系统下载 PuTTY，用来连接树莓派。  显示器  通过显示器，树莓派">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2018/06/15/Raspberry.Pi.Start.Up/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>树莓派入手安装二三事 | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2018/06/15/Raspberry.Pi.Start.Up/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">树莓派入手安装二三事
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-15 14:55:00" itemprop="dateCreated datePublished" datetime="2018-06-15T14:55:00+08:00">2018-06-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>买了一台Raspberry Pi 3 B+玩一玩。</p>
+<h2 id="一、安装系统"><a href="#一、安装系统" class="headerlink" title="一、安装系统"></a>一、安装系统</h2><p>使用官方推荐的 <a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="noopener">Raspbian</a> 系统，使用 <a href="https://sourceforge.net/projects/win32diskimager/" target="_blank" rel="noopener">Win32 Disk Imager</a> 将下载好的系统烧录到 sd 卡中，插入树莓派的卡槽，接通电源自动开机。<br>接下来就是熟悉的 Linux 了。</p>
+<h2 id="二、远程连接"><a href="#二、远程连接" class="headerlink" title="二、远程连接"></a>二、远程连接</h2><p>ssh 命令行连接<br>树莓派中首先开启 shh 连接，在 win10 系统下载 <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank" rel="noopener">PuTTY</a>，用来连接树莓派。</p>
+<ol>
+<li><p>显示器</p>
+<p> 通过显示器，树莓派连接网络，得到无线或有线的内网 ip，即可通过 ssh 进行连接</p>
+</li>
+<li><p>无显示器</p>
+<p> 方法一，可以进入路由器则查看已连接设备的ip地址，找到树莓派即可。<br> 方法二，通过网线连接笔记本与树莓派，设置 “将接入 Internet 的 Wifi 把网络共享给‘本地连接’”，通过命令 arp -a 在命令行中查看树莓派的 ip 地址，进行连接树莓派操作。</p>
+<p> <a href="https://qiita.com/Spike_Han/items/d1ad4e53373935701b1a" target="_blank" rel="noopener">这里</a>很详细</p>
+</li>
+</ol>
+<p>xrdp 远程桌面连接<br>树莓派安装 xrdp，即可通过 win10 的远程桌面连接连接树莓派的桌面。</p>
+<h2 id="三、shell、python"><a href="#三、shell、python" class="headerlink" title="三、shell、python"></a>三、shell、python</h2><p>安装vim</p>
+<h2 id="四、内网下载机"><a href="#四、内网下载机" class="headerlink" title="四、内网下载机"></a>四、内网下载机</h2><p>网络服务<br>aria2c</p>
+<p>写好 bash 文件，将 aria2 作为服务，但是无法直接运行启动</p>
+<p>需要两步：首先，首行写入“#! /bin/bash”指定运行此文件的程序；之后修改脚本的权限”chmod +x filename”即可通过文件名运行脚本。</p>
+<p><a href="https://www.jianshu.com/p/b31316ad3b64" target="_blank" rel="noopener">shell脚本入门</a>可以参考这里。</p>
+<p>使用web作为界面</p>
+<h2 id="五、个人git服务器"><a href="#五、个人git服务器" class="headerlink" title="五、个人git服务器"></a>五、个人git服务器</h2><p>参考<a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137583770360579bc4b458f044ce7afed3df579123eca000" target="_blank" rel="noopener">廖雪峰 git 教程</a>中的相关内容，和<a href="http://www.runoob.com/git/git-server.html" target="_blank" rel="noopener">菜鸟联盟</a>中相关内容实践即可。<br>要注意的是，新建 git 用户后，如果想在非 git 用户的用户文件夹下建立仓库的话，要注意修改文件夹的权限给 git 用户（指定为文件夹拥有者）。否则在进行 push 的时候会因为没有写入权限无法继续操作。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Raspberry-Pi/" rel="tag"># Raspberry Pi</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/05/MachineLearning_2/" rel="next" title="机器学习【二】 最小二乘学习法">
+                <i class="fa fa-chevron-left"></i> 机器学习【二】 最小二乘学习法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/12/SortAlgorithms/" rel="prev" title="排序算法的那些事儿">
+                排序算法的那些事儿 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、安装系统"><span class="nav-number">1.</span> <span class="nav-text">一、安装系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、远程连接"><span class="nav-number">2.</span> <span class="nav-text">二、远程连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、shell、python"><span class="nav-number">3.</span> <span class="nav-text">三、shell、python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、内网下载机"><span class="nav-number">4.</span> <span class="nav-text">四、内网下载机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、个人git服务器"><span class="nav-number">5.</span> <span class="nav-text">五、个人git服务器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

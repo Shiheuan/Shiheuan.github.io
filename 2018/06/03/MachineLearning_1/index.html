@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="机器学习的典型任务： 回归  是指把实函数在样本点附近加以近似的有监督的模式识别问题。对一个或多个自变量和因变量之间关系进行建模，求解的一种统计方法。  分类  是指对于指定的模式进行识别的有监督的模式识别问题。  异常检测  是指寻找输入样本${\vec x_i}_{i=1}^n$中所包含的异常数据的问题。 常采用密度估计的方法：正常数据为靠近密度中心的数据；异常数据为偏离密度中心的数据。  聚">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习【一】 概要">
+<meta property="og:url" content="http://shiheuan.github.io/2018/06/03/MachineLearning_1/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="机器学习的典型任务： 回归  是指把实函数在样本点附近加以近似的有监督的模式识别问题。对一个或多个自变量和因变量之间关系进行建模，求解的一种统计方法。  分类  是指对于指定的模式进行识别的有监督的模式识别问题。  异常检测  是指寻找输入样本${\vec x_i}_{i=1}^n$中所包含的异常数据的问题。 常采用密度估计的方法：正常数据为靠近密度中心的数据；异常数据为偏离密度中心的数据。  聚">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.366Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习【一】 概要">
+<meta name="twitter:description" content="机器学习的典型任务： 回归  是指把实函数在样本点附近加以近似的有监督的模式识别问题。对一个或多个自变量和因变量之间关系进行建模，求解的一种统计方法。  分类  是指对于指定的模式进行识别的有监督的模式识别问题。  异常检测  是指寻找输入样本${\vec x_i}_{i=1}^n$中所包含的异常数据的问题。 常采用密度估计的方法：正常数据为靠近密度中心的数据；异常数据为偏离密度中心的数据。  聚">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2018/06/03/MachineLearning_1/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>机器学习【一】 概要 | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2018/06/03/MachineLearning_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器学习【一】 概要
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-03 16:28:00" itemprop="dateCreated datePublished" datetime="2018-06-03T16:28:00+08:00">2018-06-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="机器学习的典型任务："><a href="#机器学习的典型任务：" class="headerlink" title="机器学习的典型任务："></a>机器学习的典型任务：</h2><ol>
+<li><p><strong>回归</strong></p>
+<p> 是指把实函数在样本点附近加以近似的有监督的模式识别问题。对一个或多个自变量和因变量之间关系进行建模，求解的一种统计方法。</p>
+</li>
+<li><p><strong>分类</strong></p>
+<p> 是指对于指定的模式进行识别的有监督的模式识别问题。</p>
+</li>
+<li><p><strong>异常检测</strong></p>
+<p> 是指寻找输入样本${\vec x_i}_{i=1}^n$中所包含的异常数据的问题。<br> 常采用密度估计的方法：正常数据为靠近密度中心的数据；异常数据为偏离密度中心的数据。</p>
+</li>
+<li><p><strong>聚类</strong></p>
+<p> 与分类问题类似，是无监督的模式识别问题（在聚类问题中常用簇代表类别）。性质→簇，关进课题是计算样本之间的相似度。</p>
+</li>
+<li><p><strong>降维</strong></p>
+<p> 是指从高维度数据中提取关键信息，将其转换为易于计算的低维度问题进而求解的方法。</p>
+</li>
+</ol>
+<h2 id="机器学习的主要流派"><a href="#机器学习的主要流派" class="headerlink" title="机器学习的主要流派"></a>机器学习的主要流派</h2><p>一个经典的分类问题，对模式$\vec x$的类别$y$进行预测，记为$\hat y$.</p>
+<p>$$\hat y=\underset{y} P(y|\vec x)$$</p>
+<p>在已知模式$\vec x$时，求得使分类类别$y$的条件概率（模式识别中称为<strong>后验概率</strong>）$P(y|\vec x)$达到最大值的类别$\hat y$. $\underset{y}{argmax} P(y|\vec x)$是指当条件概率$P(y|\vec x)$取最大值时对应的$y$值。</p>
+<ol>
+<li><p>判别式分类</p>
+<p> 应用训练集直接对后验概率$P(y|\vec x)$进行学习的过程。</p>
+<p> 著有《统计学理论的本质》一书的弗拉基米尔·万普尼克（<a href="https://zh.wikipedia.org/wiki/弗拉基米尔·万普尼克" target="_blank" rel="noopener">Vladimir Vapnik</a>）提到：“要试图得到所需要的答案，而不是更一般的答案。很可能你拥有足够的信息来很好地解决一个感兴趣的特定问题，但却没有足够的信息来解决一个一般性的问题。”</p>
+</li>
+<li><p>产生式分类（生成的分类）</p>
+<p> 通过预测数据生成概率（联合概率）$P(\vec x,y)$来进行模式识别的分类方法。</p>
+<p> $$P(y|\vec x)=\frac{P(\vec x,y)}{P(\vec x)}$$<br> $$P(\vec x)=\sum_yP(\vec x,y)$$</p>
+<p> 可见，数据生成概率是更一般的问题。</p>
+</li>
+<li><p>概率派（统计概率）</p>
+<p> （包含参数$\vec \theta$的模型$q(\vec x_i,y_i|\vec \theta)$为例，说明计算数据生成概率的问题）</p>
+<p> 将模式$\vec \theta$作为决定性的变量，用训练样本$\mathcal D={(\vec x_i,y_i)}_{i=1}^n$对模型$\vec \theta$进行学习。</p>
+<p> 在最大似然估计（Maximum Likelihood Estimation）算法中，对生成训练集$\mathcal D$的最容易的方法所对应的模式$\vec \theta$进行学习。</p>
+<p> $$\underset{\vec \theta}{max}\prod_{i=1}^n q(\vec x_i,y_i;\vec \theta)$$</p>
+<p> $\vec x_i$服从独立同分布（i.i.d），概率密度$f(x_1,x_2,\cdots,x_n|\theta)=\prod_{i=1}^nf(x_i|\theta)$.<br> 在结果（$\vec x_i$）与参数（$\vec \theta$）相互对应时，似然和概率在数值上是相等的，因此似然可以定义为:</p>
+<p> $$\mathcal L(\theta;x_1,x_2,\cdots,x_n)=f(x_1,x_2,\cdots,x_n|\theta)=\prod_{i=1}^nf(x_i|\theta)$$</p>
+<p> 而最大似然估计为：</p>
+<p> $$\ln \mathcal L(\theta;\vec x)=\sum_{i=1}^n \ln f(\vec x_i|\theta)$$</p>
+</li>
+<li><p>贝叶斯派（朴素贝叶斯）</p>
+<p> （包含参数$\vec \theta$的模型$q(\vec x_i,y_i|\vec \theta)$为例，说明计算数据生成概率的问题）</p>
+<p> 将模式$\vec \theta$作为概率变量，对其先验概率$P(\vec \theta$加以考虑，计算与训练集相对应的后验概率$P(\vec \theta|\mathcal D)$.</p>
+<p> $$P(\vec \theta|\mathcal D)=\frac{P(\mathcal D|\vec \theta)P(\vec \theta)}{P(\mathcal D)}=\frac{\prod_{i=1}^n q(\vec x_i,y_i|\vec \theta)P(\vec \theta)}{\int \prod_{i=1}^n q(\vec x_i,y_i|\vec \theta)P(\vec \theta)d \vec \theta}$$</p>
+<p> 这里$P(\mathcal D)$是数据实际分布的情况，$q(\vec x_i,y_i|\vec \theta)$是似然函数值。</p>
+</li>
+</ol>
+<p><em>在《图解机器学习》一书中，以基于频率派的识别式机器学习算法为主。</em></p>
+<h2 id="学习模型"><a href="#学习模型" class="headerlink" title="学习模型"></a>学习模型</h2><p>机器学习算法的学习模型大多着重于如何使特定函数与数据集相近似。</p>
+<blockquote>
+<p>魏尔斯特拉斯（Weierstrass）第一逼近定理：假设$f(x)$是闭区间$[a,b]$上的连续函数，对任意的$\epsilon&gt;0$，则存在多项式$P(x)$使得对于所有的$x\in [a,b]$，有$|f(x)-P(x)|&lt;\epsilon$.</p>
+</blockquote>
+<ol>
+<li><p>线性模型</p>
+<p> 线性模型并非仅仅指自变量与因变量为线性的模型（$y=kx$），也表示基于参数的线性模型，可以用来表示非线性的输入输出关系。</p>
+<p> $$f_\theta(x)=\theta x$$</p>
+<p> $$f_\theta(\vec x)=\sum_{j=1}^b\theta _j\phi _j(\vec x)=\vec\theta ^T\vec\Phi(\vec x)$$</p>
+<p> 这里的$\phi(x)$为基函数，$\vec x$为高维输入数据。</p>
+</li>
+<li><p>乘法模型</p>
+<p> 把一维基函数作为因子，通过使其<strong>相乘</strong>获得多维基函数(参数个数为$b’^d$)。</p>
+<p> $$f_\theta(\vec x)=\sum_{j_1=1}^{b’}\cdots\sum_{j_d=1}^{b’} \theta_{j_1,\cdots,j_d}\phi_{j_1}(x^{(1)})\cdots\phi_{j_d}(x^{(d)})$$</p>
+</li>
+<li><p>加法模型</p>
+<p> 把一维基函数作为因子，通过使其<strong>相加</strong>获得多维基函数(参数个数为$b’d$)。</p>
+<p> $$f_\theta(\vec x)=\sum_{k=1}^{d}\sum_{j=1}^{b’}\theta_{k,j}\phi_j(x^{(k)})$$</p>
+</li>
+<li><p>核模型</p>
+<p> 使用核函数，以$K(\vec x,\vec x_j)_{j=1}^n$线性结合的方式定义（输入样本${x_i}_{i=1}^n$）。</p>
+<p> $$f_\theta(\vec x)=\sum_{j=1}^n\theta_jK(\vec x,\vec x_j)$$</p>
+<p> 高斯核函数：</p>
+<p> $$K(\vec x,\vec c)=exp(-\frac{|\vec x-\vec c|_2^2}{2h^2})$$</p>
+<p> 这里的$h$为带宽，$\vec c$为均值。</p>
+<blockquote>
+<p>欧几里得范数（L2-Norm）： $|\vec x|_2=\sqrt {x_1^2+x_2^2+\cdots+x_n^2}$</p>
+</blockquote>
+</li>
+<li><p>层级模型</p>
+<p> 是非线性模型之一，人工神经网络模型。</p>
+<p> $$f_\theta(\vec x)=\sum_{j=1}^b\alpha_j\phi(\vec x;\beta_j)$$</p>
+<p> 关于参数向量$\vec \alpha$的线性形式；关于参数向量$\vec \theta=(\vec \alpha^T,\vec \beta^T)^T$的非线性形式。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/22/ML-Agents_1/" rel="next" title="来让AI打游戏 - ML-Agents">
+                <i class="fa fa-chevron-left"></i> 来让AI打游戏 - ML-Agents
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/05/MachineLearning_2/" rel="prev" title="机器学习【二】 最小二乘学习法">
+                机器学习【二】 最小二乘学习法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#机器学习的典型任务："><span class="nav-number">1.</span> <span class="nav-text">机器学习的典型任务：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#机器学习的主要流派"><span class="nav-number">2.</span> <span class="nav-text">机器学习的主要流派</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习模型"><span class="nav-number">3.</span> <span class="nav-text">学习模型</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

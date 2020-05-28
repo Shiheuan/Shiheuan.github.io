@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_s.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_32x32.jpg?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/favicon_s.jpg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="一、原理推导回归问题（Regression）中 最小二乘学习法（Least Square）是对模型的输出$f_\theta(\vec x_i)$和训练集输出${y_i}_{i=1}^n$的平方误差 $$J_{LS}(\theta)=\frac{1}{2}\sum_{i=1}^n(f_\theta(\vec x_i)-y_i)^2$$ 为最小时的参数$\theta$进行学习的方法。 $$||f_\t">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习【二】 最小二乘学习法">
+<meta property="og:url" content="http://shiheuan.github.io/2018/06/05/MachineLearning_2/index.html">
+<meta property="og:site_name" content="旮旯实验室">
+<meta property="og:description" content="一、原理推导回归问题（Regression）中 最小二乘学习法（Least Square）是对模型的输出$f_\theta(\vec x_i)$和训练集输出${y_i}_{i=1}^n$的平方误差 $$J_{LS}(\theta)=\frac{1}{2}\sum_{i=1}^n(f_\theta(\vec x_i)-y_i)^2$$ 为最小时的参数$\theta$进行学习的方法。 $$||f_\t">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://shiheuan.github.io/2018/06/05/MachineLearning_2/Figure_1.png">
+<meta property="og:updated_time" content="2020-04-13T07:50:59.367Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习【二】 最小二乘学习法">
+<meta name="twitter:description" content="一、原理推导回归问题（Regression）中 最小二乘学习法（Least Square）是对模型的输出$f_\theta(\vec x_i)$和训练集输出${y_i}_{i=1}^n$的平方误差 $$J_{LS}(\theta)=\frac{1}{2}\sum_{i=1}^n(f_\theta(\vec x_i)-y_i)^2$$ 为最小时的参数$\theta$进行学习的方法。 $$||f_\t">
+<meta name="twitter:image" content="http://shiheuan.github.io/2018/06/05/MachineLearning_2/Figure_1.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://shiheuan.github.io/2018/06/05/MachineLearning_2/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>机器学习【二】 最小二乘学习法 | 旮旯实验室</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">旮旯实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">GALA Lab</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://shiheuan.github.io/2018/06/05/MachineLearning_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shiheuan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="旮旯实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器学习【二】 最小二乘学习法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-06-05 22:42:00" itemprop="dateCreated datePublished" datetime="2018-06-05T22:42:00+08:00">2018-06-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2020-04-13 15:50:59" itemprop="dateModified" datetime="2020-04-13T15:50:59+08:00">2020-04-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、原理推导"><a href="#一、原理推导" class="headerlink" title="一、原理推导"></a>一、原理推导</h2><p>回归问题（Regression）中</p>
+<p>最小二乘学习法（Least Square）是对模型的输出$f_\theta(\vec x_i)$和训练集输出${y_i}_{i=1}^n$的平方误差</p>
+<p>$$J_{LS}(\theta)=\frac{1}{2}\sum_{i=1}^n(f_\theta(\vec x_i)-y_i)^2$$</p>
+<p>为最小时的参数$\theta$进行学习的方法。</p>
+<p>$$||f_\theta(\vec x_i)-y_i||_{(2)}^2$$</p>
+<p>$$=(\sqrt {(f_\theta(\vec x_i)-y_i)^T(f_\theta(\vec x_i)-y_i)})^2$$</p>
+<p>$$=(f_\theta(\vec x_i)-y_i)^T(f_\theta(\vec x_i)-y_i)$$</p>
+<p>$$=\sum_{i=1}^n(f_\theta(\vec x_i)-y_i)^2$$</p>
+<p>因此也叫$l_2$损失最小化学习。</p>
+<p>在求解最小值时，使用求微分令其为$0$的$\theta$值，因此在平方误差公式凑了一个$\frac{1}{2}$，将微分得到的$2$约去。</p>
+<p>针对线性模型$f_\theta(\vec x)=\vec\theta^T\phi(\vec x)$，先给出结果：</p>
+<p>$$\nabla_\theta J_{LS}=(\frac{\partial J_{LS}}{\partial\theta_1},\frac{\partial J_{LS}}{\partial\theta_2},\cdots,\frac{\partial J_{LS}}{\partial\theta_b})^T=\Phi^T\Phi\vec\theta-\Phi^T\vec y$$</p>
+<p>推导过程：</p>
+<p>$$J_{LS}(\vec\theta)=\frac{1}{2}|\Phi\vec\theta-\vec y|^2$$</p>
+<p>$$=\frac{1}{2}|<br>  \left(<br>  \begin{matrix}<br>    \phi_1(\vec x_1) &amp; \cdots &amp; \phi_b(\vec x_1)\\<br>    \vdots &amp; \ddots &amp; \vdots\\<br>    \phi_1(\vec x_n) &amp; \cdots &amp; \phi_b(\vec x_n)<br>  \end{matrix}<br>  \right)<br>  \left(<br>  \begin{matrix}<br>    \theta_1 \\<br>    \vdots \\<br>    \theta_b<br>  \end{matrix}<br>  \right)<br>  -<br>  \left(<br>  \begin{matrix}<br>    y_1 \\<br>    \vdots \\<br>    y_n<br>  \end{matrix}<br>  \right)<br>  |^2<br>$$</p>
+<p>$$<br>  =\frac{1}{2}|<br>  \left(<br>  \begin{matrix}<br>    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\<br>    \vdots \\<br>    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n<br>  \end{matrix}<br>  \right)<br>  |^2<br>$$</p>
+<p>根据$l_2$-Norm可得：</p>
+<p>$$<br>  =\frac{1}{2}(\sqrt{<br>  \left(<br>  \begin{matrix}<br>      \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\<br>      \vdots \\<br>      \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n<br>    \end{matrix}<br>    \right)<br>  ^T<br>  \left(<br>  \begin{matrix}<br>    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\<br>    \vdots \\<br>    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n<br>  \end{matrix}<br>  \right)<br>  })^2<br>$$<br>$$<br>  =\frac{1}{2}<br>  \left(<br>  \begin{matrix}<br>    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\<br>    \vdots \\<br>    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n<br>  \end{matrix}<br>  \right)<br>  ^T<br>  \left(<br>  \begin{matrix}<br>    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\<br>    \vdots \\<br>    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n<br>  \end{matrix}<br>  \right)<br>$$<br>$$<br>=\frac{1}{2}[(\theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1)^2+\cdots+(\theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n)^2]<br>$$</p>
+<p>因此，</p>
+<p>$$<br>\nabla_\theta J_{LS}=\frac{1}{2}<br>\left(<br>\begin{matrix}<br>2(\theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1)\phi_1(\vec x_1)+\cdots+2(\theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n)\phi_1(\vec x_n) \\<br>  \vdots \\<br>  2(\theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1)\phi_b(\vec x_1)+\cdots+2(\theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n)\phi_b(\vec x_n))<br>  \end{matrix}<br>  \right)<br>$$</p>
+<p>利用矩阵乘法，可将求导得到的$\phi_1(\vec x_1)$等提出来：</p>
+<p>$$<br>  \nabla_\theta J_{LS}=<br>  \left(<br>  \begin{matrix}<br>    \phi_1(\vec x_1) &amp; \cdots &amp; \cdots \phi_1(\vec x_n)\\<br>    \vdots &amp; \ddots &amp; \vdots \\<br>    \phi_b(\vec x_1) &amp; \cdots &amp; \cdots \phi_b(\vec x_n)<br>  \end{matrix}<br>  \right)<br>  \cdot<br>  (\Phi\vec\theta-\vec y)<br>  =\Phi^T\Phi\vec\theta-\Phi^T\vec y<br>$$</p>
+<p>即得。</p>
+<p>通过求解$\Phi^T\Phi\vec\theta-\Phi^T\vec y=0$即可得到通过最小二乘法学习的参数$\vec\theta$，但在大多数情况下，由于数据量远远大于参数数量，因此$\Phi$是一个奇异矩阵，并非方阵，我们不能通过简单的通过他的逆矩阵求出解，因此这里需要引入一个<a href="https://en.wikipedia.org/wiki/Generalized_inverse" target="_blank" rel="noopener">伪逆矩阵</a>的新概念，用来解决此问题。</p>
+<h2 id="二、实践"><a href="#二、实践" class="headerlink" title="二、实践"></a>二、实践</h2><p>学习了最小二乘法的原理之后，通过python程序来巩固一下。<br>本程序根据上面对线性模型的推导，基函数使用三角多项式形式，即：</p>
+<p>$$\phi(x) = (1,\sin\frac{x}{2},\cos\frac{x}{2},\sin\frac{2x}{2},\cos\frac{2x}{2},\cdots,\sin\frac{15x}{2},\cos\frac{15x}{2})^T$$</p>
+<p>而数据我们使用近似的$sinc(x) = \frac{\sin(\pi x)}{\pi x}$函数加上随机误差来生成得到。</p>
+<p>程序如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line">__author__ = <span class="string">'shiheuan'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">LeastSquares</span><span class="params">()</span>:</span></span><br><span class="line">    N = <span class="number">1000</span></span><br><span class="line">    n = <span class="number">50</span> <span class="comment"># len(x)</span></span><br><span class="line">    x = np.array([np.linspace(<span class="number">-3.</span>,<span class="number">3.</span>,n)])</span><br><span class="line">    <span class="comment"># print(x)</span></span><br><span class="line"></span><br><span class="line">    X = np.array([np.linspace(<span class="number">-3.</span>,<span class="number">3.</span>,N)])</span><br><span class="line">    <span class="comment"># 图像形态 + 随机误差</span></span><br><span class="line">    y = np.sin(np.pi*x)/(np.pi*x)+<span class="number">0.1</span>*x+<span class="number">0.05</span>*np.random.randn(<span class="number">1</span>,n)</span><br><span class="line"></span><br><span class="line">    P = np.ones([<span class="number">31</span>,N])</span><br><span class="line">    p = np.ones([<span class="number">31</span>,n])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">15</span>):</span><br><span class="line">        P[<span class="number">2</span>*i+<span class="number">1</span>,:] = np.sin((i+<span class="number">1</span>)/<span class="number">2</span>*X)</span><br><span class="line">        P[<span class="number">2</span>*i+<span class="number">2</span>,:] = np.cos((i+<span class="number">1</span>)/<span class="number">2</span>*X)</span><br><span class="line">        p[<span class="number">2</span>*i+<span class="number">1</span>,:] = np.sin((i+<span class="number">1</span>)/<span class="number">2</span>*x)</span><br><span class="line">        p[<span class="number">2</span>*i+<span class="number">2</span>,:] = np.cos((i+<span class="number">1</span>)/<span class="number">2</span>*x)</span><br><span class="line"></span><br><span class="line">    print(p)</span><br><span class="line">    p = p.T</span><br><span class="line">    print(p)</span><br><span class="line">    P = P.T</span><br><span class="line">    pp = np.linalg.pinv(p)</span><br><span class="line">    pp = np.dot(p.T, p)</span><br><span class="line">    <span class="comment"># print(pp)</span></span><br><span class="line">    <span class="comment"># pinv 与 inv 的区别</span></span><br><span class="line">    ppi = np.linalg.pinv(pp)</span><br><span class="line">    <span class="comment"># print(ppi)</span></span><br><span class="line">    pp_ = np.dot(ppi, p.T)</span><br><span class="line">    <span class="comment"># print(pp_)</span></span><br><span class="line">    t = np.dot(pp_, y.T)</span><br><span class="line">    <span class="comment"># print(t)</span></span><br><span class="line">    <span class="comment"># print(y)</span></span><br><span class="line">    F = np.dot(P, t).T</span><br><span class="line"></span><br><span class="line">    plt.plot(x[<span class="number">0</span>,:],y[<span class="number">0</span>,:],<span class="string">'.'</span>)</span><br><span class="line">    plt.plot(X[<span class="number">0</span>,:],F[<span class="number">0</span>,:])</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">LeastSquares()</span><br></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<p><img src="Figure_1.png" alt="最小二乘学习法运行结果图"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/03/MachineLearning_1/" rel="next" title="机器学习【一】 概要">
+                <i class="fa fa-chevron-left"></i> 机器学习【一】 概要
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/15/Raspberry.Pi.Start.Up/" rel="prev" title="树莓派入手安装二三事">
+                树莓派入手安装二三事 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Shiheuan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">42</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、原理推导"><span class="nav-number">1.</span> <span class="nav-text">一、原理推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、实践"><span class="nav-number">2.</span> <span class="nav-text">二、实践</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shiheuan</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
