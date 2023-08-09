@@ -14,7 +14,7 @@
 <meta property="og:description" content="0x00 〇关于，我，为什么这么久，没发文章。那还要从 1 月 2 号说起，想我们在 2 号放完仅仅一天的元旦假期之后，回到工位，愕然发现：工作室没了。 然后就，这么久了，还没缓过来。 0x01 一 问题目录基础 Q1-什么叫动态类型语言（Dynamically-typed language）？ Q2-Lua 中全局变量的默认值是什么，如何删除全局变量？ Q3-Lua 中的条件测试（以及逻辑运算符">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-01-27T11:30:45.000Z">
-<meta property="article:modified_time" content="2023-06-13T10:27:32.000Z">
+<meta property="article:modified_time" content="2023-08-09T03:19:22.000Z">
 <meta property="article:author" content="Shiheuan">
 <meta property="article:tag" content="foundations">
 <meta property="article:tag" content="Lua">
@@ -58,7 +58,19 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 6.3.0"></head>
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -175,7 +187,7 @@
 </ul>
 <h3 id="数值"><a href="#数值" class="headerlink" title="数值"></a>数值</h3><ul>
 <li><a href="#Q12">Q12-双精度浮点数的误差是怎么来的？</a></li>
-<li><a href="#Q13">Q13-如何保留苏哟有浮点数的精度？</a></li>
+<li><a href="#Q13">Q13-如何保留所有浮点数的精度？</a></li>
 </ul>
 <h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><ul>
 <li><a href="#Q14">Q14-为什么要少用字符串连接操作符（..）？</a></li>
@@ -307,7 +319,7 @@
 <p>问题：解决八皇后问题。</p>
 </blockquote>
 <p>使用回溯法的经典问题。主要思路是查看每行每一个位置的合法性，当一个位置不合法时，返回上一行的下一个位置，继续检查合法性。当每一行都放入了皇后，即得到了一个解。</p>
-<p>解决方案中使用了对每一列的循环，检查每一个位置，在找到一个接后不会停止循环，而是继续检查一下位置。而保存解的表并非保存有所有解，而是将解打印出来前的缓存。</p>
+<p>解决方案中使用了对每一列的循环，检查每一个位置，在找到一个解后不会停止循环，而是继续检查一下位置。而保存解的表并非保存有所有解，而是将解打印出来前的缓存。</p>
 <h3 id="Q9"><a href="#Q9" class="headerlink" title="Q9"></a>Q9</h3><blockquote>
 <p>问题：找出皇后问题的所有不重复的解。</p>
 </blockquote>
@@ -332,7 +344,7 @@
 <p>问题：为什么要少用字符串连接操作符（..）？</p>
 </blockquote>
 <p>在Lua中，字符串时不可变量，使用连接操作符时总是会创建一个新字符串，而不会改变原来作为操作数的字符串。</p>
-<p>类似C#中，使用“”+“”也是同样的道理。C#中可以使用StringBuilder类型的变量来进行拼接。</p>
+<p>类似C#中，使用“+”也是同样的道理。C#中可以使用StringBuilder类型的变量来进行拼接。</p>
 <h3 id="Q15"><a href="#Q15" class="headerlink" title="Q15"></a>Q15</h3><blockquote>
 <p>问题：什么是“一组包含歧义的转义字符序列”，可以用来做什么？</p>
 </blockquote>

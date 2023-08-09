@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="〇、对于排序算法的考察是很基础的算法考察，而很多面试都会有手写代码的考察，因此这次总结中代码的实现用了伪代码。 可以了解到：  常见的排序算法 算法的实现  （最后来写这个引言，真是毫无生气啊…… 一、排序算法|时间复杂度|空间复杂度|是否稳定–|–|–|–|–冒泡排序|О($n^2$)|О($1$)|是选择排序|О($n^2$)|О($1$)|否插入排序|О($n^2$)|О($1$)|是希尔排">
+    <meta name="description" content="〇、对于排序算法的考察是很基础的算法考察，而很多面试都会有手写代码的考察，因此这次总结中代码的实现用了伪代码。 可以了解到：  常见的排序算法 算法的实现  （最后来写这个引言，真是毫无生气啊…… 一、   排序算法 时间复杂度 空间复杂度 是否稳定    冒泡排序 О($n^2$) О($1$) 是   选择排序 О($n^2$) О($1$) 否   插入排序 О($n^2$) О($1$)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="排序算法的那些事儿">
 <meta property="og:url" content="http://shiheuan.github.io/2019/01/12/SortAlgorithms/index.html">
 <meta property="og:site_name" content="Yuan Shi&#39;s Blog">
-<meta property="og:description" content="〇、对于排序算法的考察是很基础的算法考察，而很多面试都会有手写代码的考察，因此这次总结中代码的实现用了伪代码。 可以了解到：  常见的排序算法 算法的实现  （最后来写这个引言，真是毫无生气啊…… 一、排序算法|时间复杂度|空间复杂度|是否稳定–|–|–|–|–冒泡排序|О($n^2$)|О($1$)|是选择排序|О($n^2$)|О($1$)|否插入排序|О($n^2$)|О($1$)|是希尔排">
+<meta property="og:description" content="〇、对于排序算法的考察是很基础的算法考察，而很多面试都会有手写代码的考察，因此这次总结中代码的实现用了伪代码。 可以了解到：  常见的排序算法 算法的实现  （最后来写这个引言，真是毫无生气啊…… 一、   排序算法 时间复杂度 空间复杂度 是否稳定    冒泡排序 О($n^2$) О($1$) 是   选择排序 О($n^2$) О($1$) 否   插入排序 О($n^2$) О($1$)">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-01-12T14:57:00.000Z">
-<meta property="article:modified_time" content="2019-07-08T14:40:54.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:48:38.000Z">
 <meta property="article:author" content="Shiheuan">
 <meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
@@ -56,7 +56,19 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 6.3.0"></head>
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -165,7 +177,70 @@
 <li>算法的实现</li>
 </ol>
 <p>（最后来写这个引言，真是毫无生气啊……</p>
-<h2 id="一、"><a href="#一、" class="headerlink" title="一、"></a>一、</h2><p>排序算法|时间复杂度|空间复杂度|是否稳定<br>–|–|–|–|–<br>冒泡排序|О($n^2$)|О($1$)|是<br>选择排序|О($n^2$)|О($1$)|否<br>插入排序|О($n^2$)|О($1$)|是<br>希尔排序|О($n\log^2{n}$)|О($1$)|否<br>归并排序|О($n\log{n}$)|О($n$)|是<br>快速排序|О($n\log{n}$)|О($\log{n}$)|否<br>堆排序|О($n\log{n}$)|О($1$)|否<br>计数排序|О($n+k$)|О($k$)|是<br>基数排序|О($nk$)|О($n+k$)|是</p>
+<h2 id="一、"><a href="#一、" class="headerlink" title="一、"></a>一、</h2><table>
+<thead>
+<tr>
+<th>排序算法</th>
+<th>时间复杂度</th>
+<th>空间复杂度</th>
+<th>是否稳定</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>冒泡排序</td>
+<td>О($n^2$)</td>
+<td>О($1$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>选择排序</td>
+<td>О($n^2$)</td>
+<td>О($1$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>插入排序</td>
+<td>О($n^2$)</td>
+<td>О($1$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>希尔排序</td>
+<td>О($n\log^2{n}$)</td>
+<td>О($1$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>归并排序</td>
+<td>О($n\log{n}$)</td>
+<td>О($n$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td>О($n\log{n}$)</td>
+<td>О($\log{n}$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>堆排序</td>
+<td>О($n\log{n}$)</td>
+<td>О($1$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>计数排序</td>
+<td>О($n+k$)</td>
+<td>О($k$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>基数排序</td>
+<td>О($nk$)</td>
+<td>О($n+k$)</td>
+<td>是</td>
+</tr>
+</tbody></table>
 <h2 id="二、"><a href="#二、" class="headerlink" title="二、"></a>二、</h2><h3 id="一）冒泡排序（Bubble-Sort）"><a href="#一）冒泡排序（Bubble-Sort）" class="headerlink" title="一）冒泡排序（Bubble Sort）"></a>一）冒泡排序（Bubble Sort）</h3><p>冒泡排序是思想非常简单的排序算法：重复地比较相邻两个数据的大小，将较小的靠前，较大的靠后，将顺序错误的数据交换过来，直到没有再需要交换的数据为止。</p>
 <p>冒泡排序还是原地算法（in-place algorithm），即不需要额外的辅助空间来进行转换的算法，包含了空间复杂度为О(1)的所有算法。</p>
 <p>而“稳定”是指，对于数值相同的元素，其排列的顺序在经过排序后并没有发生改变，则称这样的排序算法是稳定的。</p>

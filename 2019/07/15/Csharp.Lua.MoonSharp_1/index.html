@@ -13,17 +13,17 @@
 <meta property="og:site_name" content="Yuan Shi&#39;s Blog">
 <meta property="og:description" content="官网的教程 请配合我的代码食用Github 在 c# 工程中安装 MoonSharp 2.0 Nuget 程序包管理器控制台 Install-Package MoonSharp 安装好 MoonShap （如果是 Unity 工程如何）  发现了一个问题，当我使用 VS 打开 C++ 工程时，（项目-xxx属性 or 右键工程-属性）可以打开属性页；但是安装了 unity tool 后，c# 工程">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://shiheuan.github.io/project.png">
-<meta property="og:image" content="http://shiheuan.github.io/cproject.png">
-<meta property="og:image" content="http://shiheuan.github.io/%E8%8D%89%E5%9B%BE1.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/project.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/cproject.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/%E8%8D%89%E5%9B%BE1.png">
 <meta property="article:published_time" content="2019-07-15T12:04:20.000Z">
-<meta property="article:modified_time" content="2019-08-01T09:51:06.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:35:58.000Z">
 <meta property="article:author" content="Shiheuan">
 <meta property="article:tag" content="c#">
 <meta property="article:tag" content="MoonSharp">
 <meta property="article:tag" content="Lua">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://shiheuan.github.io/project.png">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/project.png">
     
     
       
@@ -62,7 +62,19 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 6.3.0"></head>
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -173,8 +185,8 @@
 <p>（如果是 Unity 工程如何）</p>
 <hr>
 <p><em><strong>发现了一个问题</strong></em>，当我使用 VS 打开 C++ 工程时，（项目-xxx属性 or 右键工程-属性）可以打开属性页；但是安装了 unity tool 后，c# 工程却只能打开一个与文件相似的页面，本不可以打开，需要对 unity tool 进行设置，将属性页打开，但为什么不是正常的属性页呢？</p>
-<p><img src="/project.png"></p>
-<p><img src="/cproject.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/project.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/cproject.png"></p>
 <p>为什么哟?</p>
 <hr>
 <h2 id="0x01-通过-string-执行-Lua-程序"><a href="#0x01-通过-string-执行-Lua-程序" class="headerlink" title="0x01 通过 string 执行 Lua 程序"></a>0x01 通过 string 执行 Lua 程序</h2><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">double</span> <span class="title">MoonSharpFactorial</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> script = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">        -- defines a factorial function</span></span><br><span class="line"><span class="string">        function fact (n)</span></span><br><span class="line"><span class="string">            if (n == 0) then</span></span><br><span class="line"><span class="string">                return 1</span></span><br><span class="line"><span class="string">            else</span></span><br><span class="line"><span class="string">                return n*fact(n-1)</span></span><br><span class="line"><span class="string">            end</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        return fact(5)&quot;</span>;</span><br><span class="line">    DynValue res = Script.RunString(script);</span><br><span class="line">    Console.WriteLine(res.Number);</span><br><span class="line">    Console.ReadKey();</span><br><span class="line">    <span class="keyword">return</span> res.Number;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -208,7 +220,7 @@
 <p>对于一个简单任务，将 1 到 10 累加的任务，可以使用：</p>
 <ol>
 <li>迭代方法作为 Api 传到 Lua 中进行计算</li>
-<li>返回 List<int> 转换为 table </li>
+<li>返回 List<int> 转换为 table</li>
 <li>构建一个 Lua Table</li>
 </ol>
 <p>构建 Lua Table 使用 MoonSharp 提供的 Table 类。</p>
@@ -216,7 +228,7 @@
 <p>这一部分要好好写写了，如果碰到没见过的语法句法结构的处理吼。我下面先写思考过程，最后用比较明显强调的方法写结论（请直接去看结论，过程很低能）。</p>
 <hr>
 <p>上面所写的将 c# 中的 Mul 方法在脚本中使用很容易理解，是将脚本中的方法名与 c# 中利用委托进行了关联。</p>
-<p><img src="/%E8%8D%89%E5%9B%BE1.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/15/Csharp.Lua.MoonSharp_1/%E8%8D%89%E5%9B%BE1.png"></p>
 <p>但是接下来，在脚本中使用了新的句法：</p>
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> scriptCode = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">    return dosum &#123;1, 2, 3, 4, 5, 6, 7, 8, 9, 10&#125;</span></span><br><span class="line"><span class="string">&quot;</span>;</span><br></pre></td></tr></table></figure>
 

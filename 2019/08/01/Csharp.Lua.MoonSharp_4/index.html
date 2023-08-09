@@ -13,19 +13,19 @@
 <meta property="og:site_name" content="Yuan Shi&#39;s Blog">
 <meta property="og:description" content="0x00官网的教程 请配合我的代码食用Github 这次的从一知到半解只将 MoonSharp 的 Debug。做一个专一的 blog 吧。 0x01 Debugger integrationMoonSharp 提供了两个开箱即用的调试器：  VS Code （更简单易用，但相应地只支持本地进行调试） 在支持 Flash 的浏览器中运行的远程调试器  VS Code debugger需要安装扩展M">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://shiheuan.github.io/wait.png">
-<meta property="og:image" content="http://shiheuan.github.io/debug.png">
-<meta property="og:image" content="http://shiheuan.github.io/debug2.png">
-<meta property="og:image" content="http://shiheuan.github.io/output.png">
-<meta property="og:image" content="http://shiheuan.github.io/testSyntax.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/wait.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug2.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/output.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/testSyntax.png">
 <meta property="article:published_time" content="2019-08-01T07:04:20.000Z">
-<meta property="article:modified_time" content="2019-08-05T14:15:02.000Z">
+<meta property="article:modified_time" content="2023-08-09T05:44:56.000Z">
 <meta property="article:author" content="Shiheuan">
 <meta property="article:tag" content="c#">
 <meta property="article:tag" content="MoonSharp">
 <meta property="article:tag" content="Lua">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://shiheuan.github.io/wait.png">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/wait.png">
     
     
       
@@ -64,7 +64,19 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 6.3.0"></head>
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -204,13 +216,13 @@
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestVsDebugger</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    script.DoString(...);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">bool</span> attached = AwaitDebuggerAttach(server);</span><br><span class="line">    <span class="keyword">if</span> (!attached)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;VS Code debugger did not attach. Running the script.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    script.Call(...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">AwaitDebuggerAttach</span>(<span class="params">MoonSharpVsCodeDebugServer server</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// as soon as a client has attached, &#x27;m_Client__&#x27; field of &#x27;m_Current&#x27; isn&#x27;t null anymore</span></span><br><span class="line">    <span class="comment">// </span></span><br><span class="line">    <span class="comment">// we wait for ~60 seconds for a client to attach</span></span><br><span class="line"></span><br><span class="line">    BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.NonPublic;</span><br><span class="line">    FieldInfo field = server.GetType().GetField(<span class="string">&quot;m_Current&quot;</span>, bindFlags);</span><br><span class="line">    <span class="built_in">object</span> current = field.GetValue(server);</span><br><span class="line"></span><br><span class="line">    FieldInfo property = current.GetType().GetField(<span class="string">&quot;m_Client__&quot;</span>, bindFlags);</span><br><span class="line"></span><br><span class="line">    Stopwatch stopwatch = <span class="keyword">new</span> Stopwatch();</span><br><span class="line">    stopwatch.Start();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Waiting for VS Code debugger to attach&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (property.GetValue(current) == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        Thread.Sleep(<span class="number">500</span>);</span><br><span class="line">        <span class="keyword">if</span> (stopwatch.Elapsed.TotalSeconds &gt; <span class="number">60</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    stopwatch.Stop();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;VS Code debugger attached&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>接下来，执行程序，等待连接调试器。</p>
-<p><img src="/wait.png"></p>
+<p><img src="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/wait.png"></p>
 <p>在 VsCode 中，点击 [debug]-[start debugging]，开始调试：</p>
-<p><img src="/debug.png"></p>
+<p><img src="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug.png"></p>
 <p>调试可以看到重定义的 print 函数返回值变成了字符数。</p>
-<p><img src="/debug2.png"></p>
+<p><img src="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug2.png"></p>
 <p>最后的输出：</p>
-<p><img src="/output.png"></p>
+<p><img src="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/output.png"></p>
 <h3 id="Remote-Debugger"><a href="#Remote-Debugger" class="headerlink" title="Remote Debugger"></a>Remote Debugger</h3><p>使用远程调试，同样需要 MoonSharp.RemoteDebugger.dll 并进行设置（单例）：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">PM&gt; </span><span class="language-bash">Install-Package MoonSharp.Debugger</span></span><br></pre></td></tr></table></figure>
 
@@ -229,7 +241,7 @@
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">DebuggerDemo</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Script script = <span class="keyword">new</span> Script();</span><br><span class="line"></span><br><span class="line">    ActivateRemoteDebugger(script);</span><br><span class="line"></span><br><span class="line">    script.DoString(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">        function accum(n, f)</span></span><br><span class="line"><span class="string">            if (n == 0) then</span></span><br><span class="line"><span class="string">                return 1;</span></span><br><span class="line"><span class="string">            else</span></span><br><span class="line"><span class="string">                return n * f(n);</span></span><br><span class="line"><span class="string">            end</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        local sum = 0;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        for i = 1, 5 do</span></span><br><span class="line"><span class="string">            -- let&#x27;s use a lambda to spice things up</span></span><br><span class="line"><span class="string">            sum = sum + accum(i, | x | x * 2);</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string">    &quot;</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;The script has ended..&quot;</span>);</span><br><span class="line">    Console.ReadKey();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这边有一个 lambda 语法，“|x|x*2”其中“|x|”作为参数，执行后面的运算，这是 MoonSharp 提供的非原生 Lua 语法，在 lua5.3 中测试了一下，并不能使用。</p>
-<p><img src="/testSyntax.png"></p>
+<p><img src="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/testSyntax.png"></p>
 <p>例子执行后，会自动开启调试器，允许 flash 执行，尝试一下吧。</p>
 <p>最后，可以自定义调试器，首先要实现 MoonSharp.Interpreter.Debugging.IDebugger 接口，实现的所有方法在附加脚本后由引擎调用。</p>
 <h2 id="0x02-Debug-in-Unity"><a href="#0x02-Debug-in-Unity" class="headerlink" title="0x02 Debug in Unity"></a>0x02 Debug in Unity</h2><p>调试是必需的功能，</p>

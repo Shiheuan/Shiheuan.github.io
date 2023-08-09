@@ -13,20 +13,20 @@
 <meta property="og:site_name" content="Yuan Shi&#39;s Blog">
 <meta property="og:description" content="〇、 同步等待 异步协程 同步协程 并行协程  一、同步等待是指，当调用了 yield return yieldInstruction 时，会根据不同的指令的不同，暂时挂起（ suspend ）协程，等待条件满足后，继续执行协程。 1yield return new WaitForSeconds(0.1f);  同步等待的示意图如下：  二、1234567891011121314151617181">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://shiheuan.github.io/fig1.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/fig1.png">
 <meta property="og:image" content="http://shiheuan.github.io/Asynchronous.png">
 <meta property="og:image" content="http://shiheuan.github.io/fig2.png">
-<meta property="og:image" content="http://shiheuan.github.io/Synchronous.png">
-<meta property="og:image" content="http://shiheuan.github.io/fig3.png">
-<meta property="og:image" content="http://shiheuan.github.io/Parallel.png">
-<meta property="og:image" content="http://shiheuan.github.io/fig4.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/Synchronous.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/fig3.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/Parallel.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/fig4.png">
 <meta property="article:published_time" content="2019-07-14T07:32:10.000Z">
-<meta property="article:modified_time" content="2019-07-15T14:48:20.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:37:04.000Z">
 <meta property="article:author" content="Shiheuan">
 <meta property="article:tag" content="unity">
 <meta property="article:tag" content="foundations">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://shiheuan.github.io/fig1.png">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/fig1.png">
     
     
       
@@ -65,7 +65,19 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 6.3.0"></head>
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -177,7 +189,7 @@
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br></pre></td></tr></table></figure>
 
 <p>同步等待的示意图如下：</p>
-<p><img src="/fig1.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/fig1.png"></p>
 <h2 id="二、"><a href="#二、" class="headerlink" title="二、"></a>二、</h2><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    StartCoroutine(TestCoroutine());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">IEnumerator <span class="title">TestCoroutine</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    print(<span class="keyword">this</span> + <span class="string">&quot;On TestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 and start intextcoroutine On TestCoroutine.&quot;</span>);</span><br><span class="line">    StartCoroutine(InTestCoroutine());</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On TestCoroutine. And finish this coroutine.&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">IEnumerator <span class="title">InTestCoroutine</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    print(<span class="keyword">this</span> + <span class="string">&quot;On InTestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On InTestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On InTestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On InTestCoroutine. And finish this coroutine.&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在协程中开启新协程，两个协程并行执行。即异步（ Asynchronous ）执行。新的协程并未阻塞旧协程，而是各自执行到结束。</p>
@@ -187,15 +199,15 @@
 <h2 id="三、"><a href="#三、" class="headerlink" title="三、"></a>三、</h2><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">TestCoroutine</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    print(<span class="keyword">this</span> + <span class="string">&quot;On TestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 and start intextcoroutine On TestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="title">StartCoroutine</span>(<span class="params">InTestCoroutine(</span>))</span>;</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On TestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On TestCoroutine. And finish this coroutine.&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>修改 TextCoroutine 中的代码，将启动新协程的命令修改为 yield return StartCoroutine()，此时，在执行程序后，旧的协程会在新协程执行结束后执行。</p>
-<p><img src="/Synchronous.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/Synchronous.png"></p>
 <p>同步协程的示意图如下：</p>
-<p><img src="/fig3.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/fig3.png"></p>
 <h2 id="四、"><a href="#四、" class="headerlink" title="四、"></a>四、</h2><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">TestCoroutine</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    print(<span class="keyword">this</span> + <span class="string">&quot;On TestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 and start intextcoroutine On TestCoroutine.&quot;</span>);</span><br><span class="line">    Coroutine a = StartCoroutine(InTestCoroutine(<span class="number">0.4f</span>));</span><br><span class="line">    <span class="keyword">var</span> b = StartCoroutine(InTestCoroutine(<span class="number">0.8f</span>));</span><br><span class="line">    <span class="keyword">var</span> c = StartCoroutine(InTestCoroutine(<span class="number">1.2f</span>));</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On TestCoroutine.&quot;</span>);</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> a;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> b;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> c;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On TestCoroutine. And finish this coroutine.&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">IEnumerator <span class="title">InTestCoroutine</span>(<span class="params"><span class="built_in">float</span> ft</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    print(<span class="keyword">this</span> + <span class="string">&quot;On InTestCoroutine(&quot;</span> + ft + <span class="string">&quot;).&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On InTestCoroutine(&quot;</span> + ft + <span class="string">&quot;).&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">0.1f</span></span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return 0.1 On InTestCoroutine(&quot;</span> + ft + <span class="string">&quot;).&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params">ft</span>)</span>;</span><br><span class="line">    print(<span class="string">&quot;yield return &quot;</span> + ft + <span class="string">&quot; On InTestCoroutine(&quot;</span> + ft + <span class="string">&quot;). And finish this coroutine.&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>将开启的协程保存在 UnityEngine 定义的 Coroutine 对象中，可以据此查询协程的执行状态。这里启动的每个协程对于旧的协程都是异步执行的，而这些新协程在同一刻开始并行执行，到了最后，让旧的协程同步等待新协程执行完毕后，才结束自己的执行。</p>
-<p><img src="/Parallel.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/Parallel.png"></p>
 <p>并行协程的示意图如下：</p>
-<p><img src="/fig4.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/14/Unity.Coroutine/fig4.png"></p>
 
   </div>
 </article>

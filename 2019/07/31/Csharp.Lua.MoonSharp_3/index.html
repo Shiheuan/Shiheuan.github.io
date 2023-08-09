@@ -13,15 +13,15 @@
 <meta property="og:site_name" content="Yuan Shi&#39;s Blog">
 <meta property="og:description" content="0x00官网的教程 请配合我的代码食用Github 0x01 Proxy objects处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API 过于复杂，MoonSharp 提供了一种脚本 DTO，也就是 Proxy Objects. DTO（">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://shiheuan.github.io/embedded.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png">
 <meta property="article:published_time" content="2019-07-31T12:04:20.000Z">
-<meta property="article:modified_time" content="2019-08-01T07:09:10.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:31:22.000Z">
 <meta property="article:author" content="Shiheuan">
 <meta property="article:tag" content="c#">
 <meta property="article:tag" content="MoonSharp">
 <meta property="article:tag" content="Lua">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://shiheuan.github.io/embedded.png">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png">
     
     
       
@@ -60,7 +60,19 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 6.3.0"></head>
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -216,7 +228,7 @@
 <li>写 Lua…</li>
 </ol>
 <p>将文件添加到工程（添加文件夹直接拖拽到工程中就好，我不知道你会不会，反正我刚会……），然后将开开“.lua”的属性，修改“生成操作（Build Action）”为“嵌入的资源（Embedded Resource）”如图。</p>
-<p><img src="/embedded.png"></p>
+<p><img src="https://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png"></p>
 <p>然后，就是最喜欢的写两行代码环节：</p>
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">EmbeddedResourceScriptLoader</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Script script = <span class="keyword">new</span> Script();</span><br><span class="line">    script.Options.ScriptLoader = <span class="keyword">new</span> EmbeddedResourcesScriptLoader();</span><br><span class="line">    script.DoFile(<span class="string">&quot;Scripts/Test.lua&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
