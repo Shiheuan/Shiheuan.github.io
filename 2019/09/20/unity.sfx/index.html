@@ -14,7 +14,7 @@
 <meta property="og:description" content="0x00音效真的很重要，好的背景音乐环境音效甚至可以当作 dlc 卖（误 （虽然我在做 gamejam 的时候基本都不会考虑声音，玩游戏的时候，也完全可以不开声音…… （请让我水一篇 0x01 Unity AudioSource在使用 Unity 引擎自建的音频系统，可以快速地加入声效与背景音乐元素。在 Unity Auido 部分，是仿照现实生活中我们听到声音的情形实现的，“我们”自己是声音的接">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-09-20T13:09:09.000Z">
-<meta property="article:modified_time" content="2023-06-13T10:27:32.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:54:36.000Z">
 <meta property="article:author" content="Shiheuan">
 <meta property="article:tag" content="unity">
 <meta property="article:tag" content="foundations">
@@ -204,19 +204,19 @@
 <li>分层（Layering）</li>
 </ol>
 <p>将音乐中分成不同乐器组，各自控制播放逻辑，在不同的情况下加入或移除某些乐器组。比如实现昼夜变化时背景音乐的变化，可以是同一乐曲使用了不同的乐器演奏的版本变化。这种设计的好处是可以即时地根据玩家节奏进行反馈，但同时播放多轨音源，会增大系统占用的资源，并且要完成这种分层设计，对音乐乐器组合本身的变化性上有所降低，音乐的表现上的变化就会减少，牺牲了音乐的发展性。</p>
-<ol start="2">
+<ol>
 <li>分支（Branching）</li>
 </ol>
 <p>在切换不同场景时，体现不同场景的独特风格，采用不同的音乐，而为了让不同场景的音乐能够完美衔接，往往需要音乐上具有独特的设计，有时风格差异较大，还需要单独设计音乐的转接段落。分支就是在玩家切换不同场景时，音乐产生的互动变化。这种设计可以让游戏整体音乐浑然一体，但往往不能立即进行响应，需要在特定乐段，小节结束时，再触发切换到另一个分支乐段上去。这种设计也适合在配合剧情变化、情绪变化等的场景、 Boss 战中。</p>
-<ol start="3">
+<ol>
 <li>随机（Random）</li>
 </ol>
 <p>在音乐中加入随机可以避免长时间处于同一场景产生的审美疲劳。可以配合分层设计，在每种乐器组中，预设多种音源，动态进行随机选择播放。</p>
-<ol start="4">
+<ol>
 <li>加花（Stinger）</li>
 </ol>
 <p>配合一些操作，对音乐进行修饰，可以是即时性的“音乐性的音效”，也可以是配合音乐节拍的修饰。往往用在需要对玩家进行提醒的场合，或者玩家处于特殊状态的时候。</p>
-<ol start="5">
+<ol>
 <li>实时处理（Dynamic Processing）</li>
 </ol>
 <p>使用滤波器，加入混响，做成 3D 音效等等，增加声效的变化。</p>
