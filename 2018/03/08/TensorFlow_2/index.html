@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="〇、文章总是改来改去，其实也是各个地方找到，看到的东西拿过来拼拼凑凑，主要还是给自己看的吧。第一部分 主要的算法解读第二部分 Python 代码的实现第三部分 对代码和细节的解读 一、模型构建 softmax 函数（归一化指数函数），能将任意一个含有任意实数的 K 维向量 z 投射到另一个 K 维实向量 σ(z) 中，使得每一个元素的范围都在 (0, 1) 之间，并且所有元素的和为1。   \si">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TensorFlow学习笔记【二】 手写数字识别入门">
+<meta property="og:url" content="http://shiheuan.github.io/2018/03/08/TensorFlow_2/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="〇、文章总是改来改去，其实也是各个地方找到，看到的东西拿过来拼拼凑凑，主要还是给自己看的吧。第一部分 主要的算法解读第二部分 Python 代码的实现第三部分 对代码和细节的解读 一、模型构建 softmax 函数（归一化指数函数），能将任意一个含有任意实数的 K 维向量 z 投射到另一个 K 维实向量 σ(z) 中，使得每一个元素的范围都在 (0, 1) 之间，并且所有元素的和为1。   \si">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2018/03/08/TensorFlow_2/weight.png">
+<meta property="article:published_time" content="2018-03-08T12:51:00.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.872Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="machine learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2018/03/08/TensorFlow_2/weight.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>TensorFlow学习笔记【二】 手写数字识别入门</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2018/03/17/TensorFlow_for_Dev/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018/03/06/library_1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/03/08/TensorFlow_2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&text=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&is_video=false&description=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=TensorFlow学习笔记【二】 手写数字识别入门&body=Check out this article: http://shiheuan.github.io/2018/03/08/TensorFlow_2/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&name=TensorFlow学习笔记【二】 手写数字识别入门&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&t=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81"><span class="toc-number">1.</span> <span class="toc-text">〇、</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">一、模型构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Python%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">二、Python实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%80%E7%82%B9%E8%A7%A3%E8%AF%BB"><span class="toc-number">4.</span> <span class="toc-text">三、一点解读</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        TensorFlow学习笔记【二】 手写数字识别入门
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-03-08T12:51:00.000Z" class="dt-published" itemprop="datePublished">2018-03-08</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/machine-learning/" rel="tag">machine learning</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="〇、"><a href="#〇、" class="headerlink" title="〇、"></a>〇、</h2><p>文章总是改来改去，其实也是各个地方找到，看到的东西拿过来拼拼凑凑，主要还是给自己看的吧。<br>第一部分 主要的算法解读<br>第二部分 Python 代码的实现<br>第三部分 对代码和细节的解读</p>
+<h2 id="一、模型构建"><a href="#一、模型构建" class="headerlink" title="一、模型构建"></a>一、模型构建</h2><blockquote>
+<p>softmax 函数（归一化指数函数），能将任意一个含有任意实数的 K 维向量 <strong>z</strong> 投射到另一个 K 维实向量 σ(<strong>z</strong>) 中，使得每一个元素的范围都在 (0, 1) 之间，并且所有元素的和为1。</p>
+</blockquote>
+<script type="math/tex; mode=display">
+\sigma(\mathbf{z})_j = \frac{e^{z_j}}{\sum_{k=1}^{K}e^{z_k}},\quad j=1,\dots,K</script><p>MNIST中的每一张 28*28 的图片都表示一个手写数字，从0到9，为了得到给定图片代表每个数字的概率，我们使用 softmax 回归（softmax regression），为每个不同的对象（数字）分配概率。</p>
+<p>对图片像素值进行加权求和。如果这个像素具有很强的证据说明这张图片不属于该类，那么相应的权值为负数，相反如果这个像素拥有有利的证据支持这张图片属于这个类，那么权值是正数。</p>
+<p><img src="weight.png" alt=""></p>
+<p>图为，对每个数字图片上的像素点进行学习，得到每个像素对于特定数字类的权值。红色代表负数权值，蓝色代表正数权值。</p>
+<p>此外，还要添加一个偏置量（bias），b，来排除输入数据中的干扰量。</p>
+<script type="math/tex; mode=display">
+evidence_i = \sum_j \mathbf{W}_{i,j}x_j+b_i</script><p>然后用 softmax 函数将其转换为概率：</p>
+<script type="math/tex; mode=display">
+y = softmax(evidence)</script><h2 id="二、Python实现"><a href="#二、Python实现" class="headerlink" title="二、Python实现"></a>二、Python实现</h2><p>作为数据集数据文件本身没有使用标准的图片格式存储，因此需要使用输入数据的代码（在<a target="_blank" rel="noopener" href="https://tensorflow.googlesource.com/tensorflow/+/master/tensorflow/examples/tutorials/mnist/input_data.py">这里</a>下载）来手动解压。</p>
+<p>训练和验证的 python 代码如下（<a target="_blank" rel="noopener" href="http://www.tensorfly.cn/tfdoc/tutorials/mnist_beginners.html">TensorFlow中文社区</a>）<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> input_data</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 自动下载 MNIST 数据集, 表示为 one_hot 向量</span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">&quot;MNIST_data/&quot;</span>, one_hot=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 任意数量的展平的图像张量作为输入值</span></span><br><span class="line">x = tf.placeholder(<span class="string">&quot;float&quot;</span>, [<span class="literal">None</span>, <span class="number">784</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># weight 和 bias 的 Variable 对象，用来存储模型参数，在每轮迭代时被更新，初始化为 0，</span></span><br><span class="line"><span class="comment"># （在这个简单方法中初始值不太重要）</span></span><br><span class="line">W = tf.Variable(tf.zeros([<span class="number">784</span>, <span class="number">10</span>]))</span><br><span class="line">b = tf.Variable(tf.zeros([<span class="number">10</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建立 softmax 回归模型</span></span><br><span class="line">y = tf.nn.softmax(tf.matmul(x,W) + b)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算交叉熵的输入值</span></span><br><span class="line">y_ = tf.placeholder(<span class="string">&quot;float&quot;</span>, [<span class="literal">None</span>, <span class="number">10</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算交叉熵</span></span><br><span class="line">cross_entropy = -tf.reduce_sum(y_*tf.log(y))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 反向传播算法 (backpropagation algorithm)</span></span><br><span class="line">train_step = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行运行计算</span></span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line"></span><br><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line">    batch_xs, batch_ys = mnist.train.next_batch(<span class="number">100</span>)</span><br><span class="line">    sess.run(train_step, feed_dict=&#123;x: batch_xs, y_: batch_ys&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 评估模型的正确率</span></span><br><span class="line">correct_prediction = tf.equal(tf.argmax(y, <span class="number">1</span>), tf.argmax(y_, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 求均值</span></span><br><span class="line">accuracy = tf.reduce_mean(tf.cast(correct_prediction, <span class="string">&quot;float&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(sess.run(accuracy, feed_dict=&#123;x: mnist.test.images, y_: mnist.test.labels&#125;))</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h2 id="三、一点解读"><a href="#三、一点解读" class="headerlink" title="三、一点解读"></a>三、一点解读</h2><p>从公式到 Tensorflow 的“翻译”：<br>loss function，Loss 越小表示模型行的分类结果与真实值的偏差越小，即模型越精准。这里使用了交叉熵 Cross-entropy 作为 loss function，其公式如下。</p>
+<p>\begin{equation}<br>H_{y’}(y)=- \sum_iy’_i log(y_i)<br>\end{equation}</p>
+<p>这里的 y’ 是输入的真实 label，在代码中定义一个 placeholder，label 是用 one-hot 编码的，因此我们将检查输入数据的格式是否为“[None, 10]”，10 维向量。求和为 tf.reduce_sum，“翻译”成 Python 代码为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算交叉熵</span></span><br><span class="line">cross_entropy = -tf.reduce_sum(y_*tf.log(y))</span><br></pre></td></tr></table></figure>
+<p>定义优化算法，使用随机梯度下降 SGD（Stochastic Gradient Descent），此时，前面构建的公式自动构成了计算图，tensorflow根据此计算图进行自动求导，通过反向传播算法（back propagation）进行训练，通过减少 loss 来更新模型的参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 反向传播算法 (backpropagation algorithm)</span></span><br><span class="line">train_step = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>).minimize(cross_entropy)</span><br></pre></td></tr></table></figure>
+<p>最后迭代的执行训练操作 train_step。此处用从训练集抽取的 100 条样本构成 batch，feed 给前面预留的输入 placeholder，进行训练。此方法可以减少计算量，避免不容易跳出局部最优的现象，收敛速度也比全样本训练要快很多。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">batch_xs, batch_ys = mnist.train.next_batch(<span class="number">100</span>)</span><br><span class="line">sess.run(train_step, feed_dict=&#123;x: batch_xs, y_: batch_ys&#125;)</span><br></pre></td></tr></table></figure>
+<p>完成训练，对模型的准确率进行验证，使用 <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/argmax">tf.argmax()</a> ，它的第一个参数是 tensor，第二个参数是 axis，即“寻找的方向”，一维向量则为0。此函数在这里的作用是寻找 tensor 中最大值的索引号，对于 y 来说，就是预测的结果中可能性最大的那个分类结果。然后用 tf.equal 来判断是否和正确的类型相同。以此来评价算法的准确率。<br>（argmax(f(x)) 函数的含义是使 f(x) 取得最大值的自变量 x 的值。）</p>
+<p>回忆一下上面的步骤，利用 Tensorflow 实现机器学习算法的一般步骤如下：<br>（1）定义算法公式；<br>（2）定义 loss function，选择优化器，指定优化器来优化 loss；<br>（3）迭代地对数据进行训练；<br>（4）在测试集或验证集上对准确率进行评价。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81"><span class="toc-number">1.</span> <span class="toc-text">〇、</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">一、模型构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Python%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">二、Python实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%80%E7%82%B9%E8%A7%A3%E8%AF%BB"><span class="toc-number">4.</span> <span class="toc-text">三、一点解读</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/03/08/TensorFlow_2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&text=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&is_video=false&description=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=TensorFlow学习笔记【二】 手写数字识别入门&body=Check out this article: http://shiheuan.github.io/2018/03/08/TensorFlow_2/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&title=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&name=TensorFlow学习笔记【二】 手写数字识别入门&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/03/08/TensorFlow_2/&t=TensorFlow学习笔记【二】 手写数字识别入门"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

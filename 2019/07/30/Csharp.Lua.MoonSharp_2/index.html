@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00官网的教程 请配合我的代码食用Github 本来以为可以搞定后面几章，但是没想到，就肝了一章，溜了溜了……溜了溜了…… 0x01 Sharing objects让 Lua 和 C# 进行对话 在默认情况下，一个 C# 类型传递到 Lua 脚本中，将可以访问其公共（public）的方法、属性等，这也可以通过名为 MoonSharpVisible 的属性来修改自定义类型的可见性。 使用专门的对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoonSharp 从一知到半解（2）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00官网的教程 请配合我的代码食用Github 本来以为可以搞定后面几章，但是没想到，就肝了一章，溜了溜了……溜了溜了…… 0x01 Sharing objects让 Lua 和 C# 进行对话 在默认情况下，一个 C# 类型传递到 Lua 脚本中，将可以访问其公共（public）的方法、属性等，这也可以通过名为 MoonSharpVisible 的属性来修改自定义类型的可见性。 使用专门的对">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-07-30T12:04:20.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.758Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="c#">
+<meta property="article:tag" content="MoonSharp">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>MoonSharp 从一知到半解（2）</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/07/31/Csharp.Lua.MoonSharp_3/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/07/24/DrawLineInUnity/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&text=MoonSharp 从一知到半解（2）"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&is_video=false&description=MoonSharp 从一知到半解（2）"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（2）&body=Check out this article: http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&name=MoonSharp 从一知到半解（2）&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&t=MoonSharp 从一知到半解（2）"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Sharing-objects"><span class="toc-number">2.</span> <span class="toc-text">0x01 Sharing objects</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-descriptors"><span class="toc-number">2.1.</span> <span class="toc-text">Type descriptors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E6%A1%88%E4%BE%8B"><span class="toc-number">2.2.</span> <span class="toc-text">简单案例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%88%8F%E5%BC%80%E5%A7%8B%EF%BC%8C%E5%8A%A0%E7%82%B9%E6%96%99"><span class="toc-number">2.3.</span> <span class="toc-text">游戏开始，加点料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="toc-number">2.4.</span> <span class="toc-text">静态方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%98-%E2%80%99-%E8%BF%98%E6%98%AF-%E2%80%98-%E2%80%99"><span class="toc-number">2.5.</span> <span class="toc-text">‘.’ 还是 ‘:’</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Overloads"><span class="toc-number">2.6.</span> <span class="toc-text">Overloads</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ByRef%EF%BC%88ref-out%EF%BC%89"><span class="toc-number">2.7.</span> <span class="toc-text">ByRef（ref&#x2F;out）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Indexers"><span class="toc-number">2.8.</span> <span class="toc-text">Indexers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Operators-and-metamethods-on-userdata"><span class="toc-number">2.9.</span> <span class="toc-text">Operators and metamethods on userdata</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extension-Methods"><span class="toc-number">2.10.</span> <span class="toc-text">Extension Methods</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Events"><span class="toc-number">2.11.</span> <span class="toc-text">Events</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-word-on-InteropAccessMode"><span class="toc-number">2.12.</span> <span class="toc-text">A word on InteropAccessMode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%A0%81%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-number">2.13.</span> <span class="toc-text">修改代码可见性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Removing-members"><span class="toc-number">2.14.</span> <span class="toc-text">Removing members</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">3.</span> <span class="toc-text">0xff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95I"><span class="toc-number">3.1.</span> <span class="toc-text">附录I</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#InteopAccessMode"><span class="toc-number">3.1.1.</span> <span class="toc-text">InteopAccessMode</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        MoonSharp 从一知到半解（2）
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-07-30T12:04:20.000Z" class="dt-published" itemprop="datePublished">2019-07-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Lua/" rel="tag">Lua</a>, <a class="p-category" href="/tags/MoonSharp/" rel="tag">MoonSharp</a>, <a class="p-category" href="/tags/c/" rel="tag">c#</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p><a target="_blank" rel="noopener" href="https://www.moonsharp.org/getting_started.html">官网的教程</a></p>
+<p>请配合我的代码食用<a target="_blank" rel="noopener" href="https://github.com/Shiheuan/MoonSharpTutorial">Github</a></p>
+<p>本来以为可以搞定后面几章，但是没想到，就肝了一章，溜了溜了……溜了溜了……</p>
+<h2 id="0x01-Sharing-objects"><a href="#0x01-Sharing-objects" class="headerlink" title="0x01 Sharing objects"></a>0x01 Sharing objects</h2><p>让 Lua 和 C# 进行对话</p>
+<p>在默认情况下，一个 C# 类型传递到 Lua 脚本中，将可以访问其公共（public）的方法、属性等，这也可以通过名为 MoonSharpVisible 的属性来修改自定义类型的可见性。</p>
+<p>使用专门的对象作为 CLR 与脚本代码的接口，而不是将 C# 代码中的模型直接或者全部暴露给脚本。可以通过一些设计模式来设计这一个接口层级，如 Adapter、Facade、Proxy。</p>
+<p>这样做的好处是：</p>
+<ul>
+<li>可以限制脚本什么能做，什么不能做（处于安全性考虑，mod 不能有过多的权限，如删除终端用户数据）</li>
+<li>提供接口对于脚本作者很有帮助</li>
+<li>单独写出接口的文档</li>
+<li>是脚本与内部逻辑代码相对独立，修改内部代码不至于大改脚本使用方式。</li>
+</ul>
+<p>出于以上原因，MoonSharp 默认要求显式地将类型注册到脚本来让脚本访问，当然，如果你完全信任脚本代码，也可以自动进行注册，但要承当由此带来的风险。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UserData.RegistrationPolicy = InteropRegistrationPolicy.Automatic;</span><br></pre></td></tr></table></figure>
+<h3 id="Type-descriptors"><a href="#Type-descriptors" class="headerlink" title="Type descriptors"></a>Type descriptors</h3><p>先简单说说类型描述器（Type descriptors），解释交互（introp）是怎么实现的，幕后发生的事情以及如何覆盖整个互操作系统。</p>
+<p>每一个 CLR 都被包装在一个 “type descriptor”中，用来向脚本描述这个 CLR 类型。而注册一个类型（Type）用来与脚本交互，实际上就是将此类型与描述器相关联，描述器将用来分派方法，属性等。</p>
+<p>我们可以选择使用 MoonSharp 提供的默认描述器，但也可以自己实现来提高速度，添加功能与安全性检测等，但这个过程并不容易（除非必要）。</p>
+<h3 id="简单案例"><a href="#简单案例" class="headerlink" title="简单案例"></a>简单案例</h3><p>首先，我们定义一个类，并用 attribute [MoonSharpUserData] 来修饰，表示作为提供给脚本使用的类型，并标记来自动注册。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MoonSharpUserData</span>]</span><br><span class="line"><span class="keyword">class</span> <span class="title">MyClass1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">double</span> <span class="title">calcHypotenuse</span>(<span class="params"><span class="built_in">double</span> a, <span class="built_in">double</span> b</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.Sqrt(a * a + b * b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在代码中将 MyClass1 的一个实例传递到脚本中作为一个全局变量，并在脚本中通过此变量调用 MyClass1 中的方法。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">double</span> <span class="title">CallMyClass1</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> scriptCode = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">        return MC.calcHypotenuse(3, 4)</span></span><br><span class="line"><span class="string">    &quot;</span>;</span><br><span class="line">    <span class="comment">// Automatically register all MoonSharpUserData types</span></span><br><span class="line">    UserData.RegisterAssembly();</span><br><span class="line"></span><br><span class="line">    Script script = <span class="keyword">new</span> Script();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Pass an instance of MyClass1 to the script in a global</span></span><br><span class="line">    script.Globals[<span class="string">&quot;MC&quot;</span>] = <span class="keyword">new</span> MyClass1();</span><br><span class="line"></span><br><span class="line">    DynValue res = script.DoString(scriptCode);</span><br><span class="line">    Console.WriteLine(res);</span><br><span class="line">    Console.ReadKey();</span><br><span class="line">    <span class="keyword">return</span> res.Number;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="游戏开始，加点料"><a href="#游戏开始，加点料" class="headerlink" title="游戏开始，加点料"></a>游戏开始，加点料</h3><p>现在我们把 [MoonSharpUserData] 去掉，只需要显式地进行类型注册（注意使用上的区别），然后使用 显式创建一个 DynValue，用来传递到脚本层。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UserData.RegisterType&lt;MyClass1&gt;();</span><br><span class="line">Script script = <span class="keyword">new</span> Script();</span><br><span class="line">DynValue obj = UserData.Create(<span class="keyword">new</span> MyClass1());</span><br><span class="line">script.Globals.Set(<span class="string">&quot;MC&quot;</span>, obj);</span><br></pre></td></tr></table></figure>
+<p>在 C# 中定义的脚本到了 Lua 中可以不必完全一样（只要不存在完全相同的方法版本），这是由于 MoonSharp 中的匹配规则，如 SomeMethodWithLongName 可以在 lua 脚本中通过 someMethodWithLongName 或者 some_method_with_long_name 进行访问。</p>
+<h3 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h3><p>对于脚本访问 C# 静态方法，定义一个包含了静态方法的类型：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MoonSharpUserData</span>]</span><br><span class="line"><span class="keyword">class</span> <span class="title">MyClassStatic</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">double</span> <span class="title">calcHypotenuse</span>(<span class="params"><span class="built_in">double</span> a, <span class="built_in">double</span> b</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.Sqrt(a * a + b * b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有两种方式对其进行调用（与使用 C# 代码调用相同），其一是通过类型实例（与前文无异），另外是通过直接传递类型（一个 placeholder userdata 会被创建；或者使用 UserData.CreateStatic）。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// the second method</span></span><br><span class="line">script.Globals[<span class="string">&quot;MCS&quot;</span>] = <span class="keyword">typeof</span>(MyClassStatic1);</span><br></pre></td></tr></table></figure>
+<h3 id="‘-’-还是-‘-’"><a href="#‘-’-还是-‘-’" class="headerlink" title="‘.’ 还是 ‘:’"></a>‘.’ 还是 ‘:’</h3><p>在大多数情况下，这两种调用方法是完全相同的（官方数据 99.999%……），MoonSharp 会对所调用的用户数据进行相应的表现。</p>
+<p>有一些极端情况可能会产生影响 - 例如，如果属性返回一个委托，并且您将立即调用该委托，并将原始对象作为实例。这是一个远程场景（remote scenario），当发生这种情况时你必须手动处理它。</p>
+<h3 id="Overloads"><a href="#Overloads" class="headerlink" title="Overloads"></a>Overloads</h3><p>支持重载方法，统一方法名，根据参数不同调用不同的具体实现。但是在 MoonSharp 中，重载方法类似黑暗魔法，具有“成功率”或者不稳定性，因为传递到 lua 脚本中的参数 int，float 都是 double 型，MoonSharp 通过启发式（Heuristic）的方法，来选择最佳的重载函数，如果认为重载错误了，可以去论坛吐槽，让他们校准啊2333。</p>
+<h3 id="ByRef（ref-out）"><a href="#ByRef（ref-out）" class="headerlink" title="ByRef（ref/out）"></a>ByRef（ref/out）</h3><p>在 C# 中使用 ref 或 out 参数（ByRef 函数参数）时，MoonSharp 会对其正确的整理排列成多返回值。副作用是并没有对具有 ByRef 参数的方法进行优化（使用反射调用，注意影响 AOT 平台的性能）。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">ManipulateString</span>(<span class="params"><span class="built_in">string</span> input, <span class="keyword">ref</span> <span class="built_in">string</span> tobeconcat, <span class="keyword">out</span> <span class="built_in">string</span> lowercase</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    tobeconcat = input + tobeconcat;</span><br><span class="line">    lowercase = input.ToLower();</span><br><span class="line">    <span class="keyword">return</span> input.ToUpper();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x, y, z = myobj:manipulateString(<span class="string">&#x27;CiAo&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- x will be &quot;CIAO&quot;</span></span><br><span class="line"><span class="comment">-- y will be &quot;CiAohello&quot;</span></span><br><span class="line"><span class="comment">-- z will be &quot;ciao&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Indexers"><a href="#Indexers" class="headerlink" title="Indexers"></a>Indexers</h3><p>在 C# 中，允许创建索引器方法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">IndexerTestClass</span></span><br><span class="line">&#123;</span><br><span class="line">    Dictionary&lt;<span class="built_in">int</span>, <span class="built_in">int</span>&gt; mymap = <span class="keyword">new</span> Dictionary&lt;<span class="built_in">int</span>, <span class="built_in">int</span>&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> <span class="keyword">this</span>[<span class="built_in">int</span> idx]</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> mymap[idx]; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; mymap[idx] = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> <span class="keyword">this</span>[<span class="built_in">int</span> idx1, <span class="built_in">int</span> idx2, <span class="built_in">int</span> idx3]</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="built_in">int</span> idx = (idx1 + idx2) * idx3; <span class="keyword">return</span> mymap[idx]; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; <span class="built_in">int</span> idx = (idx1 + idx2) * idx3; mymap[idx] = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>MoonSharp 作为Lua语言的扩展，允许括号内的表达式列表来索引 userdata。</p>
+<p>对任何非 userdata 的内容使用多索引都会引起错误，对上面的类在脚本中的一个实例为“o”，可以使用如下的脚本：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">o[<span class="number">5</span>] = <span class="number">19</span></span><br><span class="line"><span class="built_in">print</span>(o[<span class="number">5</span>]) <span class="comment">-- 19</span></span><br><span class="line">x = <span class="number">5</span> + o[<span class="number">5</span>]</span><br><span class="line"><span class="built_in">print</span>(x) <span class="comment">-- 24</span></span><br><span class="line">o[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>] = <span class="number">19</span></span><br><span class="line"><span class="built_in">print</span>(o[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]) <span class="comment">-- 19</span></span><br><span class="line">x = <span class="number">5</span> + o[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>] <span class="comment">-- not Standard Lua!@</span></span><br><span class="line"><span class="built_in">print</span>(x) <span class="comment">-- 24</span></span><br></pre></td></tr></table></figure>
+<p>要注意的是，对任何非 userdata 的对象使用多索引（multi-index）都会引发错误。这包括使用元方法的情况，但如果 metatable 的 __index 字段设置为 userdata（Emmm，递归），则支持多索引。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">m = &#123;</span><br><span class="line">    <span class="built_in">__index</span> = o,</span><br><span class="line">    <span class="built_in">__newindex</span> = o</span><br><span class="line">    <span class="comment">-- pretend this is some meaningful functions...</span></span><br><span class="line">    <span class="comment">--__index = function(obj, idx) return o[idx] end,</span></span><br><span class="line">    <span class="comment">--__newindex = function(obj, idx, val) end</span></span><br><span class="line">    <span class="comment">-- =&gt; :“cannot multi-index through metamethods. userdata expected”</span></span><br><span class="line">&#125;</span><br><span class="line">t = &#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">setmetatable</span>(t, m)</span><br><span class="line">t[<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>] = <span class="number">1234</span></span><br><span class="line"><span class="keyword">return</span> t[<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>]</span><br></pre></td></tr></table></figure>
+<p>这里，“<strong>newindex” 元方法用来对表更新，“</strong>index” 则用来对表访问 。</p>
+<h3 id="Operators-and-metamethods-on-userdata"><a href="#Operators-and-metamethods-on-userdata" class="headerlink" title="Operators and metamethods on userdata"></a>Operators and metamethods on userdata</h3><p>运算符重载 MoonSharp 中也有支持（也是黑魔法吗？？？）</p>
+<p>对于 lua 中的运算符，只能通过 Attributes 的方式来进行重载，如 [MoonSharpUserDataMetamethod(“<strong>concat”)] 对应 concat(..) 运算符，其他的有 </strong>pow, <strong>call, </strong>pairs, __ipairs。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MoonSharpUserDataMetamethod(<span class="string">&quot;__concat&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Concat</span>(<span class="params">ArithmOperatorsTestClass o, <span class="built_in">int</span> v</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> o.Value + v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">MoonSharpUserDataMetamethod(<span class="string">&quot;__concat&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Concat</span>(<span class="params"><span class="built_in">int</span> v, ArithmOperatorsTestClass o</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> o.Value + v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">MoonSharpUserDataMetamethod(<span class="string">&quot;__concat&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Concat</span>(<span class="params">ArithmOperatorsTestClass o1, ArithmOperatorsTestClass o2</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> o1.Value + o2.Value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外对于算数运算符，可以使用隐式重载，找到的算数运算符将被自动处理。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="keyword">operator</span> +(ArithmOperatorsTestClass o, <span class="built_in">int</span> v)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> o.Value + v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="keyword">operator</span> +(<span class="built_in">int</span> v, ArithmOperatorsTestClass o)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> o.Value + v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="keyword">operator</span> +(ArithmOperatorsTestClass o1, ArithmOperatorsTestClass o2)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> o1.Value + o2.Value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码将允许在 lua 中使用“+”操作符来运算数字和这个给定的对象。加减乘除，取模，一元非运算等，都使用这种方式实现。</p>
+<p>插播一条 lua tips：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>__add</td>
+<td>对应的运算符 ‘+’.</td>
+</tr>
+<tr>
+<td>__sub</td>
+<td>对应的运算符 ‘-‘.</td>
+</tr>
+<tr>
+<td>__mul</td>
+<td>对应的运算符 ‘*’.</td>
+</tr>
+<tr>
+<td>__div</td>
+<td>对应的运算符 ‘/‘.</td>
+</tr>
+<tr>
+<td>__mod</td>
+<td>对应的运算符 ‘%’.</td>
+</tr>
+<tr>
+<td>__unm</td>
+<td>对应的运算符 ‘-‘.</td>
+</tr>
+<tr>
+<td>__concat</td>
+<td>对应的运算符 ‘..’.</td>
+</tr>
+<tr>
+<td>__eq</td>
+<td>对应的运算符 ‘==’.</td>
+</tr>
+<tr>
+<td>__lt</td>
+<td>对应的运算符 ‘&lt;’.</td>
+</tr>
+<tr>
+<td>__le</td>
+<td>对应的运算符 ‘&lt;=’.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>最后是相对比较复杂的比较运算，长度运算符（#），__iterator metamethod 的实现。</p>
+<p>等运算符（== ~=）：使用 System.Object.Equals 方法自动解释；</p>
+<p>比较运算符（&lt; &gt;= etc.）：如果类型实现了 IComparable.CompareTo，则会自动解释；</p>
+<p>长度运算符（#）：如果类型实现了特定属性（Length Count）会自动分派；</p>
+<p>__iterator：如果类型实现了 System.Collections.IEnumerable，则自动分派给 GetEnumerator。可以用来实现 ipairs 和 pairs，两者都是键值对，区别在于前者根据 key 的值递增遍历，如果遇到空值就会结束，而后者会遍历表中所有的键值对。</p>
+<h3 id="Extension-Methods"><a href="#Extension-Methods" class="headerlink" title="Extension Methods"></a>Extension Methods</h3><p>支持扩展方法，知道就行了……并不知道干吗用……</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UserData.<span class="function">RegisterExtensionType</span></span><br><span class="line"><span class="function"><span class="title">RegisterAssembly</span>(<span class="params">&lt;assembly&gt;，<span class="literal">true</span></span>)</span></span><br></pre></td></tr></table></figure>
+<h3 id="Events"><a href="#Events" class="headerlink" title="Events"></a>Events</h3><p>MoonSharp 中也支持事件，但是只以非常简单的方式（minimalistic way），支持符合约束的事件：</p>
+<ul>
+<li>事件必须以引用类型（reference type）声明</li>
+<li>事件必须实现 add 和 remove 方法</li>
+<li>事件处理函数的返回类型必须是 System.Void （VB.NET 中必须是 Sub）</li>
+<li>事件处理函数的参数不能多于 16 个</li>
+<li>事件处理函数不能包含值类型参数或者 by-ref 参数</li>
+<li>事件处理函数的签名中不能包含指针或未解析的泛型</li>
+<li>事件处理函数的所有参数必须能够转换为 MoonSharp 类型</li>
+</ul>
+<p>什么意思？（我好想说“字面意思”摸鱼啊……），反正，这些约束是为了尽量避免在运行时构建代码。看起来限制多多，但是至少可以使用 EventHandler EventHandler<T> 这样的事件处理方式。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">MyClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler SomethingHappened;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RaiseTheEvent</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (SomethingHappened != <span class="literal">null</span>)</span><br><span class="line">            SomethingHappened(<span class="keyword">this</span>, EventArgs.Empty);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Events</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> scriptCode = <span class="string">@&quot;    </span></span><br><span class="line"><span class="string">        function handler(o, a)</span></span><br><span class="line"><span class="string">            print(&#x27;handled!&#x27;, o, a);</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        myobj.somethingHappened.add(handler);</span></span><br><span class="line"><span class="string">        myobj.raiseTheEvent();</span></span><br><span class="line"><span class="string">        myobj.somethingHappened.remove(handler);</span></span><br><span class="line"><span class="string">        myobj.raiseTheEvent();</span></span><br><span class="line"><span class="string">    &quot;</span>;</span><br><span class="line"></span><br><span class="line">    UserData.RegisterType&lt;EventArgs&gt;();</span><br><span class="line">    UserData.RegisterType&lt;MyClass&gt;();</span><br><span class="line">    Script script = <span class="keyword">new</span> Script();</span><br><span class="line">    script.Globals[<span class="string">&quot;myobj&quot;</span>] = <span class="keyword">new</span> MyClass();</span><br><span class="line">    script.DoString(scriptCode);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子中是在 lua 脚本中触发事件，在 C# 中处理，反之也同样可行，比如教程最开始就是获取了一个脚本中的方法并执行了，记得吗。需要注意的一点是，添加和移除事件处理函数是一个缓慢的操作，需要在线程锁定下使用反射执行（这个应用的还挺多）。</p>
+<h3 id="A-word-on-InteropAccessMode"><a href="#A-word-on-InteropAccessMode" class="headerlink" title="A word on InteropAccessMode"></a>A word on InteropAccessMode</h3><p>很多方法都有一个 InteopAccessMode 类型的可选参数，定义了标准描述器如何处理回调函数。</p>
+<p>默认为 LazyOptimized。其他模式可以参考附录。</p>
+<h3 id="修改代码可见性"><a href="#修改代码可见性" class="headerlink" title="修改代码可见性"></a>修改代码可见性</h3><p>MoonSharp 可以通过两种方法修改可见性：MoonSharpHidden 和 MoonSharpVisible 来重写默认的成员可见性（也就是前面说的 public 成员是脚本中默认可见的）。</p>
+<p>这里的 MoonSharpHidden 就是 MoonSharpVisible(false) 的简写。</p>
+<h3 id="Removing-members"><a href="#Removing-members" class="headerlink" title="Removing members"></a>Removing members</h3><p>有时候我们需要将已经注册了的类型的成员的可见性，让脚本不再可以调用。这有下面两种方法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> descr = ((StandardUserDataDescriptor)(UserData.RegisterType&lt;SomeType&gt;()));</span><br><span class="line">descr.RemoveMember(<span class="string">&quot;SomeMember&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>另外，直接增加一个 attribute 到类型的声明上；</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MoonSharpHide(<span class="string">&quot;SomeMember&quot;</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SomeType</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>这可以将继承的但不重写的成员隐藏。</p>
+<hr>
+<hr>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><h3 id="附录I"><a href="#附录I" class="headerlink" title="附录I"></a>附录I</h3><h4 id="InteopAccessMode"><a href="#InteopAccessMode" class="headerlink" title="InteopAccessMode"></a>InteopAccessMode</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reflection</td>
+<td>Optimization is not performed and reflection is used everytime to access members. This is the slowest approach but saves a lot of memory if members are seldomly used.</td>
+</tr>
+<tr>
+<td>LazyOptimized</td>
+<td>This is a hint, and MoonSharp is free to “downgrade” this to Reflection. Optimization is done on the fly the first time a member is accessed. This saves memory for all members that are never accessed, at the cost of an increased script execution time.</td>
+</tr>
+<tr>
+<td>Preoptimized</td>
+<td>This is a hint, and MoonSharp is free to “downgrade” this to Reflection. Optimization is done in a background thread which starts at registration time. If a member is accessed before optimization is completed, reflection is used.</td>
+</tr>
+<tr>
+<td>BackgroundOptimized</td>
+<td>This is a hint, and MoonSharp is free to “downgrade” this to Reflection. Optimization is done at registration time.</td>
+</tr>
+<tr>
+<td>HideMembers</td>
+<td>Members are simply not accessible at all. Can be useful if you need a userdata type whose members are hidden from scripts but can still be passed around to other functions. See also AnonWrapper and AnonWrapper<T>.</td>
+</tr>
+<tr>
+<td>Default</td>
+<td>Use the default access mode</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Sharing-objects"><span class="toc-number">2.</span> <span class="toc-text">0x01 Sharing objects</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-descriptors"><span class="toc-number">2.1.</span> <span class="toc-text">Type descriptors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E6%A1%88%E4%BE%8B"><span class="toc-number">2.2.</span> <span class="toc-text">简单案例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B8%E6%88%8F%E5%BC%80%E5%A7%8B%EF%BC%8C%E5%8A%A0%E7%82%B9%E6%96%99"><span class="toc-number">2.3.</span> <span class="toc-text">游戏开始，加点料</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="toc-number">2.4.</span> <span class="toc-text">静态方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%98-%E2%80%99-%E8%BF%98%E6%98%AF-%E2%80%98-%E2%80%99"><span class="toc-number">2.5.</span> <span class="toc-text">‘.’ 还是 ‘:’</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Overloads"><span class="toc-number">2.6.</span> <span class="toc-text">Overloads</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ByRef%EF%BC%88ref-out%EF%BC%89"><span class="toc-number">2.7.</span> <span class="toc-text">ByRef（ref&#x2F;out）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Indexers"><span class="toc-number">2.8.</span> <span class="toc-text">Indexers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Operators-and-metamethods-on-userdata"><span class="toc-number">2.9.</span> <span class="toc-text">Operators and metamethods on userdata</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extension-Methods"><span class="toc-number">2.10.</span> <span class="toc-text">Extension Methods</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Events"><span class="toc-number">2.11.</span> <span class="toc-text">Events</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-word-on-InteropAccessMode"><span class="toc-number">2.12.</span> <span class="toc-text">A word on InteropAccessMode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%A0%81%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-number">2.13.</span> <span class="toc-text">修改代码可见性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Removing-members"><span class="toc-number">2.14.</span> <span class="toc-text">Removing members</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">3.</span> <span class="toc-text">0xff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95I"><span class="toc-number">3.1.</span> <span class="toc-text">附录I</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#InteopAccessMode"><span class="toc-number">3.1.1.</span> <span class="toc-text">InteopAccessMode</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&text=MoonSharp 从一知到半解（2）"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&is_video=false&description=MoonSharp 从一知到半解（2）"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（2）&body=Check out this article: http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&title=MoonSharp 从一知到半解（2）"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&name=MoonSharp 从一知到半解（2）&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/07/30/Csharp.Lua.MoonSharp_2/&t=MoonSharp 从一知到半解（2）"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="工程分析GDC 演讲 Maxim Gumin 的 github repository wikiWaveFunctionCollapse This program generates bitmaps that are locally similar to the input bitmap.  本程序用来生成与输入模板位图局部相似的位图。  Local similarity means that  (">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WFC-工程分析">
+<meta property="og:url" content="http://shiheuan.github.io/2021/03/04/WFC_2/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="工程分析GDC 演讲 Maxim Gumin 的 github repository wikiWaveFunctionCollapse This program generates bitmaps that are locally similar to the input bitmap.  本程序用来生成与输入模板位图局部相似的位图。  Local similarity means that  (">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/04/WFC_2/wfc-patterns.png">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/04/WFC_2/wfc-symmetry-system.png">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/04/WFC_2/wfc-simpletiles-symmetry-counts.png">
+<meta property="article:published_time" content="2021-03-04T12:41:32.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.988Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="procedural generation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2021/03/04/WFC_2/wfc-patterns.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>WFC-工程分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/03/30/WFC_3/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2020/11/30/WFC_1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2021/03/04/WFC_2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2021/03/04/WFC_2/&text=WFC-工程分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2021/03/04/WFC_2/&is_video=false&description=WFC-工程分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WFC-工程分析&body=Check out this article: http://shiheuan.github.io/2021/03/04/WFC_2/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2021/03/04/WFC_2/&name=WFC-工程分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2021/03/04/WFC_2/&t=WFC-工程分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">工程分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wiki"><span class="toc-number">2.</span> <span class="toc-text">wiki</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WaveFunctionCollapse"><span class="toc-number">2.1.</span> <span class="toc-text">WaveFunctionCollapse</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Algorithm"><span class="toc-number">2.1.1.</span> <span class="toc-text">Algorithm</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tilemap-generation"><span class="toc-number">2.1.2.</span> <span class="toc-text">Tilemap generation</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%86%E8%BD%AE%E5%AD%90"><span class="toc-number">3.</span> <span class="toc-text">拆轮子</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        WFC-工程分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-03-04T12:41:32.000Z" class="dt-published" itemprop="datePublished">2021-03-04</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/algorithm/" rel="tag">algorithm</a>, <a class="p-category" href="/tags/procedural-generation/" rel="tag">procedural generation</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="工程分析"><a href="#工程分析" class="headerlink" title="工程分析"></a>工程分析</h2><p><a target="_blank" rel="noopener" href="https://gdcvault.com/play/1026263/Math-for-Game-Developers-Tile">GDC 演讲</a></p>
+<p>Maxim Gumin 的 <a target="_blank" rel="noopener" href="https://github.com/mxgmn/WaveFunctionCollapse">github repository</a></p>
+<h2 id="wiki"><a href="#wiki" class="headerlink" title="wiki"></a>wiki</h2><h3 id="WaveFunctionCollapse"><a href="#WaveFunctionCollapse" class="headerlink" title="WaveFunctionCollapse"></a>WaveFunctionCollapse</h3><blockquote>
+<p>This program generates bitmaps that are locally similar to the input bitmap.</p>
+</blockquote>
+<p>本程序用来生成与输入模板位图<strong>局部相似</strong>的位图。</p>
+<blockquote>
+<p>Local similarity means that</p>
+<ul>
+<li>(C1) Each NxN pattern of pixels in the output should occur at least once in the input.</li>
+<li>(Weak C2) Distribution of NxN patterns in the input should be similar to the distribution of NxN patterns over a sufficiently large number of outputs. In other words, probability to meet a particular pattern in the output should be close to the density of such patterns in the input.</li>
+</ul>
+</blockquote>
+<p>局部相似的含义是：</p>
+<ul>
+<li>(C1)输出位图中的每一个 NxN 的像素图案都至少在输入位图中出现过一次</li>
+<li>(Weak C2)输入位图中 NxN 的像素图案的概率分布，应该与足够数量的输出位图中 NxN 像素图案的概率分布相同（TODO: 大数定律）。换句话说，相同的图案在输出中出现的可能性接近输入位图中这个图案的比例。</li>
+</ul>
+<p><img src="wfc-patterns.png" alt="局部相似(N=3)"></p>
+<blockquote>
+<p>WFC initializes output bitmap in a completely unobserved state, where each pixel value is in superposition of colors of the input bitmap (so if the input was black &amp; white then the unobserved states are shown in different shades of grey). The coefficients in these superpositions are real numbers, not complex numbers, so it doesn’t do the actual quantum mechanics, but it was inspired by QM. Then the program goes into the observation-propagation cycle:</p>
+<ul>
+<li>On each observation step an NxN region is chosen among the unobserved which has the lowest Shannon entropy. This region’s state then collapses into a definite state according to its coefficients and the distribution of NxN patterns in the input.</li>
+<li>On each propagation step new information gained from the collapse on the previous step propagates through the output.</li>
+</ul>
+</blockquote>
+<p>WFC 算法首先将输出位图全部初始化为未观测状态，每一个像素的值均为输入位图像素颜色的叠加（例如输入仅有黑白两种颜色，那么未观测状态就以不同的灰色表示（同一个位置，出现黑色和白色的可能性不同））。这些叠加态的系数是实数而非复数，因此实际上并不满足量子力学的概念，仅是收到量子力学概念的启发。接着程序进入“观测-传播”的循环：</p>
+<ul>
+<li>每一个观测阶段，选中一个有着最低熵（Shannon entropy）的未观测的 NxN 的区域。随后，这个区域的状态会根据它的系数（one-hot 系数）以及 NxN 的图案在输入中的概率分布，collapses（TODO: collapse 的翻译）到一个确定态。</li>
+<li>每一个传播阶段，从上一步 collapse 得到的信息都会通过输出进行传播（TODO: 改的像人话一点）</li>
+</ul>
+<blockquote>
+<p>On each step the overall entropy decreases and in the end we have a completely observed state, the wave function has collapsed.</p>
+<p>It may happen that during propagation all the coefficients for a certain pixel become zero. That means that the algorithm has run into a contradiction and can not continue. The problem of determining whether a certain bitmap allows other nontrivial bitmaps satisfying condition (C1) is NP-hard, so it’s impossible to create a fast solution that always finishes. In practice, however, the algorithm runs into contradictions surprisingly rarely.</p>
+</blockquote>
+<p>每一步之后，总体熵会减小，最终得到完全地观测状态，那么波函数就完全 collapsed 了。</p>
+<p>有可能会发生这种情况，在传播过程中，一个像素的全部系数都变成了 0，这表明算法出现了冲突，无法继续执行了。确定某个位图允许其他不同位图满足条件（C1）是一个 NP 困难的问题，因此难以完成一个足够快的解决方案确保算法可以完成。在实践中，这种冲突极少发生。</p>
+<h4 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h4><blockquote>
+<ol>
+<li>Read the input bitmap and count NxN patterns.<ol>
+<li>(optional) Augment pattern data with rotations and reflections.</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<ol>
+<li>读取输入位图，计算 NxN 的图案<ol>
+<li>（可选）通过旋转、翻转扩充图案数据的数量</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<ol>
+<li>Create an array with the dimensions of the output (called “wave” in the source). Each element of this array represents a state of an NxN region in the output. A state of an NxN region is a superposition of NxN patterns of the input with boolean coefficients (so a state of a pixel in the output is a superposition of input colors with real coefficients). False coefficient means that the corresponding pattern is forbidden, true coefficient means that the corresponding pattern is not yet forbidden.</li>
+</ol>
+</blockquote>
+<ol>
+<li>创建输出尺寸相符的数组（wave），数组中每一个元素代表一个 NxN 区域在输出结果中的状态。一个 NxN 区域的一个状态是输入的所有 NxN 图案及其 bool 系数的叠加（因此，输出结果中的一个像素的状态是输入的颜色及其实数系数的叠加（TODO: 验证））。False 系数表示相应的图案被禁止，True 系数表示相应的图案到目前为止未被禁用。</li>
+</ol>
+<blockquote>
+<ol>
+<li>Initialize the wave in the completely unobserved state, i.e. with all the boolean coefficients being true.</li>
+</ol>
+</blockquote>
+<ol>
+<li>将代表 wave 的数组初始化为完全未观测状态（全部 bool 系数值为 True）</li>
+</ol>
+<blockquote>
+<ol>
+<li>Repeat the following steps:<ol>
+<li>Observation:<ol>
+<li>Find a wave element with the minimal nonzero entropy. If there is no such elements (if all elements have zero or undefined entropy) then break the cycle (4) and go to step (5).</li>
+<li>Collapse this element into a definite state according to its coefficients and the distribution of NxN patterns in the input.</li>
+</ol>
+</li>
+<li>Propagation: propagate information gained on the previous observation step.</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<ol>
+<li>循环：<ol>
+<li>观测：<ol>
+<li>选择一个非零最小熵的数组（波）元素。若找不到符合条件的数组元素（熵为 0 或未定义的熵），跳到第五步。</li>
+<li>根据当前的 bool 系数，以及输入的 NxN 图案的分布律，将这个元素 Collapse 到确定态。</li>
+</ol>
+</li>
+<li>传播：传递上一个观测阶段得到信息</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<ol>
+<li>By now all the wave elements are either in a completely observed state (all the coefficients except one being zero) or in the contradictory state (all the coefficients being zero). In the first case return the output. In the second case finish the work without returning anything.</li>
+</ol>
+</blockquote>
+<ol>
+<li>至此，所有数组元素都处在已观测状态（系数为 one-hot 位元组合，仅容许单一位元为 1，其他位元均为 0），或处在矛盾状态（系数全为 0）。</li>
+</ol>
+<h4 id="Tilemap-generation"><a href="#Tilemap-generation" class="headerlink" title="Tilemap generation"></a>Tilemap generation</h4><blockquote>
+<p>The simplest nontrivial case of the algorithm is when NxN=1x2 (well, NxM). If we simplify it even further by storing not the probabilities of pairs of colors but the probabilities of colors themselves, we get what we call a “simple tiled model”. The propagation phase in this model is just adjacency constraint propagation. It’s convenient to initialize the simple tiled model with a list of tiles and their adjacency data (adjacency data can be viewed as a large set of very small samples) rather than a sample bitmap.</p>
+</blockquote>
+<p>最简单的例子是取 NxN=1x2 （NxM）。如果我们通过存储颜色对的概率而非颜色本身的概率来进一步简化算法，我们就得到了”简单平铺模型（simple tiled model）”。该模型中的传播阶段只是邻接约束的传播。因此可以很方便地用一个瓦片（tile）列表和它们的邻接数据（邻接数据可以看作时一组很小的样本）来初始化简单平铺模型，而不是使用样本位图。</p>
+<blockquote>
+<p>Lists of all the possible pairs of adjacent tiles in practical tilesets can be quite long, so I implemented a symmetry system for tiles to shorten the enumeration. In this system each tile should be assigned with its symmetry type.</p>
+</blockquote>
+<p>完全将这些邻接情况列举出来时一项很繁琐的工作，因此我实现了一套瓦片（tile）对称系统来缩短这些枚举内容。每一个瓦片都需要标明它的对称类型。</p>
+<p><img src="wfc-symmetry-system.png" alt="图案示例"></p>
+<hr>
+<p>需要解释<em>这种对称关系是怎样的</em>？（优化方法）</p>
+<ul>
+<li>是与这种瓦片的连接相关的吗？</li>
+<li>这五种类型可以包括全部可能性吗？<br><img src="wfc-simpletiles-symmetry-counts.png" alt="不同对称类型经过旋转、镜像操作的全部图案"></li>
+</ul>
+<hr>
+<blockquote>
+<p>Note that the tiles have the same symmetry type as their assigned letters (or, in other words, actions of the<br>dihedral group D4 are isomorphic for tiles and their corresponding letters). With this system it’s enough to enumerate pairs of adjacent tiles only up to symmetry, which makes lists of adjacencies for tilesets with many symmetrical tiles (even the summer tileset, despite drawings not being symmetrical the system considers such tiles to be symmetrical) several times shorter.</p>
+</blockquote>
+<p>瓦片的对称类型与这些字母相同（同构的），有了这套系统就可以根据对称性列举出邻接瓦片，使得列出的许多对称的瓦片的邻接列表可以成倍缩短。</p>
+<blockquote>
+<p>Note that the unrestrained knot tileset (with all 5 tiles being allowed) is not interesting for WFC, because you can’t run into a situation where you can’t place a tile. We call tilesets with this property “easy”. Without special heuristics easy tilesets don’t produce interesting global arrangements, because correlations of tiles in easy tilesets quickly fall off with a distance. Many easy tilesets can be found on <a target="_blank" rel="noopener" href="http://cr31.co.uk/stagecast/wang/tiles_e.html">cr31’s site</a>. Consider the “Dual” 2-edge tileset there. How can it generate knots (without t-junctions, not easy) while being easy? The answer is, it can only generate a narrow class of knots, it can’t produce an arbitrary knot.</p>
+</blockquote>
+<p>knot（绳结）图集对 WFC 算法来说并无必要，因为不可能遇到无法放置图集中瓦片的情况。我们称具有这种情况的图集属性为“easy”。cr311’s site 可以找到这种图集。</p>
+<blockquote>
+<p>Note also that Circuit, Summer and Rooms tilesets are non-Wang. That is, their adjacency data cannot be induced from edge coloring. For example, in Circuit two Corners cannot be adjacent, yet they can be connected with a Connection tile, and diagonal tracks cannot change direction.</p>
+</blockquote>
+<h2 id="拆轮子"><a href="#拆轮子" class="headerlink" title="拆轮子"></a>拆轮子</h2><p>工程结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Wave-function-collapse-sharp</span><br><span class="line"> ├─ samples</span><br><span class="line"> │  ├─ &lt;sample-name&gt;</span><br><span class="line"> │  │  ├─ data.xml</span><br><span class="line"> │  │  ├─ .png</span><br><span class="line"> │  │  └─ ...</span><br><span class="line"> │  ├─ .png</span><br><span class="line"> │  └─ ...</span><br><span class="line"> ├─ Main.cs</span><br><span class="line"> ├─ Model.cs</span><br><span class="line"> ├─ OverlappingModel.cs</span><br><span class="line"> ├─ SimpleTiledModel.cs</span><br><span class="line"> ├─ Stuff.cs</span><br><span class="line"> ├─ samples.xml</span><br><span class="line"> └─ .csproj</span><br></pre></td></tr></table></figure>
+<ul>
+<li>“[][]”和“[,]”：锯齿数组和二维数组的区别</li>
+<li>“(int, int)[]”：元组类型（c# 7.0，之前版本使用泛型 Tuple）数组，组合不同类型的对象（返回多个值），使用 Item1 等访问，也可以声明成员</li>
+<li>熵的计算：<ul>
+<li>$\log w<em>{sum} - \frac{\sum</em>{i-1}^n w<em>i\times\log w_i}{w</em>{sum}}$</li>
+<li>$\sum_{i-1}^n w_i\times\log w_i$</li>
+<li>定义：</li>
+</ul>
+</li>
+</ul>
+<p>随机变量$X$的熵值$Eta$定义如下，其值域为${x_1, \dots, x_n}$：</p>
+<script type="math/tex; mode=display">Eta(X)=\Bbb{E}[I(X)]=\Bbb{E}[-\ln(P(X))]</script><p>其中，$P$为$X$的概率质量函数（probability mass function），$E$为期望函数，而I(X)是X的信息量（又称为自信息）。I(X)本身是个随机变数。</p>
+<p>当取自有限的样本时，熵的公式可以表示为：</p>
+<script type="math/tex; mode=display">Eta(X)=\sum_iP(x_i)\log_b{P(x_i)}=-\sum_iP(x_i)log_b{P(x_i)}</script>
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">工程分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wiki"><span class="toc-number">2.</span> <span class="toc-text">wiki</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WaveFunctionCollapse"><span class="toc-number">2.1.</span> <span class="toc-text">WaveFunctionCollapse</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Algorithm"><span class="toc-number">2.1.1.</span> <span class="toc-text">Algorithm</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tilemap-generation"><span class="toc-number">2.1.2.</span> <span class="toc-text">Tilemap generation</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%86%E8%BD%AE%E5%AD%90"><span class="toc-number">3.</span> <span class="toc-text">拆轮子</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2021/03/04/WFC_2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2021/03/04/WFC_2/&text=WFC-工程分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2021/03/04/WFC_2/&is_video=false&description=WFC-工程分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WFC-工程分析&body=Check out this article: http://shiheuan.github.io/2021/03/04/WFC_2/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2021/03/04/WFC_2/&title=WFC-工程分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2021/03/04/WFC_2/&name=WFC-工程分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2021/03/04/WFC_2/&t=WFC-工程分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

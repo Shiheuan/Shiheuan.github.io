@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="一、原理推导回归问题（Regression）中 最小二乘学习法（Least Square）是对模型的输出$f\theta(\vec x_i)$和训练集输出${y_i}{i&#x3D;1}^n$的平方误差 J_{LS}(\theta)&#x3D;\frac{1}{2}\sum_{i&#x3D;1}^n(f_\theta(\vec x_i)-y_i)^2为最小时的参数$\theta$进行学习的方法。 \||f_\theta(\ve">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习【二】 最小二乘学习法">
+<meta property="og:url" content="http://shiheuan.github.io/2018/06/05/MachineLearning_2/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="一、原理推导回归问题（Regression）中 最小二乘学习法（Least Square）是对模型的输出$f\theta(\vec x_i)$和训练集输出${y_i}{i&#x3D;1}^n$的平方误差 J_{LS}(\theta)&#x3D;\frac{1}{2}\sum_{i&#x3D;1}^n(f_\theta(\vec x_i)-y_i)^2为最小时的参数$\theta$进行学习的方法。 \||f_\theta(\ve">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2018/06/05/MachineLearning_2/Figure_1.png">
+<meta property="article:published_time" content="2018-06-05T14:42:00.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.847Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="machine learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2018/06/05/MachineLearning_2/Figure_1.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>机器学习【二】 最小二乘学习法</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2018/06/15/Raspberry.Pi.Start.Up/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018/06/03/MachineLearning_1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/06/05/MachineLearning_2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&text=机器学习【二】 最小二乘学习法"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&is_video=false&description=机器学习【二】 最小二乘学习法"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=机器学习【二】 最小二乘学习法&body=Check out this article: http://shiheuan.github.io/2018/06/05/MachineLearning_2/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&name=机器学习【二】 最小二乘学习法&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&t=机器学习【二】 最小二乘学习法"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%8E%9F%E7%90%86%E6%8E%A8%E5%AF%BC"><span class="toc-number">1.</span> <span class="toc-text">一、原理推导</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E8%B7%B5"><span class="toc-number">2.</span> <span class="toc-text">二、实践</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        机器学习【二】 最小二乘学习法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-06-05T14:42:00.000Z" class="dt-published" itemprop="datePublished">2018-06-05</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/machine-learning/" rel="tag">machine learning</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="一、原理推导"><a href="#一、原理推导" class="headerlink" title="一、原理推导"></a>一、原理推导</h2><p>回归问题（Regression）中</p>
+<p>最小二乘学习法（Least Square）是对模型的输出$f<em>\theta(\vec x_i)$和训练集输出${y_i}</em>{i=1}^n$的平方误差</p>
+<script type="math/tex; mode=display">J_{LS}(\theta)=\frac{1}{2}\sum_{i=1}^n(f_\theta(\vec x_i)-y_i)^2</script><p>为最小时的参数$\theta$进行学习的方法。</p>
+<script type="math/tex; mode=display">\||f_\theta(\vec x_i)-y_i\||_{(2)}^2</script><script type="math/tex; mode=display">=(\sqrt {(f_\theta(\vec x_i)-y_i)^T(f_\theta(\vec x_i)-y_i)})^2</script><script type="math/tex; mode=display">=(f_\theta(\vec x_i)-y_i)^T(f_\theta(\vec x_i)-y_i)</script><script type="math/tex; mode=display">=\sum_{i=1}^n(f_\theta(\vec x_i)-y_i)^2</script><p>因此也叫$l_2$损失最小化学习。</p>
+<p>在求解最小值时，使用求微分令其为$0$的$\theta$值，因此在平方误差公式凑了一个$\frac{1}{2}$，将微分得到的$2$约去。</p>
+<p>针对线性模型$f_\theta(\vec x)=\vec\theta^T\phi(\vec x)$，先给出结果：</p>
+<script type="math/tex; mode=display">\nabla_\theta J_{LS}=(\frac{\partial J_{LS}}{\partial\theta_1},\frac{\partial J_{LS}}{\partial\theta_2},\cdots,\frac{\partial J_{LS}}{\partial\theta_b})^T=\Phi^T\Phi\vec\theta-\Phi^T\vec y</script><p>推导过程：</p>
+<script type="math/tex; mode=display">J_{LS}(\vec\theta)=\frac{1}{2}\|\Phi\vec\theta-\vec y\|^2</script><script type="math/tex; mode=display">
+=\frac{1}{2}\|
+\left(
+\begin{matrix}
+\phi_1(\vec x_1) & \cdots & \phi_b(\vec x_1)\\\\
+\vdots & \ddots & \vdots\\\\
+\phi_1(\vec x_n) & \cdots & \phi_b(\vec x_n)
+\end{matrix}
+\right)
+\left(
+\begin{matrix}
+\theta_1 \\\\
+\vdots \\\\
+\theta_b
+\end{matrix}
+\right)
+-
+\left(
+\begin{matrix}
+y_1 \\\\
+\vdots \\\\
+y_n
+\end{matrix}
+\right)
+\|^2</script><script type="math/tex; mode=display">
+  =\frac{1}{2}\|
+  \left(
+  \begin{matrix}
+    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\\\
+    \vdots \\\\
+    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n
+  \end{matrix}
+  \right)
+  \|^2</script><p>根据$l_2$-Norm可得：</p>
+<script type="math/tex; mode=display">
+  =\frac{1}{2}(\sqrt{
+  \left(
+  \begin{matrix}
+      \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\\\
+      \vdots \\\\
+      \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n
+    \end{matrix}
+    \right)
+  ^T
+  \left(
+  \begin{matrix}
+    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\\\
+    \vdots \\\\
+    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n
+  \end{matrix}
+  \right)
+  })^2</script><script type="math/tex; mode=display">
+  =\frac{1}{2}
+  \left(
+  \begin{matrix}
+    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\\\
+    \vdots \\\\
+    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n
+  \end{matrix}
+  \right)
+  ^T
+  \left(
+  \begin{matrix}
+    \theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1\\\\
+    \vdots \\\\
+    \theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n
+  \end{matrix}
+  \right)</script><script type="math/tex; mode=display">
+=\frac{1}{2}[(\theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1)^2+\cdots+(\theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n)^2]</script><p>因此，</p>
+<script type="math/tex; mode=display">
+\nabla_\theta J_{LS}=\frac{1}{2}
+\left(
+\begin{matrix}
+2(\theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1)\phi_1(\vec x_1)+\cdots+2(\theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n)\phi_1(\vec x_n) \\\\
+  \vdots \\\\
+  2(\theta_1\phi_1(\vec x_1) + \cdots + \theta_b\phi_b(\vec x_1) - y_1)\phi_b(\vec x_1)+\cdots+2(\theta_1\phi_1(\vec x_n) + \cdots + \theta_b\phi_b(\vec x_n) - y_n)\phi_b(\vec x_n))
+  \end{matrix}
+  \right)</script><p>利用矩阵乘法，可将求导得到的$\phi_1(\vec x_1)$等提出来：</p>
+<script type="math/tex; mode=display">
+  \nabla_\theta J_{LS}=
+  \left(
+  \begin{matrix}
+    \phi_1(\vec x_1) & \cdots & \cdots \phi_1(\vec x_n)\\\\
+    \vdots & \ddots & \vdots \\\\
+    \phi_b(\vec x_1) & \cdots & \cdots \phi_b(\vec x_n)
+  \end{matrix}
+  \right)
+  \cdot
+  (\Phi\vec\theta-\vec y)
+  =\Phi^T\Phi\vec\theta-\Phi^T\vec y</script><p>即得。</p>
+<p>通过求解$\Phi^T\Phi\vec\theta-\Phi^T\vec y=0$即可得到通过最小二乘法学习的参数$\vec\theta$，但在大多数情况下，由于数据量远远大于参数数量，因此$\Phi$是一个奇异矩阵，并非方阵，我们不能通过简单的通过他的逆矩阵求出解，因此这里需要引入一个<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Generalized_inverse">伪逆矩阵</a>的新概念，用来解决此问题。</p>
+<h2 id="二、实践"><a href="#二、实践" class="headerlink" title="二、实践"></a>二、实践</h2><p>学习了最小二乘法的原理之后，通过python程序来巩固一下。<br>本程序根据上面对线性模型的推导，基函数使用三角多项式形式，即：</p>
+<script type="math/tex; mode=display">\phi(x) = (1,\sin\frac{x}{2},\cos\frac{x}{2},\sin\frac{2x}{2},\cos\frac{2x}{2},\cdots,\sin\frac{15x}{2},\cos\frac{15x}{2})^T</script><p>而数据我们使用近似的$sinc(x) = \frac{\sin(\pi x)}{\pi x}$函数加上随机误差来生成得到。</p>
+<p>程序如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line">__author__ = <span class="string">&#x27;shiheuan&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">LeastSquares</span>():</span><br><span class="line">    N = <span class="number">1000</span></span><br><span class="line">    n = <span class="number">50</span> <span class="comment"># len(x)</span></span><br><span class="line">    x = np.array([np.linspace(-<span class="number">3.</span>,<span class="number">3.</span>,n)])</span><br><span class="line">    <span class="comment"># print(x)</span></span><br><span class="line"></span><br><span class="line">    X = np.array([np.linspace(-<span class="number">3.</span>,<span class="number">3.</span>,N)])</span><br><span class="line">    <span class="comment"># 图像形态 + 随机误差</span></span><br><span class="line">    y = np.sin(np.pi*x)/(np.pi*x)+<span class="number">0.1</span>*x+<span class="number">0.05</span>*np.random.randn(<span class="number">1</span>,n)</span><br><span class="line"></span><br><span class="line">    P = np.ones([<span class="number">31</span>,N])</span><br><span class="line">    p = np.ones([<span class="number">31</span>,n])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">15</span>):</span><br><span class="line">        P[<span class="number">2</span>*i+<span class="number">1</span>,:] = np.sin((i+<span class="number">1</span>)/<span class="number">2</span>*X)</span><br><span class="line">        P[<span class="number">2</span>*i+<span class="number">2</span>,:] = np.cos((i+<span class="number">1</span>)/<span class="number">2</span>*X)</span><br><span class="line">        p[<span class="number">2</span>*i+<span class="number">1</span>,:] = np.sin((i+<span class="number">1</span>)/<span class="number">2</span>*x)</span><br><span class="line">        p[<span class="number">2</span>*i+<span class="number">2</span>,:] = np.cos((i+<span class="number">1</span>)/<span class="number">2</span>*x)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(p)</span><br><span class="line">    p = p.T</span><br><span class="line">    <span class="built_in">print</span>(p)</span><br><span class="line">    P = P.T</span><br><span class="line">    pp = np.linalg.pinv(p)</span><br><span class="line">    pp = np.dot(p.T, p)</span><br><span class="line">    <span class="comment"># print(pp)</span></span><br><span class="line">    <span class="comment"># pinv 与 inv 的区别</span></span><br><span class="line">    ppi = np.linalg.pinv(pp)</span><br><span class="line">    <span class="comment"># print(ppi)</span></span><br><span class="line">    pp_ = np.dot(ppi, p.T)</span><br><span class="line">    <span class="comment"># print(pp_)</span></span><br><span class="line">    t = np.dot(pp_, y.T)</span><br><span class="line">    <span class="comment"># print(t)</span></span><br><span class="line">    <span class="comment"># print(y)</span></span><br><span class="line">    F = np.dot(P, t).T</span><br><span class="line"></span><br><span class="line">    plt.plot(x[<span class="number">0</span>,:],y[<span class="number">0</span>,:],<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">    plt.plot(X[<span class="number">0</span>,:],F[<span class="number">0</span>,:])</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">LeastSquares()</span><br></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<p><img src="Figure_1.png" alt="最小二乘学习法运行结果图"></p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%8E%9F%E7%90%86%E6%8E%A8%E5%AF%BC"><span class="toc-number">1.</span> <span class="toc-text">一、原理推导</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E8%B7%B5"><span class="toc-number">2.</span> <span class="toc-text">二、实践</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/06/05/MachineLearning_2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&text=机器学习【二】 最小二乘学习法"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&is_video=false&description=机器学习【二】 最小二乘学习法"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=机器学习【二】 最小二乘学习法&body=Check out this article: http://shiheuan.github.io/2018/06/05/MachineLearning_2/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&title=机器学习【二】 最小二乘学习法"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&name=机器学习【二】 最小二乘学习法&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/06/05/MachineLearning_2/&t=机器学习【二】 最小二乘学习法"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

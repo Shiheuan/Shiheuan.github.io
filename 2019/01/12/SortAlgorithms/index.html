@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="〇、对于排序算法的考察是很基础的算法考察，而很多面试都会有手写代码的考察，因此这次总结中代码的实现用了伪代码。 可以了解到：  常见的排序算法 算法的实现  （最后来写这个引言，真是毫无生气啊…… 一、    排序算法 时间复杂度 空间复杂度 是否稳定     冒泡排序 О($n^2$) О($1$) 是   选择排序 О($n^2$) О($1$) 否   插入排序 О($n^2$) О($1$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="排序算法的那些事儿">
+<meta property="og:url" content="http://shiheuan.github.io/2019/01/12/SortAlgorithms/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="〇、对于排序算法的考察是很基础的算法考察，而很多面试都会有手写代码的考察，因此这次总结中代码的实现用了伪代码。 可以了解到：  常见的排序算法 算法的实现  （最后来写这个引言，真是毫无生气啊…… 一、    排序算法 时间复杂度 空间复杂度 是否稳定     冒泡排序 О($n^2$) О($1$) 是   选择排序 О($n^2$) О($1$) 否   插入排序 О($n^2$) О($1$">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-01-12T14:57:00.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.862Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="algorithm">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>排序算法的那些事儿</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/02/25/unity.and.android.debug/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018/06/15/Raspberry.Pi.Start.Up/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/01/12/SortAlgorithms/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&text=排序算法的那些事儿"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&is_video=false&description=排序算法的那些事儿"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=排序算法的那些事儿&body=Check out this article: http://shiheuan.github.io/2019/01/12/SortAlgorithms/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&name=排序算法的那些事儿&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&t=排序算法的那些事儿"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81"><span class="toc-number">1.</span> <span class="toc-text">〇、</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81"><span class="toc-number">2.</span> <span class="toc-text">一、</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81"><span class="toc-number">3.</span> <span class="toc-text">二、</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%EF%BC%89%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%EF%BC%88Bubble-Sort%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">一）冒泡排序（Bubble Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%EF%BC%89%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%EF%BC%88Selection-Sort%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">二）选择排序（Selection Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%EF%BC%89%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%EF%BC%88Insertion-Sort%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">三）插入排序（Insertion Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%EF%BC%89%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%EF%BC%88Shell-Sort%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">四）希尔排序（Shell Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%EF%BC%89%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%EF%BC%88Merge-Sort%EF%BC%89"><span class="toc-number">3.5.</span> <span class="toc-text">五）归并排序（Merge Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%EF%BC%89%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88Quick-Sort"><span class="toc-number">3.6.</span> <span class="toc-text">六）快速排序（Quick Sort</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%EF%BC%89%E5%A0%86%E6%8E%92%E5%BA%8F%EF%BC%88Heap-Sort%EF%BC%89"><span class="toc-number">3.7.</span> <span class="toc-text">七）堆排序（Heap Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AB%EF%BC%89%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%EF%BC%88Counting-Sort%EF%BC%89"><span class="toc-number">3.8.</span> <span class="toc-text">八）计数排序（Counting Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%9D%EF%BC%89%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%EF%BC%88Radix-Sort%EF%BC%89"><span class="toc-number">3.9.</span> <span class="toc-text">九）基数排序（Radix Sort）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81"><span class="toc-number">4.</span> <span class="toc-text">三、</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        排序算法的那些事儿
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-01-12T14:57:00.000Z" class="dt-published" itemprop="datePublished">2019-01-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/algorithm/" rel="tag">algorithm</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="〇、"><a href="#〇、" class="headerlink" title="〇、"></a>〇、</h2><p>对于排序算法的考察是很基础的算法考察，而很多面试都会有手写代码的考察，因此这次总结中代码的实现用了伪代码。</p>
+<p>可以了解到：</p>
+<ol>
+<li>常见的排序算法</li>
+<li>算法的实现</li>
+</ol>
+<p>（最后来写这个引言，真是毫无生气啊……</p>
+<h2 id="一、"><a href="#一、" class="headerlink" title="一、"></a>一、</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>排序算法</th>
+<th>时间复杂度</th>
+<th>空间复杂度</th>
+<th>是否稳定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>冒泡排序</td>
+<td>О($n^2$)</td>
+<td>О($1$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>选择排序</td>
+<td>О($n^2$)</td>
+<td>О($1$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>插入排序</td>
+<td>О($n^2$)</td>
+<td>О($1$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>希尔排序</td>
+<td>О($n\log^2{n}$)</td>
+<td>О($1$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>归并排序</td>
+<td>О($n\log{n}$)</td>
+<td>О($n$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td>О($n\log{n}$)</td>
+<td>О($\log{n}$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>堆排序</td>
+<td>О($n\log{n}$)</td>
+<td>О($1$)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>计数排序</td>
+<td>О($n+k$)</td>
+<td>О($k$)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>基数排序</td>
+<td>О($nk$)</td>
+<td>О($n+k$)</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="二、"><a href="#二、" class="headerlink" title="二、"></a>二、</h2><h3 id="一）冒泡排序（Bubble-Sort）"><a href="#一）冒泡排序（Bubble-Sort）" class="headerlink" title="一）冒泡排序（Bubble Sort）"></a>一）冒泡排序（Bubble Sort）</h3><p>冒泡排序是思想非常简单的排序算法：重复地比较相邻两个数据的大小，将较小的靠前，较大的靠后，将顺序错误的数据交换过来，直到没有再需要交换的数据为止。</p>
+<p>冒泡排序还是原地算法（in-place algorithm），即不需要额外的辅助空间来进行转换的算法，包含了空间复杂度为О(1)的所有算法。</p>
+<p>而“稳定”是指，对于数值相同的元素，其排列的顺序在经过排序后并没有发生改变，则称这样的排序算法是稳定的。</p>
+<p>冒泡算法虽然简单，但在数列数据较大时很没有效率，因此唯一的用处大概就是学习算法课程的时候，经常被用来介绍算法的概念吧。</p>
+<p>伪代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function bubble_sort (array, length):</span><br><span class="line">    var i, j</span><br><span class="line">    for i &lt;- 0 to length-1:</span><br><span class="line">        for j &lt;- 0 to length-1-i:</span><br><span class="line">            if array[j] &gt; array[j+1]:</span><br><span class="line">                swap(array[j], array[j+1])</span><br></pre></td></tr></table></figure>
+<p>上面的pseudo-code只有循环判断过整个数列后才会停止，很可能在后面数列已经排序完成，却进行了许多无用的判断。为了优化此算法，可以加入判断条件，如果一次内循环没有交换过任何数据，即表明数列已经完成了排序。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function bubble_sort_withflag (array, length):</span><br><span class="line">    var i, j</span><br><span class="line">    bool flag</span><br><span class="line">    for i &lt;- 0 to length-1:</span><br><span class="line">        flag &lt;- false</span><br><span class="line">        for j &lt;- 0 to length-1-i):</span><br><span class="line">            if array[j] &gt; array[j+1]:</span><br><span class="line">                swap(array[j], array[j+1])</span><br><span class="line">                flag &lt;- true</span><br><span class="line"></span><br><span class="line">        if (flag == false)</span><br><span class="line">            break</span><br></pre></td></tr></table></figure>
+<p>还可以继续优化算法，通过尝试已经大部分有序的数列（如2，3，4，5，1），冒泡算法依然要进行完整的循环。但如果此时能够反向的“冒泡”，即可一次循环就将数据“1”排到正确的位置上去。</p>
+<p>这种改进的算法叫做鸡尾酒排序（Cocktail Sort），也叫定向冒泡排序，排序时将以两个方向在数列中进行排序，因此对于大部分有序的数列，时间复杂度会接近О($n^2$)，当然平均复杂度依然是О($n^2$)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function cocktail_sort (array, length):</span><br><span class="line">    var left &lt;- 0, right &lt;- length - 1</span><br><span class="line">    bool flag</span><br><span class="line">    while left &lt; right:</span><br><span class="line">        flag &lt;- false</span><br><span class="line">        for var i &lt;- left to right-1:</span><br><span class="line">            if array[i] &gt; array[i + 1]:</span><br><span class="line">                swap(array[i], array[i + 1])</span><br><span class="line">                flag &lt;- true</span><br><span class="line">        right--</span><br><span class="line">        for var j &lt;- right to left+1:</span><br><span class="line">            if array[j] &lt; array[i - 1]:</span><br><span class="line">                swap(array[i], array[i - 1])</span><br><span class="line">                flag &lt;- true</span><br><span class="line">        left++</span><br><span class="line">        if (flag == false)</span><br><span class="line">        break</span><br></pre></td></tr></table></figure>
+<h3 id="二）选择排序（Selection-Sort）"><a href="#二）选择排序（Selection-Sort）" class="headerlink" title="二）选择排序（Selection Sort）"></a>二）选择排序（Selection Sort）</h3><p>选择排序的基本思想也很简单：首先在未排序序列中找到最小（或者最大）元素，存放到排序序列的起始（末尾）位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。</p>
+<p>选择排序的优势在于交换次数较冒泡排序更少，通常交换操作需要的CPU时间比比较操作的时间更多，因此选择排序是要优于冒泡排序的，但同样也是О($n^2$)的时间复杂度就是了；另外一个优势是原地操作，当空间复杂度要求较高时，可以考虑选择排序，但实际上可以使用的场合非常罕见了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function selection_sort(array, length):</span><br><span class="line">    int min</span><br><span class="line">    for int i &lt;- 0 to length-1:</span><br><span class="line">        min &lt;- i</span><br><span class="line">        for int j &lt;- i+1 to length:</span><br><span class="line">            if array[j] &lt; array[i]:</span><br><span class="line">                min &lt;- j</span><br><span class="line">        swap(array[min], array[i])</span><br></pre></td></tr></table></figure>
+<h3 id="三）插入排序（Insertion-Sort）"><a href="#三）插入排序（Insertion-Sort）" class="headerlink" title="三）插入排序（Insertion Sort）"></a>三）插入排序（Insertion Sort）</h3><p>插入排序的基本思想是将序列划分为有序部分和未排序部分，对于未排序部分的数据，在有序部分从后向前扫描，找到正确的位置插入。</p>
+<p>同时插入排序是在线算法，并不要求输入数据在开始运行前完备。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function insertion_sort(array, length):</span><br><span class="line">    int i, j</span><br><span class="line">    int temp</span><br><span class="line">    for i &lt;- 1 to length-1:</span><br><span class="line">        temp &lt;- array[i]</span><br><span class="line">        j &lt;- i</span><br><span class="line">        while j &gt; 0 and array[j-1]&gt;temp:</span><br><span class="line">            array[j] &lt;- array[j-1]</span><br><span class="line">            j--</span><br><span class="line">        array[j] &lt;- temp</span><br></pre></td></tr></table></figure>
+<h3 id="四）希尔排序（Shell-Sort）"><a href="#四）希尔排序（Shell-Sort）" class="headerlink" title="四）希尔排序（Shell Sort）"></a>四）希尔排序（Shell Sort）</h3><p>希尔排序是对插入排序的一种改进版本，也叫递减增量排序算法。其基本思想是：将全部元素分为几个区域，提升插入排序的性能（一次性让元素向着最终的位置前进一大步）。通过不断减少步长，到最后插入排序（步长为1时），数列几乎是已经排列好的了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function shell_sort(array, length):</span><br><span class="line">    int i, j, step</span><br><span class="line">    int temp // element type in array</span><br><span class="line">    while step &gt; 0:</span><br><span class="line">        for i &lt;- step to length-1:</span><br><span class="line">            temp &lt;- array[i]</span><br><span class="line">            j &lt;- i</span><br><span class="line">            while j &gt;= step and array[j - step] &gt; temp:</span><br><span class="line">                array[j] &lt;- array[j - step]</span><br><span class="line">                j &lt;- j - step</span><br><span class="line">            array[j] &lt;- temp</span><br><span class="line">        step &lt;- step / 2</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="五）归并排序（Merge-Sort）"><a href="#五）归并排序（Merge-Sort）" class="headerlink" title="五）归并排序（Merge Sort）"></a>五）归并排序（Merge Sort）</h3><p>归并排序的基本思想是采用分治法（Divide and Conquer），基于归并操作，首先与插入算法类似地将每个元素看作已经排好序的子序列，之后两两进行归并操作，直到完成序列的排序。</p>
+<p>进行归并操作需要О($n$)的额外空间，在较大数据排序的效率上可以接受，但特别大的数据在空间上不可接受。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">function merge_sort(arr, length):</span><br><span class="line">    int[] temp = arr</span><br><span class="line">    merge_sort_recursive(arr, temp, 0, length-1)</span><br><span class="line"></span><br><span class="line">function merge_sort_recursive(arr, temp, left, right):</span><br><span class="line">    // 分割问题</span><br><span class="line">    if left &gt;= right:</span><br><span class="line">        return</span><br><span class="line">    int mid &lt;- (right - left) &gt;&gt; 1 + left</span><br><span class="line">    int l1 &lt;- left, l2 &lt;- mid+1</span><br><span class="line">    int r1 &lt;- mid, r2 &lt;- right</span><br><span class="line">    merge_sort_recursive(arr, temp, l1, r1)</span><br><span class="line">    merge_sort_recursive(arr, temp, l2, r2)</span><br><span class="line">    // 处理问题</span><br><span class="line">    int i &lt;- left</span><br><span class="line">    while l1 &lt;= r1 and l2 &lt;= r2:</span><br><span class="line">        if arr[l1] &lt; arr[l2]:</span><br><span class="line">            temp[i++] &lt;- arr[l1++]</span><br><span class="line">        else:</span><br><span class="line">            temp[i++] &lt;- arr[l2++]</span><br><span class="line">    while l1 &lt;= r1:</span><br><span class="line">        temp[i++] &lt;- arr[l1++]</span><br><span class="line">    while l2 &lt;= r2:</span><br><span class="line">        temp[i++] &lt;- arr[l2++]</span><br><span class="line">    for k &lt;- left to right:</span><br><span class="line">        arr[k] &lt;- temp[k]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="六）快速排序（Quick-Sort"><a href="#六）快速排序（Quick-Sort" class="headerlink" title="六）快速排序（Quick Sort"></a>六）快速排序（Quick Sort</h3><p>快速排序，又称划分交换排序（partition-exchange sort），简称快排。都说是经常会被拿出来考的算法。基本思想也是使用了分治法，选定一个pivot值，将序列分为两个子序列，其中左侧的子序列全部小于pivot，右侧的子序列全部大于pivot，直到每个子序列只有一个数据排序完成。</p>
+<p>由于使用递归，每次递归需要О($1$)的额外空间，因此原地（in-place）的快速排序算法平均需要О($\log{n}$)的额外空间。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function quick_sort(arr, length):</span><br><span class="line">    quick_sort_recursive(arr, 0, length-1)</span><br><span class="line">    </span><br><span class="line">function quick_sort_recursive(arr, left, right):</span><br><span class="line">    if left &lt; right:</span><br><span class="line">        int l &lt;- left, r &lt;- right, cur &lt;- right</span><br><span class="line">        int pivot &lt;- arr[right]</span><br><span class="line">        while l &lt; r:</span><br><span class="line">            while l &lt; r and arr[l] &lt; pivot: l++</span><br><span class="line">            while l &lt; r and arr[r] &gt;= pivot: r--</span><br><span class="line">            arr[cur] &lt;- arr[l]</span><br><span class="line">            arr[l] &lt;- arr[r]</span><br><span class="line">            cur &lt;- r</span><br><span class="line">        arr[cur] &lt;- pivot</span><br><span class="line">        quick_sort_recursive(arr, left, cur-1)</span><br><span class="line">        quick_sort_recursive(arr, cur+1, right)</span><br></pre></td></tr></table></figure>
+<p>为了避免递归过深，在内省排序（introsort）算法中，当递归深度超过一定深度（深度为排序元素数量的对数值）后转为堆排序。2000年SGI的C++标准模板库中的不稳定排序算法就采用了Introsort。</p>
+<h3 id="七）堆排序（Heap-Sort）"><a href="#七）堆排序（Heap-Sort）" class="headerlink" title="七）堆排序（Heap Sort）"></a>七）堆排序（Heap Sort）</h3><p>堆排序的基本思想是利用堆数据结构，利用最大堆调整，将数列保存到最大堆中，之后将根节点与堆尾互换完成排序。</p>
+<p>最大堆调整（Max_Heapify）是将堆的末端子节点作调整，使得子节点永远小于父节点，以符合最大堆的结构要求。</p>
+<p>将最大堆存入数组中，对于节点i与其相关节点之间的关系为（索引从1开始）：节点i的父亲节点为$\lfloor{\frac{i}{2}}\rfloor$，节点i的左子节点为$2i$，节点i的右子节点为$2i+1$。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function max_heapify(arr, start, end):</span><br><span class="line">    p &lt;- start</span><br><span class="line">    c &lt;- p * 2 + 1</span><br><span class="line">    while c &lt;= end:</span><br><span class="line">        if c + 1 &lt;= end and arr[c] &lt; arr[c+1]:</span><br><span class="line">            c++</span><br><span class="line">        if arr[p] &gt; arr[c]:</span><br><span class="line">            return</span><br><span class="line">        else:</span><br><span class="line">            swap(arr[p], arr[c])</span><br><span class="line">            p &lt;- c</span><br><span class="line">            c &lt;- p * 2 + 1</span><br><span class="line"></span><br><span class="line">function heap_sort(arr, len):</span><br><span class="line">    for i &lt;- len/2 to 0:</span><br><span class="line">        max_heapify(arr, i, len-1)</span><br><span class="line">    for i &lt;- len-1 to 0:</span><br><span class="line">        swap(arr[0], arr[i])</span><br><span class="line">        max_heapify(arr, 0, i-1)</span><br></pre></td></tr></table></figure>
+<h3 id="八）计数排序（Counting-Sort）"><a href="#八）计数排序（Counting-Sort）" class="headerlink" title="八）计数排序（Counting Sort）"></a>八）计数排序（Counting Sort）</h3><p>计数排序与基数排序不同于上面的排序，并不是基于比较的排序算法，因此可以突破О($n\log{n}$)的极限，称为线性时间排序算法。</p>
+<p>计数排序的方法是使用一个额外的数组C，其中第i个元素是待排序数组A中值等于i的元素的个数。然后根据数组C来将A中的元素排到正确的位置。</p>
+<p>过程：</p>
+<ol>
+<li>找出待排序的数组中最大和最小的元素</li>
+<li>统计数组中每个值为i的元素出现的次数，存入数组C的第i项</li>
+<li>对所有的计数累加（从C中的第一个元素开始，每一项和前一项相加）</li>
+<li>反向填充目标数组：将每个元素i放在新数组的第C[i]项，每放一个元素就将C[i]减去1</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function counting_sort(arr, len):</span><br><span class="line">    m &lt;- max(elements in arr)</span><br><span class="line">    counts &lt;- new array(m + 1)</span><br><span class="line">    sorted &lt;- new array(len)</span><br><span class="line">    for i &lt;- 0 to m:</span><br><span class="line">        counts[i] &lt;- 0</span><br><span class="line">    for i &lt;- 0 to len:</span><br><span class="line">        connts[arr[i]]++</span><br><span class="line">    for i &lt;- 1 to m:</span><br><span class="line">        counts[i] += counts[i-1]</span><br><span class="line">    for i &lt;- len-1 to 0:</span><br><span class="line">        sorted[--counts[arr[i]]] = arr[i]</span><br></pre></td></tr></table></figure>
+<h3 id="九）基数排序（Radix-Sort）"><a href="#九）基数排序（Radix-Sort）" class="headerlink" title="九）基数排序（Radix Sort）"></a>九）基数排序（Radix Sort）</h3><p>基数排序的原理是将整数按位数切割成不同的数字，然后按每个位数分别比较，从低位到高位进行排序。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function radix_sort(arr, len):</span><br><span class="line">    m &lt;- max_bit(arr)</span><br><span class="line">    radix &lt;- 1</span><br><span class="line">    for i &lt;- 0 to m-1:</span><br><span class="line">        counting_sort_by_bit(arr, len, radix)</span><br><span class="line">        radix &lt;- 10*radix</span><br><span class="line">    return arr</span><br></pre></td></tr></table></figure>
+<h2 id="三、"><a href="#三、" class="headerlink" title="三、"></a>三、</h2><p>问题：</p>
+<ol>
+<li>基于比较的排序算法的极限时间复杂度是？为什么？</li>
+<li>从数组到链表时间复杂度显著增大的排序方法有哪些？</li>
+</ol>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81"><span class="toc-number">1.</span> <span class="toc-text">〇、</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81"><span class="toc-number">2.</span> <span class="toc-text">一、</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81"><span class="toc-number">3.</span> <span class="toc-text">二、</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%EF%BC%89%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%EF%BC%88Bubble-Sort%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">一）冒泡排序（Bubble Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%EF%BC%89%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%EF%BC%88Selection-Sort%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">二）选择排序（Selection Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%EF%BC%89%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%EF%BC%88Insertion-Sort%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">三）插入排序（Insertion Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%EF%BC%89%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%EF%BC%88Shell-Sort%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">四）希尔排序（Shell Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%EF%BC%89%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%EF%BC%88Merge-Sort%EF%BC%89"><span class="toc-number">3.5.</span> <span class="toc-text">五）归并排序（Merge Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%EF%BC%89%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88Quick-Sort"><span class="toc-number">3.6.</span> <span class="toc-text">六）快速排序（Quick Sort</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%EF%BC%89%E5%A0%86%E6%8E%92%E5%BA%8F%EF%BC%88Heap-Sort%EF%BC%89"><span class="toc-number">3.7.</span> <span class="toc-text">七）堆排序（Heap Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AB%EF%BC%89%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%EF%BC%88Counting-Sort%EF%BC%89"><span class="toc-number">3.8.</span> <span class="toc-text">八）计数排序（Counting Sort）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%9D%EF%BC%89%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%EF%BC%88Radix-Sort%EF%BC%89"><span class="toc-number">3.9.</span> <span class="toc-text">九）基数排序（Radix Sort）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81"><span class="toc-number">4.</span> <span class="toc-text">三、</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/01/12/SortAlgorithms/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&text=排序算法的那些事儿"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&is_video=false&description=排序算法的那些事儿"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=排序算法的那些事儿&body=Check out this article: http://shiheuan.github.io/2019/01/12/SortAlgorithms/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&title=排序算法的那些事儿"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&name=排序算法的那些事儿&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/01/12/SortAlgorithms/&t=排序算法的那些事儿"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

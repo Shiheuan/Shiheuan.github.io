@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="过程化生成（procedural generation）是计算机科学中一种使计算机自动制造一类数据的算法。在电子游戏领域中用于自动制造大量游戏内容。过程化生成有着减小文件体积、扩大内容量、增强游戏随机性等优点。过程化生成的好处是仅要很小的函数和源数据，便可以制造出很多和源数据有关或类似但存在不同的新数据。电子游戏借助它可出现许多（接近无限）个关卡。这可以缩短开发时间，也可以减小软件的文件大小。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WFC-初识过程化生成">
+<meta property="og:url" content="http://shiheuan.github.io/2020/11/30/WFC_1/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="过程化生成（procedural generation）是计算机科学中一种使计算机自动制造一类数据的算法。在电子游戏领域中用于自动制造大量游戏内容。过程化生成有着减小文件体积、扩大内容量、增强游戏随机性等优点。过程化生成的好处是仅要很小的函数和源数据，便可以制造出很多和源数据有关或类似但存在不同的新数据。电子游戏借助它可出现许多（接近无限）个关卡。这可以缩短开发时间，也可以减小软件的文件大小。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-Rogue_Screen_Shot_CAR.png">
+<meta property="og:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-Rogue-1980.gif">
+<meta property="og:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-DiabloII_Screen_Shot.png">
+<meta property="og:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-Minecraft_Screen_Shot.png">
+<meta property="og:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-NoMansSky_Screen_Shot.png">
+<meta property="og:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-DwarfFortress_Screen_Shot.png">
+<meta property="og:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-rR-zmcY5.png">
+<meta property="article:published_time" content="2020-11-30T08:18:53.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.969Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="procedural generation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2020/11/30/WFC_1/wfc-Rogue_Screen_Shot_CAR.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>WFC-初识过程化生成</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/03/04/WFC_2/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2020/10/29/lua.dll/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2020/11/30/WFC_1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2020/11/30/WFC_1/&text=WFC-初识过程化生成"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2020/11/30/WFC_1/&is_video=false&description=WFC-初识过程化生成"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WFC-初识过程化生成&body=Check out this article: http://shiheuan.github.io/2020/11/30/WFC_1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2020/11/30/WFC_1/&name=WFC-初识过程化生成&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2020/11/30/WFC_1/&t=WFC-初识过程化生成"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B%E5%8C%96%E7%94%9F%E6%88%90%EF%BC%88procedural-generation%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">过程化生成（procedural generation）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E4%BE%8B%E5%AD%90%E6%9D%A5%E5%BC%95%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">通过例子来引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%92%8C%E9%A1%B9%E7%9B%AE%E5%AF%B9%E6%8E%A5%EF%BC%88%E5%90%B9%E7%89%9B%E9%80%BC%E4%B8%93%E7%94%A8%E6%A0%8F%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">和项目对接（吹牛逼专用栏）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E7%9A%84%E6%96%87%E7%8C%AE%E7%BB%BC%E8%BF%B0"><span class="toc-number">4.</span> <span class="toc-text">相关算法的文献综述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%B8%80%E4%BA%9B%E8%B5%84%E6%BA%90"><span class="toc-number">5.</span> <span class="toc-text">分享一些资源</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        WFC-初识过程化生成
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-11-30T08:18:53.000Z" class="dt-published" itemprop="datePublished">2020-11-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/algorithm/" rel="tag">algorithm</a>, <a class="p-category" href="/tags/procedural-generation/" rel="tag">procedural generation</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="过程化生成（procedural-generation）"><a href="#过程化生成（procedural-generation）" class="headerlink" title="过程化生成（procedural generation）"></a>过程化生成（procedural generation）</h2><p>是计算机科学中一种使计算机自动制造一类数据的算法。在电子游戏领域中用于自动制造大量游戏内容。过程化生成有着减小文件体积、扩大内容量、增强游戏随机性等优点。过程化生成的好处是仅要很小的函数和源数据，便可以制造出很多和源数据有关或类似但存在不同的新数据。电子游戏借助它可出现许多（接近无限）个关卡。这可以缩短开发时间，也可以减小软件的文件大小。 </p>
+<p>很多游戏中都使用了过程化生成算法：</p>
+<ul>
+<li>Rogue(1980) <img src="wfc-Rogue_Screen_Shot_CAR.png" alt="Rouge-1980"> <img src="wfc-Rogue-1980.gif" alt="Rouge-1980"></li>
+<li>暗黑破坏神II（2000）<img src="wfc-DiabloII_Screen_Shot.png" alt="DiabloII-2000"><blockquote>
+<p>Tiles, like “Splunky”</p>
+</blockquote>
+</li>
+<li>我的世界（2011） <img src="wfc-Minecraft_Screen_Shot.png" alt="Minecraft-2011"><blockquote>
+<p>generates their terrain</p>
+</blockquote>
+</li>
+<li>无人深空（2016） <img src="wfc-NoMansSky_Screen_Shot.png" alt="NoMansSky"><blockquote>
+<p>generates all different things</p>
+</blockquote>
+</li>
+<li>Dwarf Fortress(2006) <img src="wfc-DwarfFortress_Screen_Shot.png" alt="Dwarf Fortress"><blockquote>
+<p>generates the whole world</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="通过例子来引入"><a href="#通过例子来引入" class="headerlink" title="通过例子来引入"></a>通过例子来引入</h2><p>应用在《Bad North》和《Townscaper》中，用来实现程序自动生成的算法，Wave Function Collapse Algorithm.</p>
+<p>collapse 坍缩的解释：</p>
+<ul>
+<li>波函数的坍缩</li>
+<li>量子力学</li>
+</ul>
+<p>波函数解释：在量子力学中，量子系统的量子态可以用波函数来描述。波函数是复值函数$\Psi(r,t)$，表示粒子在位置$r$、时间$t$的概率幅，它的绝对值平方是在位置$r$、时间$t$找到粒子的概率密度。位置空间波函数、动量空间波函数互为傅里叶变换。</p>
+<h2 id="和项目对接（吹牛逼专用栏）"><a href="#和项目对接（吹牛逼专用栏）" class="headerlink" title="和项目对接（吹牛逼专用栏）"></a>和项目对接（吹牛逼专用栏）</h2><p>项目采用回合制战斗，系统组大部分开发工作是在 ugui 上。在主线界面中，及抽卡系统中，会有城市全景画面，目前来说这个场景是完全通过场景同学手工制作得到的。为了</p>
+<p>并非从零开始生成一个每次都不尽相同的场景，类似《刺客信条》等大型开放世界中的各种互动元素，场景中的元素，通过自动生成算法可以在增加场景细节丰富度的同时降低成本。</p>
+<p>技术难点（技术壁垒，你觉得主要的困难是，你觉得你做的工作里很牛逼的是）</p>
+<ol>
+<li>如何避免重复感？ - 自动生成的例子（No man’s sky）</li>
+<li>如何针对不同情景设计合理的算法？ - 并无通用方案。</li>
+<li>如何与人工结合？ - 算法不能破坏人工部分，GDC2018刺客信条分享测试团队如何用自动化思路发现自动生成和人工内容冲突（看游戏的bug数似乎说服力不强啊）</li>
+</ol>
+<h2 id="相关算法的文献综述"><a href="#相关算法的文献综述" class="headerlink" title="相关算法的文献综述"></a>相关算法的文献综述</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+<th>解决的问题</th>
+<th>缺陷</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WFC</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ConvChain</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DeadCell</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Spelunky</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="分享一些资源"><a href="#分享一些资源" class="headerlink" title="分享一些资源"></a>分享一些资源</h2><p>一些资源图：Oskar Stålberg（@OskSta）</p>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/i/status/1279107097108635649">https://twitter.com/i/status/1279107097108635649</a></p>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/OskSta/status/1246729301434798080">https://twitter.com/OskSta/status/1246729301434798080</a></p>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/OskSta/status/1228331649060024325">https://twitter.com/OskSta/status/1228331649060024325</a></p>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/OskSta/status/1227650434602610688">https://twitter.com/OskSta/status/1227650434602610688</a></p>
+<p>city generator:</p>
+<p><a target="_blank" rel="noopener" href="http://oskarstalberg.com/game/CityGenerator/">http://oskarstalberg.com/game/CityGenerator/</a></p>
+<p>wfc 可交互版本（Oskar Stalberg made an interactive version of the tiled model that runs in the browser.）：</p>
+<p><a target="_blank" rel="noopener" href="http://oskarstalberg.com/game/wave/wave.html">http://oskarstalberg.com/game/wave/wave.html</a></p>
+<p>Nick Nenov made a visual guide to the tile symmetry system.</p>
+<p><img src="wfc-rR-zmcY5.png" alt=""></p>
+<p>Marian Kleineberg created a city generator based on the tiled model for Procjam 2018. He wrote an article describing his approaches to setting adjacencies, backtracking and the online variation of WFC.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/marian42/wavefunctioncollapse">https://github.com/marian42/wavefunctioncollapse</a></p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B%E5%8C%96%E7%94%9F%E6%88%90%EF%BC%88procedural-generation%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">过程化生成（procedural generation）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E4%BE%8B%E5%AD%90%E6%9D%A5%E5%BC%95%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">通过例子来引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%92%8C%E9%A1%B9%E7%9B%AE%E5%AF%B9%E6%8E%A5%EF%BC%88%E5%90%B9%E7%89%9B%E9%80%BC%E4%B8%93%E7%94%A8%E6%A0%8F%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">和项目对接（吹牛逼专用栏）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E7%9A%84%E6%96%87%E7%8C%AE%E7%BB%BC%E8%BF%B0"><span class="toc-number">4.</span> <span class="toc-text">相关算法的文献综述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%B8%80%E4%BA%9B%E8%B5%84%E6%BA%90"><span class="toc-number">5.</span> <span class="toc-text">分享一些资源</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2020/11/30/WFC_1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2020/11/30/WFC_1/&text=WFC-初识过程化生成"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2020/11/30/WFC_1/&is_video=false&description=WFC-初识过程化生成"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WFC-初识过程化生成&body=Check out this article: http://shiheuan.github.io/2020/11/30/WFC_1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2020/11/30/WFC_1/&title=WFC-初识过程化生成"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2020/11/30/WFC_1/&name=WFC-初识过程化生成&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2020/11/30/WFC_1/&t=WFC-初识过程化生成"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

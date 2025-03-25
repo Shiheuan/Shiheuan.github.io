@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00新坑《游戏编程模式》（作者 Robert Nystrom）。 在 Unity 下，用 C# 做了简单的实现，传送门： 链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;10ExEhTy1ui8vZiCnFVS7Nw提取码：3d03  其他模式传送门： 命令模式 观察者模式 原型模式、类型对象模式 Humble 对象模式 0x01“使用固定的对象池重用对象，取代单独分配和释放对象，以此来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏编程模式 - 对象池模式">
+<meta property="og:url" content="http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00新坑《游戏编程模式》（作者 Robert Nystrom）。 在 Unity 下，用 C# 做了简单的实现，传送门： 链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;10ExEhTy1ui8vZiCnFVS7Nw提取码：3d03  其他模式传送门： 命令模式 观察者模式 原型模式、类型对象模式 Humble 对象模式 0x01“使用固定的对象池重用对象，取代单独分配和释放对象，以此来">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shiheuan.github.io/2019/12/12/ObjectPoolPattern/fig1_nopool.png">
+<meta property="article:published_time" content="2019-12-12T11:00:27.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.850Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="design pattern">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/12/12/ObjectPoolPattern/fig1_nopool.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>游戏编程模式 - 对象池模式</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/12/24/NUnitTest/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/12/09/HumbleObjectPattern/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&text=游戏编程模式 - 对象池模式"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&is_video=false&description=游戏编程模式 - 对象池模式"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏编程模式 - 对象池模式&body=Check out this article: http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&name=游戏编程模式 - 对象池模式&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&t=游戏编程模式 - 对象池模式"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        游戏编程模式 - 对象池模式
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-12-12T11:00:27.000Z" class="dt-published" itemprop="datePublished">2019-12-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/design-pattern/" rel="tag">design pattern</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>新坑《游戏编程模式》（作者 Robert Nystrom）。</p>
+<p>在 Unity 下，用 C# 做了简单的实现，传送门：</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/10ExEhTy1ui8vZiCnFVS7Nw">https://pan.baidu.com/s/10ExEhTy1ui8vZiCnFVS7Nw</a><br>提取码：3d03 </p>
+<p>其他模式传送门：</p>
+<p><a href="https://shiheuan.github.io/2019/11/26/CommandPattern/">命令模式</a></p>
+<p><a href="https://shiheuan.github.io/2019/12/04/ObserverPattern/">观察者模式</a></p>
+<p><a href="https://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/">原型模式、类型对象模式</a></p>
+<p><a href="https://shiheuan.github.io/2019/12/09/HumbleObjectPattern/">Humble 对象模式</a></p>
+<h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><p>“使用固定的对象池重用对象，取代单独分配和释放对象，以此来达到提升性能和优化内存使用的目的。”</p>
+<p>对象池模式是一种创建性模式，在对象池中包含了已经经过初始化并可以使用的对象，在用户需要时可以从对象池中获得对象并进行操作，当用户不需要时归还给对象池而非销毁对象。这是一种特殊的工厂对象。</p>
+<p>对象池模式定义了一个保持着可重用对象集合的对象池类。其中的每个对象支持对其“使用中（in use）”状态的访问，以确定这个对象目前是否“存活（alive）”。在对象池初始化时，它预先创建了整个对象的集合（通常为一块连续区域），并将它们都置为“未使用（not in use）”状态。</p>
+<p>当我们要创建一个新对象时就向对象池请求。它将搜索到一个可用的对象，将其初始化为“使用中”状态并返回。当对象不再被使用时，它将被置为“未使用”状态。使用该方法，对象便可以在无需进行内存或其他资源分配的情况下进行任意的创建和销毁。</p>
+<p>对象池模式的使用情景：</p>
+<p>对于可见游戏实体对象，视觉特效，数据结构等，在下面情况下会使用对象池。</p>
+<ul>
+<li><p>需要频繁地创建和销毁对象</p>
+</li>
+<li><p>对象的大小一致</p>
+</li>
+<li><p>在堆上进行内存分配较慢或者会产生内存碎片（简单说，就是不连续的内存空间，当内存碎片过多，虽然内存余量较大，但会出现无法使用的现象）</p>
+</li>
+<li><p>每个对象封装着获取代价昂贵且可重用的资源。</p>
+</li>
+</ul>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>在实践中，我们通过一个简单的射击场景来模拟，子弹作为可重用的对象，如果在更新函数中检测射击动作并生成子弹，在击中目标或超出范围时销毁对象，则会在更新函数中频繁地进行 GC。</p>
+<p><img src="https://Shiheuan.github.io/2019/12/12/ObjectPoolPattern/fig1_nopool.png" alt=""></p>
+<p>在前面使用了 MoonSharp 在更新函数中对 Lua 脚本中的协程 GC，导致了在移动平台画面的卡顿。</p>
+<p>实例中，简单实现了三种对象池的结构：</p>
+<ol>
+<li>具体类型的对象池</li>
+</ol>
+<p>只保存特定的类型，对象池作为单例由用户使用。</p>
+<ol>
+<li>保存 GameObject 的对象池</li>
+</ol>
+<p>是在 Unity 中的较为通用的对象池，在创建对象时，将对象池的引用保存在对象中。</p>
+<ol>
+<li>泛型的对象池</li>
+</ol>
+<p>类似第一种，但是将对象池的功能实现为抽象类，由每种类型的对象池继承，可以更清晰的找到对象与对象池的关系。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&text=游戏编程模式 - 对象池模式"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&is_video=false&description=游戏编程模式 - 对象池模式"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏编程模式 - 对象池模式&body=Check out this article: http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&title=游戏编程模式 - 对象池模式"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&name=游戏编程模式 - 对象池模式&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/12/ObjectPoolPattern/&t=游戏编程模式 - 对象池模式"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

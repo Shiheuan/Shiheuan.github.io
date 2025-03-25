@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="为什么要做“未命名”引擎呢？  做游戏，最常听到原因之一就是有表达的欲望，而自己又刚好可以通过游戏。做引擎也是一样，也是一种表达。   为什么要用Vulkan呢？  首先是对渲染有了兴趣，然后才有了要用Vulkan的打算。更有挑战，更面向未来。相比于为跨平台使用OpenGL和OpenGL ES，Vulkan更好的解决了这个问题。    渲染管线是什么对比流水线，渲染的流水线就是要把一个三维场景描">
+<meta property="og:type" content="article">
+<meta property="og:title" content="做引擎也是自我表达——UntitledGameEngine (1)">
+<meta property="og:url" content="http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="为什么要做“未命名”引擎呢？  做游戏，最常听到原因之一就是有表达的欲望，而自己又刚好可以通过游戏。做引擎也是一样，也是一种表达。   为什么要用Vulkan呢？  首先是对渲染有了兴趣，然后才有了要用Vulkan的打算。更有挑战，更面向未来。相比于为跨平台使用OpenGL和OpenGL ES，Vulkan更好的解决了这个问题。    渲染管线是什么对比流水线，渲染的流水线就是要把一个三维场景描">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/renderpipeline.drawio.png">
+<meta property="article:published_time" content="2023-08-10T13:09:02.000Z">
+<meta property="article:modified_time" content="2025-03-25T10:06:50.788Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="engine">
+<meta property="article:tag" content="vulkan">
+<meta property="article:tag" content="game development">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/renderpipeline.drawio.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>做引擎也是自我表达——UntitledGameEngine (1)</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/09/05/unity.assembly/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&text=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&is_video=false&description=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=做引擎也是自我表达——UntitledGameEngine (1)&body=Check out this article: http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&name=做引擎也是自我表达——UntitledGameEngine (1)&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&t=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">渲染管线是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E4%B8%80%E4%B8%8B%EF%BC%8C%E7%AA%97%E5%8F%A3"><span class="toc-number">2.</span> <span class="toc-text">准备一下，窗口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Vulkan"><span class="toc-number">2.1.</span> <span class="toc-text">使用Vulkan</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulkan%E7%9A%84%E5%86%85%E5%AD%98"><span class="toc-number">3.</span> <span class="toc-text">Vulkan的内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">4.</span> <span class="toc-text">最后</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        做引擎也是自我表达——UntitledGameEngine (1)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-08-10T13:09:02.000Z" class="dt-published" itemprop="datePublished">2023-08-10</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/engine/" rel="tag">engine</a>, <a class="p-category" href="/tags/game-development/" rel="tag">game development</a>, <a class="p-category" href="/tags/vulkan/" rel="tag">vulkan</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <ul>
+<li><p>为什么要做“未命名”引擎呢？</p>
+<blockquote>
+<p>做游戏，最常听到原因之一就是有表达的欲望，而自己又刚好可以通过游戏。做引擎也是一样，也是一种表达。</p>
+</blockquote>
+</li>
+<li><p>为什么要用Vulkan呢？</p>
+<blockquote>
+<p>首先是对渲染有了兴趣，然后才有了要用Vulkan的打算。更有挑战，更面向未来。相比于为跨平台使用OpenGL和OpenGL ES，Vulkan更好的解决了这个问题。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="渲染管线是什么"><a href="#渲染管线是什么" class="headerlink" title="渲染管线是什么"></a>渲染管线是什么</h2><p>对比流水线，渲染的流水线就是要把一个三维场景描画成为一个二维的图像的过程，这中间有很多道工序。一个概念上的渲染流水线由下面的几个部分组成：</p>
+<ul>
+<li>应用阶段：准备场景数据（场景组成、剔除看不到的部分、设置模型的渲染状态），输出渲染图元（点、面、三角形）；</li>
+<li>几何阶段：进行逐顶点、逐多边形的操作，输出屏幕空间的顶点信息；</li>
+<li>光栅化阶段：逐顶点、逐像素处理，输出最终的图像；</li>
+</ul>
+<p><img src="renderpipeline.drawio.png" alt="renderpipeline"></p>
+<h2 id="准备一下，窗口"><a href="#准备一下，窗口" class="headerlink" title="准备一下，窗口"></a>准备一下，窗口</h2><p>为了能使用Vulkan，我们首先需要创建出窗口，用来显示渲染的结果。这里介绍一下OpenGL的glfw库，用来操作窗口。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">glfwInit</span>(); <span class="comment">// 初始化glfw库</span></span><br></pre></td></tr></table></figure>
+<p>但是，我们要将它设置成使用Vulkan API工作。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">glfwWindowHint</span>(GLFW_CLIENT_API, GLFW_NO_API); <span class="comment">// 不使用OpenGL或OpenGL ES</span></span><br><span class="line"><span class="built_in">glfwWindowHint</span>(GLFW_RESIZABLE, GLFW_FALSE);   <span class="comment">// 窗口不能调整大小</span></span><br></pre></td></tr></table></figure>
+<p>接下来就是创建一个标题为“HELLO VULKAN”的窗口。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GLFWwindow* window = <span class="built_in">glfwCreateWindow</span>(<span class="number">1280</span>, <span class="number">720</span>, <span class="string">&quot;HELLO VULKAN&quot;</span>, <span class="literal">nullptr</span>, <span class="literal">nullptr</span>); <span class="comment">// 不会处于全屏模式，也不和其他窗口共享资源</span></span><br></pre></td></tr></table></figure>
+<p>当程序关闭，调用glfw的清理和关闭接口：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">glfwDestroyWindow</span>(window); <span class="comment">// 销毁窗口对象</span></span><br><span class="line"><span class="built_in">glfwTerminate</span>(); <span class="comment">// 关闭库</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用Vulkan"><a href="#使用Vulkan" class="headerlink" title="使用Vulkan"></a>使用Vulkan</h3><blockquote>
+<p>Vulkan的实例、设备和队列</p>
+</blockquote>
+<ul>
+<li>Vulkan的实例</li>
+</ul>
+<p>首先通过<code>VulkanContext</code>类和<code>VulkanInstance</code>类，设置创建Vulkan实例所需的参数，包括应用程序信息、所需的扩展和验证层等。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建Vulkan实例</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">vkCreateInstance</span>(&amp;vkInstanceInfo, <span class="literal">nullptr</span>, &amp;vkInstance) != VK_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create vkInstance!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过glfw创建vulkan的展示表面<code>VkSurfaceKHR</code>，以便在窗口中使用Vulkan进行渲染。</p>
+<ul>
+<li>Vulkan设备</li>
+</ul>
+<p>通过实例查找系统中与Vulkan兼容的设备。</p>
+<ul>
+<li>物理设备（及其固定的功能）</li>
+<li>逻辑设备（物理设备的软件抽象，是应用程序主要处理的对象）</li>
+</ul>
+<p><code>Device</code>类负责对Vulkan设备进行管理。查询并创建物理设备</p>
+<ul>
+<li>设备队列</li>
+</ul>
+<p>Vulkan设备执行提交给队列的工作。每个设备都有一个或者多个队列，每个队列都从属于设备的某个队列族（queue family）。队列族拥有相同功能同时又能并行运行。队列族的数量、每个族的功能以及每个族中的队列数量都是物理设备的属性。</p>
+<p>通过查询设备支持的队列族，获取到支持图形操作（<code>VK_QUEUE_GRAPHICS_BIT</code>）和支持呈现到指定Vulkan表面的队列族，在之后用于处理图形渲染以及显示输出。</p>
+<ul>
+<li>创建逻辑设备</li>
+</ul>
+<p>在查看完所有连接的物理设备之后，我们就应该选择一个合适的设备，针对该设备创建逻辑设备。逻辑设备代表处于初始化状态的设备。在创建逻辑设备时，可以选择可选特性，开启需要的扩展等。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据参数createInfo在物理设备上创建逻辑设备</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">vkCreateDevice</span>(physicalDevice, &amp;createInfo, <span class="literal">nullptr</span>, &amp;logicalDevice) != VK_SUCCESS)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create logical device!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// get handle to the graphics queue of the gpu</span></span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(logicalDevice, indices.graphicsFamily, <span class="number">0</span>, &amp;graphicsQueue);</span><br><span class="line"></span><br><span class="line"><span class="comment">// get handle to the presentation queue of the gpu</span></span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(logicalDevice, indices.presentFamily, <span class="number">0</span>, &amp;presentQueue);</span><br></pre></td></tr></table></figure>
+<p>最后通过之前保存的队列信息，通过<code>vkGetDeviceQueue</code>方法获取队列的句柄，方便后续在逻辑设备上执行队列的操作。</p>
+<ul>
+<li>交换链（SwapChain）</li>
+</ul>
+<p>SwapChain用来请求窗口系统创建多个可用来代表Vulkan表面的图像对象，通过<code>VK_KHR_swapchain</code>扩展来提供这个功能。交换链对象通常以环状缓冲区的形式管理一个图像集。应用程序可以请求交换链中下一个可用的图像，渲染数据到图像里，然后把这个图像交还给交换链并准备显示。通过管理队列里的多个图像，可以将一幅图像展示到显示器上，同时对另一幅进行绘制。实现了常见的双缓冲模式。</p>
+<p><code>SwapChain</code>类负责创建和管理应用中的交换链。</p>
+<ul>
+<li>渲染通道（RenderPass）</li>
+</ul>
+<p>Vulkan中的渲染通道对象表示。一个渲染通道对象封装了多个通道，或者用于产生一系列输出图像的几个渲染阶段。渲染通道里的每一个通道称为子通道。每一个渲染通道对象可以包含许多子通道，但是即使是在只有一个通道和一个输出图像的简单应用程序里，渲染通道对象也包含关于输出图像的信息。</p>
+<ul>
+<li>图像视图（ImageView）</li>
+</ul>
+<p>资源，作为RenderTarget。</p>
+<ul>
+<li>命令缓冲区（Commond Buffer）</li>
+</ul>
+<p>队列的主要目的就是代表应用程序处理任务，这些任务就是记录到命令缓冲区中的一系列命令。应用将会创建包含需要完成的任务的命令缓冲区，进而提交到某个队列来执行。在记录任何命令之前，需要创建命令缓冲区。命令缓冲区并不直接创建，而是从池中分配。</p>
+<ul>
+<li>栅栏（Fence）</li>
+</ul>
+<p>在命令提交的方法中使用，用来等待本次提交执行的命令完成。在不使用Fence时，可以调用<code>vkQueueWaitIdel</code></p>
+<h2 id="Vulkan的内存"><a href="#Vulkan的内存" class="headerlink" title="Vulkan的内存"></a>Vulkan的内存</h2><ul>
+<li>主机内存（Host Memory）：CPU可以访问的内存，Vulkan的实现使用主机内存保存API内部的数据结构；</li>
+<li>设备内存（Device Memory）：GPU设备可以访问的内存，用来分配图像对象和缓冲区对象。</li>
+</ul>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>下一篇再继续思考怎么样通过程序化的语言来解释这个流程，API设置，场景设置，再到游戏的主循环。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">glfwInit</span>();</span><br><span class="line"></span><br><span class="line">	<span class="built_in">glfwWindowHint</span>(GLFW_CLIENT_API, GLFW_NO_API);</span><br><span class="line">	<span class="built_in">glfwWindowHint</span>(GLFW_RESIZABLE, GLFW_FALSE);</span><br><span class="line"></span><br><span class="line">	GLFWwindow* window = <span class="built_in">glfwCreateWindow</span>(<span class="number">1280</span>, <span class="number">720</span>, <span class="string">&quot;HELLO VULKAN&quot;</span>, <span class="literal">nullptr</span>, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">	VulkanContext::<span class="built_in">getInstance</span>()-&gt;<span class="built_in">initVulkan</span>(window);</span><br><span class="line"></span><br><span class="line">	Camera camera;</span><br><span class="line">	camera.<span class="built_in">init</span>(<span class="number">45.0f</span>, <span class="number">1280.0f</span>, <span class="number">720.0f</span>, <span class="number">0.1f</span>, <span class="number">10000.0f</span>);</span><br><span class="line">	camera.<span class="built_in">setCameraPosition</span>(glm::<span class="built_in">vec3</span>(<span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">4.0f</span>));</span><br><span class="line"></span><br><span class="line">	ObjectRenderer object;</span><br><span class="line">	object.<span class="built_in">createObjectRenderer</span>(MeshType::kTriangle, glm::<span class="built_in">vec3</span>(<span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>), glm::<span class="built_in">vec3</span>(<span class="number">0.5f</span>));</span><br><span class="line"></span><br><span class="line">	<span class="comment">// engine loop: game loop</span></span><br><span class="line">	<span class="keyword">while</span> (!<span class="built_in">glfwWindowShouldClose</span>(window))</span><br><span class="line">	&#123;</span><br><span class="line">		VulkanContext::<span class="built_in">getInstance</span>()-&gt;<span class="built_in">drawBegin</span>();</span><br><span class="line">		<span class="comment">// draw command </span></span><br><span class="line">		object.<span class="built_in">updateUniformBuffer</span>(camera);</span><br><span class="line">		object.<span class="built_in">draw</span>();</span><br><span class="line"></span><br><span class="line">		VulkanContext::<span class="built_in">getInstance</span>()-&gt;<span class="built_in">drawEnd</span>();</span><br><span class="line"></span><br><span class="line">		<span class="built_in">glfwPollEvents</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	object.<span class="built_in">destroy</span>();</span><br><span class="line"></span><br><span class="line">	VulkanContext::<span class="built_in">getInstance</span>()-&gt;<span class="built_in">cleanup</span>();</span><br><span class="line"></span><br><span class="line">	<span class="built_in">glfwDestroyWindow</span>(window);</span><br><span class="line">	<span class="built_in">glfwTerminate</span>();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">渲染管线是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E4%B8%80%E4%B8%8B%EF%BC%8C%E7%AA%97%E5%8F%A3"><span class="toc-number">2.</span> <span class="toc-text">准备一下，窗口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Vulkan"><span class="toc-number">2.1.</span> <span class="toc-text">使用Vulkan</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vulkan%E7%9A%84%E5%86%85%E5%AD%98"><span class="toc-number">3.</span> <span class="toc-text">Vulkan的内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">4.</span> <span class="toc-text">最后</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&text=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&is_video=false&description=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=做引擎也是自我表达——UntitledGameEngine (1)&body=Check out this article: http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&title=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&name=做引擎也是自我表达——UntitledGameEngine (1)&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2023/08/10/UntitledGameEngine_1/&t=做引擎也是自我表达——UntitledGameEngine (1)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

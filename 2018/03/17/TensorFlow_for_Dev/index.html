@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="〇、阅读本文阅读本文你能了解到一、在 linux 平台搭建 TensorFlow 深度学习开发环境二、在 win10 平台搭建 TensorFlow 深度学习开发环境 在开始学习 TensorFlow 的时候，是在 PyCharm 里直接用了 WinPython-64bit-3.5.4.0Qt5 这个版本，用 PyCharm 里的包管理安装了 CPU 版本的 TensorFlow。这两天也没闲着，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="来搭个环境 - TensorFlow">
+<meta property="og:url" content="http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="〇、阅读本文阅读本文你能了解到一、在 linux 平台搭建 TensorFlow 深度学习开发环境二、在 win10 平台搭建 TensorFlow 深度学习开发环境 在开始学习 TensorFlow 的时候，是在 PyCharm 里直接用了 WinPython-64bit-3.5.4.0Qt5 这个版本，用 PyCharm 里的包管理安装了 CPU 版本的 TensorFlow。这两天也没闲着，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/CUDA_HOME.png">
+<meta property="og:image" content="http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/fig3.png">
+<meta property="og:image" content="http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/fig2.png">
+<meta property="article:published_time" content="2018-03-17T07:06:00.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.882Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="machine learning">
+<meta property="article:tag" content="environment">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/CUDA_HOME.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>来搭个环境 - TensorFlow</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2018/03/17/TensorFlow_3/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018/03/08/TensorFlow_2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&text=来搭个环境 - TensorFlow"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&is_video=false&description=来搭个环境 - TensorFlow"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=来搭个环境 - TensorFlow&body=Check out this article: http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&name=来搭个环境 - TensorFlow&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&t=来搭个环境 - TensorFlow"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81%E9%98%85%E8%AF%BB%E6%9C%AC%E6%96%87"><span class="toc-number">1.</span> <span class="toc-text">〇、阅读本文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Ubuntu-%E5%AE%89%E8%A3%85-tensorflow-gpu"><span class="toc-number">2.</span> <span class="toc-text">一、Ubuntu 安装 tensorflow-gpu</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Win10-%E5%AE%89%E8%A3%85-tensorflow-gpu"><span class="toc-number">3.</span> <span class="toc-text">二、Win10 安装 tensorflow-gpu</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        来搭个环境 - TensorFlow
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-03-17T07:06:00.000Z" class="dt-published" itemprop="datePublished">2018-03-17</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/environment/" rel="tag">environment</a>, <a class="p-category" href="/tags/machine-learning/" rel="tag">machine learning</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="〇、阅读本文"><a href="#〇、阅读本文" class="headerlink" title="〇、阅读本文"></a>〇、阅读本文</h2><p>阅读本文你能了解到<br>一、在 linux 平台搭建 TensorFlow 深度学习开发环境<br>二、在 win10 平台搭建 TensorFlow 深度学习开发环境</p>
+<p>在开始学习 TensorFlow 的时候，是在 PyCharm 里直接用了 WinPython-64bit-3.5.4.0Qt5 这个版本，用 PyCharm 里的包管理安装了 CPU 版本的 TensorFlow。<br>这两天也没闲着，工作站又加了一块硬盘装上了 Linux：Ubuntu 16.04. 下面就总结一下在 Win10 和 Ubuntu 安装 GPU 版本的 TensorFlow 的方法。</p>
+<h2 id="一、Ubuntu-安装-tensorflow-gpu"><a href="#一、Ubuntu-安装-tensorflow-gpu" class="headerlink" title="一、Ubuntu 安装 tensorflow-gpu"></a>一、Ubuntu 安装 tensorflow-gpu</h2><ol>
+<li>安装 Anaconda3；</li>
+<li>安装 CUDA；</li>
+<li>解压 cuDNN；</li>
+<li>在 Anaconda3 环境中安装 tensorflow.</li>
+</ol>
+<p>在 Anaconda3 网站下载最新版本，<a target="_blank" rel="noopener" href="https://www.anaconda.com/download/#linux">这里</a> 下载对应版本的软件（目前是Python 3.6 版本）。<br>下载好以后，打开终端，进入到文件所在的下载目录，基本应该是 Downloads 文件夹下，执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Anaconda3-5.1.0-Linux-x86_64.sh </span><br></pre></td></tr></table></figure>
+<p>“yes” 确认安装，漫长等待以后，可以选择 “yes” 将 anaconda3 添加到 .bashrc 中，以后在终端中可以直接打开 anaconda3 的环境。</p>
+<p>下面为了要使用 GPU 进行计算，要根据显卡安装相应计算工具软件。NVIDIA 的显卡是 CUDA，AMD 的是 OpenCL 。因为工作站是 N 卡，所以 N 卡的小伙伴们可以在<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">这里</a>下载 CUDA。<br>目前 TensorFlow 1.6.0 版本所要求的 CUDA 版本为 9.0，因此下载 9.0 版本。</p>
+<p>下载完成后，同样打开终端到下载目录，执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i cuda-repo-ubuntu1604-9-0-local_9.0.176-1_amd64.deb </span><br></pre></td></tr></table></figure>
+<p>解压以后，使用下面的命令安装所有依赖，然后安装 CUDA 工具包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install -f</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install cuda</span><br></pre></td></tr></table></figure>
+<p>没有报错就证明安装完成了！然后在<a target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cudnn-download">这里</a>下载 cuDNN，首先要注册一个开发者的账号，登陆以后找到 “Download cuDNN v7.0.5 (Dec 5, 2017), for CUDA 9.0”，需要下载 “cuDNN v7.0.5 Runtime Library for Ubuntu16.04 (Deb)” 和 “cuDNN v7.0.5 Developer Library for Ubuntu16.04 (Deb)”。</p>
+<p>下载完成以后执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i libcudnn7_7.0.5.15_1+cuda9.0_amd64.deb</span><br><span class="line">sudo dpkg -i libcudnn7-dev_7.0.5.15-1+cuda9.0_amd64.deb</span><br></pre></td></tr></table></figure>
+<p>然后将 CUDA 的文件添加到 .bashrc 文件中，类似于 windows 系统的环境变量，让系统能够找到我们刚安装的这些文件。执行下面的命令打开 .bashrc：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>在文件的末尾，添加下面的文本添加到文件末尾（注意到刚才添加的 anaconda3 了吗）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export LD_LIBRARY_PATH=&quot;$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64&quot;</span><br><span class="line">export CUDA_HOME=/usr/local/cuda</span><br></pre></td></tr></table></figure>
+<p>最后的步骤了，我们创建一个新的环境，来安装 GPU 支持的 Tensorflow，在终端中执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create -n tensorflow-gpu</span><br></pre></td></tr></table></figure>
+<p>这里的 “tensorflow-gpu” 是新建的环境名，可以换成别的任何名字。然后激活环境：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source activate tensorflow-gpu</span><br></pre></td></tr></table></figure>
+<p>在此环境中安装 TensorFlow（目前版本为1.6.0）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow-gpu</span><br></pre></td></tr></table></figure>
+<p>耐心等待安装完成，我们进入 python ，检验一下是否成功安装：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure><br>我得到了这样的警告：<br>“\Anaconda3\lib\site-packages\h5py_<em>init_</em>.py:36: FutureWarning: Conversion of the second argument of issubdtype from <code>float</code> to <code>np.floating</code> is deprecated. In future, it will be treated as <code>np.float64 == np.dtype(float).type</code>.from ._conv import register_converters as _register_converters”<br>但只要没报错，就成功了。</p>
+<h2 id="二、Win10-安装-tensorflow-gpu"><a href="#二、Win10-安装-tensorflow-gpu" class="headerlink" title="二、Win10 安装 tensorflow-gpu"></a>二、Win10 安装 tensorflow-gpu</h2><p>在 Win10 安装时使用 Anaconda 就与 Linux 下完全相似：</p>
+<ol>
+<li>安装 Anaconda3；</li>
+<li>安装 CUDA；</li>
+<li>解压 cuDNN；</li>
+<li>在 Anaconda3 环境中安装 tensorflow.</li>
+</ol>
+<p>（科学上网的小伙伴可以借鉴<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=qxicgknzUG8">这里</a>的教程视频，比较直观，但视频中安装的是 8.0 版本的 CUDA，并提到 9.0 版本不好用，但想来已经挺久远了，现在的新版本 Tensorflow 还是要安装 CUDA 9.0 的）</p>
+<p>下载安装 <a target="_blank" rel="noopener" href="https://www.anaconda.com/download/#windows">Anaconda</a>（目前是Python 3.6 版本），安装完成后，新建一个名叫 tensorflow 的环境（也可以保持 base 环境中）。</p>
+<p>依然在<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">这里</a>下载 CUDA 9.0，可以选择本地版本的安装包和网络版本的安装包两种，酌情选择。安装完成后，点<a target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cudnn-download">这里</a>下载 cuDNN，首先要注册一个开发者的账号，登陆以后找到 “Download cuDNN v7.0.5 (Dec 5, 2017), for CUDA 9.0”，选择 “cuDNN v7.0.5 Library for Windows 10” 进行下载。完成后为了管理方便，将文件解压到 CUDA 的安装目录下即可。</p>
+<p>接下来添加环境变量，在搜索中搜索 path，打开编辑环境变量。首先在系统变量中添加 CUDA_HOME 环境变量，值为 “<em>\NVIDIA GPU Computing Toolkit\CUDA\v9.0”，这里的 “</em>” 是你的安装位置，比如我的是 “C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0”，图是我替小伙伴们装的 CUDA 8.0。</p>
+<p><img src="CUDA_HOME.png" alt=""></p>
+<p>然后在系统变量 path 中添加<br>“C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\lib\x64”、<br>“C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\extras\CUPTI\libx64”。</p>
+<p>然后最后一步，在 Anaconda Prompt 中安装 tensorflow-gpu。激活刚刚新建的环境 tensorflow，或者留在 base 环境下，执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow-gpu</span><br></pre></td></tr></table></figure>
+<p>安装完成，进入 python ，测试是否安装成功，成功则如图所示（这里有一个警告）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br></pre></td></tr></table></figure>
+<p><img src="fig3.png" alt=""></p>
+<p>将环境配置到 PyCharm 跑一下前面写的卷积网络的代码，新配置的环境成功使用了 GPU 设备来计算，撒花！</p>
+<p><img src="fig2.png" alt=""></p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81%E9%98%85%E8%AF%BB%E6%9C%AC%E6%96%87"><span class="toc-number">1.</span> <span class="toc-text">〇、阅读本文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Ubuntu-%E5%AE%89%E8%A3%85-tensorflow-gpu"><span class="toc-number">2.</span> <span class="toc-text">一、Ubuntu 安装 tensorflow-gpu</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Win10-%E5%AE%89%E8%A3%85-tensorflow-gpu"><span class="toc-number">3.</span> <span class="toc-text">二、Win10 安装 tensorflow-gpu</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&text=来搭个环境 - TensorFlow"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&is_video=false&description=来搭个环境 - TensorFlow"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=来搭个环境 - TensorFlow&body=Check out this article: http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&title=来搭个环境 - TensorFlow"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&name=来搭个环境 - TensorFlow&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/03/17/TensorFlow_for_Dev/&t=来搭个环境 - TensorFlow"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

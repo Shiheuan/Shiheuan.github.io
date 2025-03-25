@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00 问题 Preset不支持个性化控制一个asset的属性，怎么办？（升级新版本，新版本提供了） 资产导入配置的管理问题？  0x01 原文Building a Custom Asset Pipeline for a Unity Project 原文地址 0x02 一些定义、约定和目的asset pipeline：在管线的一端提供源文件（格式正确的），经过管线可以得到优化后的、可以直接用在游">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译介】为Unity创建一个自定义的资产管线">
+<meta property="og:url" content="http://shiheuan.github.io/2022/03/30/customAssetPipeline/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00 问题 Preset不支持个性化控制一个asset的属性，怎么办？（升级新版本，新版本提供了） 资产导入配置的管理问题？  0x01 原文Building a Custom Asset Pipeline for a Unity Project 原文地址 0x02 一些定义、约定和目的asset pipeline：在管线的一端提供源文件（格式正确的），经过管线可以得到优化后的、可以直接用在游">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2022/03/30/customAssetPipeline/simpleAssetPipeline.png">
+<meta property="og:image" content="http://shiheuan.github.io/2022/03/30/customAssetPipeline/assetImportStep.png">
+<meta property="og:image" content="http://shiheuan.github.io/2022/03/30/customAssetPipeline/importBrowser.png">
+<meta property="og:image" content="http://shiheuan.github.io/2022/03/30/customAssetPipeline/assetFilterOptions.png">
+<meta property="og:image" content="http://shiheuan.github.io/2022/03/30/customAssetPipeline/assetProcessors.png">
+<meta property="article:published_time" content="2022-03-30T08:19:43.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:08.078Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="unity">
+<meta property="article:tag" content="asset pipeline">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2022/03/30/customAssetPipeline/simpleAssetPipeline.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>【译介】为Unity创建一个自定义的资产管线</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/04/12/imgui.editor.customization/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/06/15/rl.foundation/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2022/03/30/customAssetPipeline/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&text=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&is_video=false&description=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=【译介】为Unity创建一个自定义的资产管线&body=Check out this article: http://shiheuan.github.io/2022/03/30/customAssetPipeline/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&name=【译介】为Unity创建一个自定义的资产管线&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&t=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">0x00 问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8E%9F%E6%96%87"><span class="toc-number">2.</span> <span class="toc-text">0x01 原文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E4%B8%80%E4%BA%9B%E5%AE%9A%E4%B9%89%E3%80%81%E7%BA%A6%E5%AE%9A%E5%92%8C%E7%9B%AE%E7%9A%84"><span class="toc-number">3.</span> <span class="toc-text">0x02 一些定义、约定和目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E7%9B%AE%E6%A0%87"><span class="toc-number">4.</span> <span class="toc-text">0x03 目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E6%B5%81%E7%A8%8B"><span class="toc-number">5.</span> <span class="toc-text">0x04 流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E8%B5%84%E4%BA%A7%E5%90%8D%E6%A3%80%E6%9F%A5"><span class="toc-number">6.</span> <span class="toc-text">0x05 资产名检查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-Unity%E7%9B%B8%E5%85%B3%E7%BC%96%E8%BE%91%E5%99%A8%E5%8F%8A%E8%B5%84%E4%BA%A7%E5%A4%84%E7%90%86API"><span class="toc-number">7.</span> <span class="toc-text">0x06 Unity相关编辑器及资产处理API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Extending-the-Unity-Editor"><span class="toc-number">7.1.</span> <span class="toc-text">Extending the Unity Editor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Unity%E2%80%99s-Asset-Database"><span class="toc-number">7.2.</span> <span class="toc-text">Unity’s Asset Database</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-%E5%AF%BC%E5%85%A5%E6%B5%8F%E8%A7%88%E5%B7%A5%E5%85%B7%EF%BC%88Import-Browser%EF%BC%89"><span class="toc-number">8.</span> <span class="toc-text">0x07 导入浏览工具（Import Browser）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90%E7%AE%A1%E7%BA%BF"><span class="toc-number">9.</span> <span class="toc-text">0x08 自定义资源管线</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AssetPostprocessor"><span class="toc-number">9.1.</span> <span class="toc-text">AssetPostprocessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Preset"><span class="toc-number">9.2.</span> <span class="toc-text">Preset</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%EF%BC%81%E7%BB%93%E5%90%88%E8%B5%B7%E6%9D%A5"><span class="toc-number">9.3.</span> <span class="toc-text">实践！结合起来</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x09-Asset-Import-Rules"><span class="toc-number">10.</span> <span class="toc-text">0x09 Asset Import Rules</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Rules"><span class="toc-number">10.1.</span> <span class="toc-text">1. Rules</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Rule-Asset"><span class="toc-number">10.1.1.</span> <span class="toc-text">1) Rule Asset</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Filter-Options"><span class="toc-number">10.1.2.</span> <span class="toc-text">2) Filter Options</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Importer-Presets"><span class="toc-number">10.2.</span> <span class="toc-text">2. Importer Presets</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Asset-Processors"><span class="toc-number">10.3.</span> <span class="toc-text">3. Asset Processors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Rules-Browser-Window"><span class="toc-number">10.4.</span> <span class="toc-text">4. Rules Browser Window</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0a-%E5%B1%95%E6%9C%9B"><span class="toc-number">11.</span> <span class="toc-text">0x0a 展望</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        【译介】为Unity创建一个自定义的资产管线
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-03-30T08:19:43.000Z" class="dt-published" itemprop="datePublished">2022-03-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/asset-pipeline/" rel="tag">asset pipeline</a>, <a class="p-category" href="/tags/unity/" rel="tag">unity</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00-问题"><a href="#0x00-问题" class="headerlink" title="0x00 问题"></a>0x00 问题</h2><ul>
+<li>Preset不支持个性化控制一个asset的属性，怎么办？（升级新版本，新版本提供了）</li>
+<li>资产导入配置的管理问题？</li>
+</ul>
+<h2 id="0x01-原文"><a href="#0x01-原文" class="headerlink" title="0x01 原文"></a>0x01 原文</h2><p><a target="_blank" rel="noopener" href="https://tech.innogames.com/building-a-custom-asset-pipeline-for-a-unity-project/">Building a Custom Asset Pipeline for a Unity Project 原文地址</a></p>
+<h2 id="0x02-一些定义、约定和目的"><a href="#0x02-一些定义、约定和目的" class="headerlink" title="0x02 一些定义、约定和目的"></a>0x02 一些定义、约定和目的</h2><p>asset pipeline：在管线的一端提供源文件（格式正确的），经过管线可以得到优化后的、可以直接用在游戏中的资产。</p>
+<p><img src="simpleAssetPipeline.png" alt="简单的asset pipeline"></p>
+<p>这里面一般会涉及到：文件格式的转换，使用对应平台更适合的压缩方式，组装成游戏中的预制对象等等。</p>
+<p>目的是通过asset pipeline可以保证资产在游戏中可用，对于资产驱动的游戏来说尤为重要，节省处理资源消耗的人力（美术和开发都不觉得这项工作应该要自己来做）。</p>
+<h2 id="0x03-目标"><a href="#0x03-目标" class="headerlink" title="0x03 目标"></a>0x03 目标</h2><ul>
+<li><strong>Automation</strong>:<blockquote>
+<p>asset pipeline需要尽量少的手动操作（有可能自动化尽量自动化）</p>
+</blockquote>
+</li>
+<li><strong>Batch-Processing</strong>:<blockquote>
+<p>批量化的处理资产可以允许快速调整资产的导入设置，比如调整下载包的包体大小</p>
+</blockquote>
+</li>
+<li><strong>Validation</strong>:<blockquote>
+<p>提早对asset pipeline的输入做格式、正确性检查</p>
+</blockquote>
+</li>
+<li><strong>Maintainability</strong> and <strong>Extendability</strong>:<blockquote>
+<p>易于管理、维护和扩展，需要让美术和开发都能对asset pipeline理解和进行调整。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="0x04-流程"><a href="#0x04-流程" class="headerlink" title="0x04 流程"></a>0x04 流程</h2><ol>
+<li>ddc软件中，对资产做preprocess（dcc插件、python脚本）</li>
+<li>pre-commit hook 资源命名检查</li>
+</ol>
+<h2 id="0x05-资产名检查"><a href="#0x05-资产名检查" class="headerlink" title="0x05 资产名检查"></a>0x05 资产名检查</h2><p>检查内容：</p>
+<ul>
+<li>文件名包含非法字符</li>
+<li>文件名不匹配预定义的命名模式<ul>
+<li>大小写</li>
+<li>扩展名</li>
+<li>前后缀</li>
+</ul>
+</li>
+<li>文件类型</li>
+<li>白名单</li>
+</ul>
+<p>时机：</p>
+<p><img src="assetImportStep.png" alt="当资产提交时检查命名合法性"></p>
+<p>通过pre-commit hook来检查资源名的合法性，对于不合法的提交返回报错信息。保证工程中资产的正确性，和意外的错误提交。</p>
+<h2 id="0x06-Unity相关编辑器及资产处理API"><a href="#0x06-Unity相关编辑器及资产处理API" class="headerlink" title="0x06 Unity相关编辑器及资产处理API"></a>0x06 Unity相关编辑器及资产处理API</h2><h3 id="Extending-the-Unity-Editor"><a href="#Extending-the-Unity-Editor" class="headerlink" title="Extending the Unity Editor"></a>Extending the Unity Editor</h3><p>扩展编辑器功能，<a target="_blank" rel="noopener" href="https://docs.unity3d.com/2021.2/Documentation/Manual/TreeViewAPI.html">TreeView</a>，Odin插件（<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f1b27e85bc35">使用教程</a>）</p>
+<h3 id="Unity’s-Asset-Database"><a href="#Unity’s-Asset-Database" class="headerlink" title="Unity’s Asset Database"></a>Unity’s Asset Database</h3><p>提供了API对资产进行导入，创建，删除，修改。</p>
+<p>可以通过代码提供从工程外将资产文件复制导入工程的功能。</p>
+<h2 id="0x07-导入浏览工具（Import-Browser）"><a href="#0x07-导入浏览工具（Import-Browser）" class="headerlink" title="0x07 导入浏览工具（Import Browser）"></a>0x07 导入浏览工具（Import Browser）</h2><p>版本控制难题，通过拆分subtrees，submodules来管理会有很多麻烦（没用过，目前不清楚，git的lfs如何？）</p>
+<p>实际开发过程中，未必需要导入全部资产再进行工作。</p>
+<p>需要对导入资产提供选项，只导入必须的部分（这是否需要对一些逻辑相关的资产做出限定？对于资产和代码关联密切的如何处理，比如UI）。</p>
+<p>因此Import Browser可以理解为一个diff工具（custom editor tool），查看当前资产仓库和工程中资产的差异。</p>
+<p><img src="importBrowser.png" alt="导入浏览工具"></p>
+<p>保持资产仓库和工程内资产路径的一致性，自动创建缺失目录，文件可读性（通过宏定义开启可读性检查的代码的方式）等问题。</p>
+<blockquote>
+<p>可以选择性开启此步手动操作是否必要，不必要完全可以自动全量导入到工程内。</p>
+</blockquote>
+<h2 id="0x08-自定义资源管线"><a href="#0x08-自定义资源管线" class="headerlink" title="0x08 自定义资源管线"></a>0x08 自定义资源管线</h2><p>在Unity Editor的Assets目录中编辑资产文件，会触发Unity的资产导入，是一个自动但可以自定义扩展的过程。</p>
+<h3 id="AssetPostprocessor"><a href="#AssetPostprocessor" class="headerlink" title="AssetPostprocessor"></a>AssetPostprocessor</h3><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2021.2/Documentation/ScriptReference/AssetPostprocessor.html">官方文档</a></p>
+<p>主要功能就是在Unity的导入管线执行自定义的钩子函数（hook into the import pipeline and run scripts prior or after improting assets）。</p>
+<ul>
+<li>OnPreprocessXXX</li>
+<li>OnPostprocessXXX</li>
+</ul>
+<h3 id="Preset"><a href="#Preset" class="headerlink" title="Preset"></a>Preset</h3><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2021.2/Documentation/Manual/Presets.html">官方文档</a></p>
+<p>将Inspector中的设置保存成序列化文件（yaml），可以手动或通过代码设置到相同类型的对象上，不限于资产对象，预制体，组件，工程设置等。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2021.2/Documentation/Manual/DefaultPresetsByFolder.html">官方使用案例</a></p>
+<h3 id="实践！结合起来"><a href="#实践！结合起来" class="headerlink" title="实践！结合起来"></a>实践！结合起来</h3><p><a target="_blank" rel="noopener" href="https://github.com/Unity-Technologies/ToolsCollection">Unity-Technologies/ToolsCollection</a></p>
+<p>工程地址：待完成</p>
+<h2 id="0x09-Asset-Import-Rules"><a href="#0x09-Asset-Import-Rules" class="headerlink" title="0x09 Asset Import Rules"></a>0x09 Asset Import Rules</h2><p>使用基于规则（rule）的方法实现资产管线（模仿工具合集中的preset importer）：如果一个导入的资产文件路径匹配预定义的规则过滤器的配置，那么这个规则的import settings就会应用到这个资产上。</p>
+<p>手动处理部分：定义规则配置，维护规则。</p>
+<p>出于这个原因，需要开发一个易于使用的图形用户界面：理想情况下，美术和开发都能够阅读、理解和更新规则的配置。</p>
+<h3 id="1-Rules"><a href="#1-Rules" class="headerlink" title="1. Rules"></a>1. Rules</h3><h4 id="1-Rule-Asset"><a href="#1-Rule-Asset" class="headerlink" title="1) Rule Asset"></a>1) Rule Asset</h4><p>导入规则的实际载体，保存和配置定义的导入规则。每一个导入规则都时自定义的ScriptableObject专用资产文件，每个资产文件包含三个子资产，每一个对应一类资产的preset文件。</p>
+<p>每个规则保存在一个文件中，方便版本控制。</p>
+<p>为了使修改规则资产尽可能容易，需要编写一个复杂的自定义检查器（检查什么？）</p>
+<h4 id="2-Filter-Options"><a href="#2-Filter-Options" class="headerlink" title="2) Filter Options"></a>2) Filter Options</h4><p>资产筛选选项，来决定哪些资产需要应用规则。</p>
+<p><img src="assetFilterOptions.png" alt="import rule&#39;s filter options"></p>
+<p>筛选器来判断导入的资产路径是否符合条件：</p>
+<ul>
+<li>字符串模式<ul>
+<li>文件名包含“_Normal”</li>
+<li>路径以“Assets/Sprites/UI”开始</li>
+</ul>
+</li>
+<li>扩展名必须匹配白名单中的格式<ul>
+<li>.png</li>
+<li>必须为模型或音频类型（可以避免检测扩展名字符串模式）</li>
+</ul>
+</li>
+<li>配置例外的路径、资产</li>
+</ul>
+<p>通过自定义的asset postprocessor来触发工程中的导入规则，抢占规则简单应用第一条满足的筛选器，或后续的匹配项直接进行覆盖。</p>
+<h3 id="2-Importer-Presets"><a href="#2-Importer-Presets" class="headerlink" title="2. Importer Presets"></a>2. Importer Presets</h3><p>每一个规则包含了三个importer preset：</p>
+<ul>
+<li>Texture</li>
+<li>Model</li>
+<li>Audio</li>
+</ul>
+<p>规则资产的inspector中会显示需要修改的资产类型对应的导入设置。</p>
+<p>当资产匹配了一个规则以后，会在导入后应用对应类型的preset，这只会覆盖preset中设置需要进行覆盖的设置（对于设置中不能disable的属性，需要在应用后重新赋原值）。</p>
+<blockquote>
+<p>需要验证：只有当有目标资产要修改时，importer的Inspecotr才能被编辑。如果只使用preset，就没有这样一个asset。这样的话，preset在inspector中显示的属性可能就不包含我们需要编辑的属性。（没有看到对应的情况很难理解这种说法。）</p>
+<p>另外平台相关的不能修改（2019.2）。</p>
+<p>文中是通过添加Asset Processors步骤来解决上面这些问题的，为什么？</p>
+</blockquote>
+<h3 id="3-Asset-Processors"><a href="#3-Asset-Processors" class="headerlink" title="3. Asset Processors"></a>3. Asset Processors</h3><p>有时候资产管线做的事情并非只是应用preset设置属性，可能需要对资产管线的扩展性和自定义提出要求。</p>
+<p>Asset Processors在功能上与Unity的AssetPostprocessor类似，同时也hook了他提供的资产导入事件，以便我们开发自定义功能。</p>
+<p><img src="assetProcessors.png" alt="Asset Processors的Inspector界面"></p>
+<p>区别：</p>
+<ul>
+<li>与特定规则绑定，只对匹配特定规则的资产有效</li>
+<li>基于ScriptableObject，方便对不同设置重用，在Inspector中显示序列化的属性</li>
+</ul>
+<p>创建一个新的Asset Processor，继承AssetProcessor基类，重写hook事件方法，最后添加到一个Import Rule的配置中。</p>
+<p>每一个import rule的Inspector中保存一个列表来显示匹配的资产要执行的asset processors，可以通过反射找到所有继承了AssetProcessor基类的派生类，在添加到import rule（规则资产）时创建一个实例，并作为子对象添加到import rule上。</p>
+<p>对Inspector中的Asset Processors列表是顺序相关的，总是从上向下逐个运行，关系一个AssetProcessor可能需要依赖另一个AssetProcessor的结果，这样被依赖的就需要先执行（可以自动吗？类似组件的Dependence标记）。</p>
+<p>这样就形成了Import Rule配合不同Asset Processor组成的工具链，以组件化的方式，灵活且强力。对于开发来说，根据需求提前定义好一系列Asset Processor就可以快速地调整、应用、配置他们，而不需要修改代码。</p>
+<h3 id="4-Rules-Browser-Window"><a href="#4-Rules-Browser-Window" class="headerlink" title="4. Rules Browser Window"></a>4. Rules Browser Window</h3><p>统一浏览全部分开保存的import rule资产内容，可以查看工程中所有导入规则，或增加、修改、删除规则。</p>
+<h2 id="0x0a-展望"><a href="#0x0a-展望" class="headerlink" title="0x0a 展望"></a>0x0a 展望</h2><p>编辑器相关限制，preset版本可能导致一些问题。</p>
+<p>如何管理自动生成的资产，如果资产被移动或者删除，自动创建的prefab不会被清理干净，留下了废弃的预制件。是否可以通过跟踪导入依赖关系管理自动生成的资产，减少资产的重复和手动清理。</p>
+<p>预制体组成时依赖复数规则的资产，如何处理这种多规则的情况。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">0x00 问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8E%9F%E6%96%87"><span class="toc-number">2.</span> <span class="toc-text">0x01 原文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E4%B8%80%E4%BA%9B%E5%AE%9A%E4%B9%89%E3%80%81%E7%BA%A6%E5%AE%9A%E5%92%8C%E7%9B%AE%E7%9A%84"><span class="toc-number">3.</span> <span class="toc-text">0x02 一些定义、约定和目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-%E7%9B%AE%E6%A0%87"><span class="toc-number">4.</span> <span class="toc-text">0x03 目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E6%B5%81%E7%A8%8B"><span class="toc-number">5.</span> <span class="toc-text">0x04 流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E8%B5%84%E4%BA%A7%E5%90%8D%E6%A3%80%E6%9F%A5"><span class="toc-number">6.</span> <span class="toc-text">0x05 资产名检查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-Unity%E7%9B%B8%E5%85%B3%E7%BC%96%E8%BE%91%E5%99%A8%E5%8F%8A%E8%B5%84%E4%BA%A7%E5%A4%84%E7%90%86API"><span class="toc-number">7.</span> <span class="toc-text">0x06 Unity相关编辑器及资产处理API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Extending-the-Unity-Editor"><span class="toc-number">7.1.</span> <span class="toc-text">Extending the Unity Editor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Unity%E2%80%99s-Asset-Database"><span class="toc-number">7.2.</span> <span class="toc-text">Unity’s Asset Database</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-%E5%AF%BC%E5%85%A5%E6%B5%8F%E8%A7%88%E5%B7%A5%E5%85%B7%EF%BC%88Import-Browser%EF%BC%89"><span class="toc-number">8.</span> <span class="toc-text">0x07 导入浏览工具（Import Browser）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90%E7%AE%A1%E7%BA%BF"><span class="toc-number">9.</span> <span class="toc-text">0x08 自定义资源管线</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AssetPostprocessor"><span class="toc-number">9.1.</span> <span class="toc-text">AssetPostprocessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Preset"><span class="toc-number">9.2.</span> <span class="toc-text">Preset</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%EF%BC%81%E7%BB%93%E5%90%88%E8%B5%B7%E6%9D%A5"><span class="toc-number">9.3.</span> <span class="toc-text">实践！结合起来</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x09-Asset-Import-Rules"><span class="toc-number">10.</span> <span class="toc-text">0x09 Asset Import Rules</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Rules"><span class="toc-number">10.1.</span> <span class="toc-text">1. Rules</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Rule-Asset"><span class="toc-number">10.1.1.</span> <span class="toc-text">1) Rule Asset</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Filter-Options"><span class="toc-number">10.1.2.</span> <span class="toc-text">2) Filter Options</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Importer-Presets"><span class="toc-number">10.2.</span> <span class="toc-text">2. Importer Presets</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Asset-Processors"><span class="toc-number">10.3.</span> <span class="toc-text">3. Asset Processors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Rules-Browser-Window"><span class="toc-number">10.4.</span> <span class="toc-text">4. Rules Browser Window</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0a-%E5%B1%95%E6%9C%9B"><span class="toc-number">11.</span> <span class="toc-text">0x0a 展望</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2022/03/30/customAssetPipeline/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&text=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&is_video=false&description=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=【译介】为Unity创建一个自定义的资产管线&body=Check out this article: http://shiheuan.github.io/2022/03/30/customAssetPipeline/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&title=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&name=【译介】为Unity创建一个自定义的资产管线&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2022/03/30/customAssetPipeline/&t=【译介】为Unity创建一个自定义的资产管线"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

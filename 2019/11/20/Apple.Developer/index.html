@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00我们戏称的 “ppt” 做完了，在上传和打包到 Apple Store 时，我并没有经验，所以查了不少资料，堪堪完成，总结一下吧。 0x01 适配刘海屏iPhone X 等刘海屏在打包时默认即拉伸到最大尺寸。 Android 设备则需要在 Android Studio 中进行处理。 首先是从 Unity 中导出工程，并将必须的文件，和用来适配的 java 文件替换到打开的 AS 工程中，出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏做好了，那下一步呢 - 打包发布">
+<meta property="og:url" content="http://shiheuan.github.io/2019/11/20/Apple.Developer/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00我们戏称的 “ppt” 做完了，在上传和打包到 Apple Store 时，我并没有经验，所以查了不少资料，堪堪完成，总结一下吧。 0x01 适配刘海屏iPhone X 等刘海屏在打包时默认即拉伸到最大尺寸。 Android 设备则需要在 Android Studio 中进行处理。 首先是从 Unity 中导出工程，并将必须的文件，和用来适配的 java 文件替换到打开的 AS 工程中，出">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-11-20T05:23:29.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.745Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="unity">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="release">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>游戏做好了，那下一步呢 - 打包发布</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/11/26/ludumdare/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/11/19/Unity.MicroFPS/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/11/20/Apple.Developer/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&text=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&is_video=false&description=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏做好了，那下一步呢 - 打包发布&body=Check out this article: http://shiheuan.github.io/2019/11/20/Apple.Developer/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&name=游戏做好了，那下一步呢 - 打包发布&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/11/20/Apple.Developer/&t=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E9%80%82%E9%85%8D%E5%88%98%E6%B5%B7%E5%B1%8F"><span class="toc-number">2.</span> <span class="toc-text">0x01 适配刘海屏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-iOS-%E6%B5%8B%E8%AF%95%E6%89%93%E5%8C%85%E4%B8%8E%E5%8F%91%E5%B8%83"><span class="toc-number">3.</span> <span class="toc-text">0x02 iOS 测试打包与发布</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03"><span class="toc-number">4.</span> <span class="toc-text">0x03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">5.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        游戏做好了，那下一步呢 - 打包发布
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-11-20T05:23:29.000Z" class="dt-published" itemprop="datePublished">2019-11-20</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Android/" rel="tag">Android</a>, <a class="p-category" href="/tags/iOS/" rel="tag">iOS</a>, <a class="p-category" href="/tags/release/" rel="tag">release</a>, <a class="p-category" href="/tags/unity/" rel="tag">unity</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>我们戏称的 “ppt” 做完了，在上传和打包到 Apple Store 时，我并没有经验，所以查了不少资料，堪堪完成，总结一下吧。</p>
+<h2 id="0x01-适配刘海屏"><a href="#0x01-适配刘海屏" class="headerlink" title="0x01 适配刘海屏"></a>0x01 适配刘海屏</h2><p>iPhone X 等刘海屏在打包时默认即拉伸到最大尺寸。</p>
+<p>Android 设备则需要在 Android Studio 中进行处理。</p>
+<p>首先是从 Unity 中导出工程，并将必须的文件，和用来适配的 java 文件替换到打开的 AS 工程中，出包即可（啊，等我再看一遍）。</p>
+<p>在 AS 出包还需要设定 Publishing Settings 中的 keystore，通过设定的文件和密码进行打包。</p>
+<p>由于我们的这个 “ppt” 并不需要额外处理 UI 位置，所以要做的只是拉伸到没有刘海两边的黑条即可，因此并不复杂。</p>
+<h2 id="0x02-iOS-测试打包与发布"><a href="#0x02-iOS-测试打包与发布" class="headerlink" title="0x02 iOS 测试打包与发布"></a>0x02 iOS 测试打包与发布</h2><p>首先，你要有个开发者账号，这一篇讲的很清楚，<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8190cf4a8172">传送门</a></p>
+<p>个人，公司或是企业，三种不同的账号，</p>
+<p>然后就是要用到 XCode，也就是要有一台 Mac，来进行真机测试和打包了。</p>
+<ul>
+<li>证书（Certificate）</li>
+</ul>
+<p>证书分为开发证书（Development Certifacate）和发布证书（Distribution Certifacate），顾名思义，一个用来本地真机测试和开发，另一个是用来上传 app 到应用商店或线上测试。</p>
+<ul>
+<li>标识符？（Identifier）</li>
+</ul>
+<p>发布 App 主要是要申请一个 App ID，用来确定发布的平台，Bundle ID（唯一确定包名 explicit 或匹配包名 wildcard），以及 App 需要使用的服务。</p>
+<ul>
+<li>描述文件（Profile）</li>
+</ul>
+<p>是用来指定上述的 Certificate 以及 App ID，并附加允许的调试设备而创建的。</p>
+<ul>
+<li>Xcode </li>
+</ul>
+<p>在打包时，需要关注的是 bundle id 是不是和设置的 App id 匹配。</p>
+<p>另外是在 build settings 中是不是设置了匹配的证书，如果使用的账号不是开发者，就不要在 Signing&amp;Capabilities 使用自动模式，手动配置证书许可就可以。</p>
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><p>测试了几个事情吧，</p>
+<ul>
+<li>首先我么得开发者账号，所以用大佬的账号测试了一下整个流程，</li>
+</ul>
+<p>申请中提交的邮箱并不重要，名称也是和密钥的生成有关系。</p>
+<p>在 Xcode 中添加新账户（非开发者）后，查看证书会自动生成一个本机的开发证书（Development Certificate）</p>
+<p>用这个证书是可以进行真机测试的。</p>
+<ul>
+<li>在创建了证书后，是可以生成 .p12 证书文件提供给其他人使用的。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8190cf4a8172">Apple开发者账号介绍及证书配置说明</a></p>
+<p><a target="_blank" rel="noopener" href="https://ask.dcloud.net.cn/article/152">证书和描述文件申请</a></p>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><p>我其实一直没有很好的做博客的定位，有时候觉得应该写一些有内容有深度的东西（可以装逼），有时候又觉得这样一个没开评论的地方其实只是自己的一个公开的笔记本……</p>
+<p>有关这一点，一是时间不够（毛仔：你说的是能力吧？十元：……），二是私以为坚持最重要哈！</p>
+<p>年前把这个事情想想清楚吧，至少不能过于随意嗯。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E9%80%82%E9%85%8D%E5%88%98%E6%B5%B7%E5%B1%8F"><span class="toc-number">2.</span> <span class="toc-text">0x01 适配刘海屏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-iOS-%E6%B5%8B%E8%AF%95%E6%89%93%E5%8C%85%E4%B8%8E%E5%8F%91%E5%B8%83"><span class="toc-number">3.</span> <span class="toc-text">0x02 iOS 测试打包与发布</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03"><span class="toc-number">4.</span> <span class="toc-text">0x03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">5.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/11/20/Apple.Developer/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&text=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&is_video=false&description=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏做好了，那下一步呢 - 打包发布&body=Check out this article: http://shiheuan.github.io/2019/11/20/Apple.Developer/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&title=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/11/20/Apple.Developer/&name=游戏做好了，那下一步呢 - 打包发布&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/11/20/Apple.Developer/&t=游戏做好了，那下一步呢 - 打包发布"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 过程化生成（综述）1.1 概念过程化生成是计算机科学中的一种使计算机自动制造一类数据的算法。在电子游戏领域中常用于自动地制造大量游戏内容。 优点：  减小文件体积 扩大内容数量 增加游戏的随机性  1.2 过程化生成的方法简单介绍一下关于过程化生成的几种比较直观的方法：  Tiles 基于Tile板块的拼接，  bitmap 关卡地图   Grammars 基于一定的规则，  生成文字数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WFC-从入门到放弃">
+<meta property="og:url" content="http://shiheuan.github.io/2021/03/30/WFC_3/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="1. 过程化生成（综述）1.1 概念过程化生成是计算机科学中的一种使计算机自动制造一类数据的算法。在电子游戏领域中常用于自动地制造大量游戏内容。 优点：  减小文件体积 扩大内容数量 增加游戏的随机性  1.2 过程化生成的方法简单介绍一下关于过程化生成的几种比较直观的方法：  Tiles 基于Tile板块的拼接，  bitmap 关卡地图   Grammars 基于一定的规则，  生成文字数据">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-Rogue-1980.gif">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-DiabloII_Screen_Shot.png">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-NoMansSky_Screen_Shot.png">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-DwarfFortress_Screen_Shot.png">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-patterns.png">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-bitmap.gif">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-Townscaper.gif">
+<meta property="og:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-simpletiles-symmetry-counts.png">
+<meta property="article:published_time" content="2021-03-30T13:48:32.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.995Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="algorithm">
+<meta property="article:tag" content="procedural generation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2021/03/30/WFC_3/wfc-Rogue-1980.gif">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>WFC-从入门到放弃</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/06/15/rl.foundation/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/03/04/WFC_2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2021/03/30/WFC_3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2021/03/30/WFC_3/&text=WFC-从入门到放弃"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2021/03/30/WFC_3/&is_video=false&description=WFC-从入门到放弃"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WFC-从入门到放弃&body=Check out this article: http://shiheuan.github.io/2021/03/30/WFC_3/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2021/03/30/WFC_3/&name=WFC-从入门到放弃&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2021/03/30/WFC_3/&t=WFC-从入门到放弃"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%BF%87%E7%A8%8B%E5%8C%96%E7%94%9F%E6%88%90%EF%BC%88%E7%BB%BC%E8%BF%B0%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">1. 过程化生成（综述）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E8%BF%87%E7%A8%8B%E5%8C%96%E7%94%9F%E6%88%90%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 过程化生成的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E6%8C%91%E6%88%98"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 挑战</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Wave-Function-Collapse-Algorithm"><span class="toc-number">2.</span> <span class="toc-text">2. Wave Function Collapse Algorithm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%BA%94%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 算法原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1-%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1 算法流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2 数据准备</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-Unity-Demo"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 Unity Demo</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        WFC-从入门到放弃
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-03-30T13:48:32.000Z" class="dt-published" itemprop="datePublished">2021-03-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/algorithm/" rel="tag">algorithm</a>, <a class="p-category" href="/tags/procedural-generation/" rel="tag">procedural generation</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="1-过程化生成（综述）"><a href="#1-过程化生成（综述）" class="headerlink" title="1. 过程化生成（综述）"></a>1. 过程化生成（综述）</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><p>过程化生成是计算机科学中的一种使计算机自动制造一类数据的算法。在电子游戏领域中常用于自动地制造大量游戏内容。</p>
+<p>优点：</p>
+<ul>
+<li>减小文件体积</li>
+<li>扩大内容数量</li>
+<li>增加游戏的随机性</li>
+</ul>
+<h3 id="1-2-过程化生成的方法"><a href="#1-2-过程化生成的方法" class="headerlink" title="1.2 过程化生成的方法"></a>1.2 过程化生成的方法</h3><p>简单介绍一下关于过程化生成的几种比较直观的方法：</p>
+<ul>
+<li><p>Tiles</p>
+<p>基于Tile板块的拼接，</p>
+<ul>
+<li>bitmap</li>
+<li>关卡地图</li>
+</ul>
+</li>
+<li><p>Grammars</p>
+<p>基于一定的规则，</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.crystalcodepalace.com/traceryTut.html">生成文字数据</a></li>
+<li>生成几何图案数据</li>
+<li><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/2000919.2000921">生成地牢玩法（Zelda）</a></li>
+</ul>
+</li>
+<li>Distribution<ul>
+<li>grid with offset</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Halton_sequence">Halton Sequence</a></li>
+</ul>
+</li>
+<li>Parametric<ul>
+<li>modellable as points in an N-dimensional cube</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-3-应用场景"><a href="#1-3-应用场景" class="headerlink" title="1.3 应用场景"></a>1.3 应用场景</h3><p>在电子游戏中应用非常广泛：</p>
+<ul>
+<li><p>Rogue(1980)</p>
+<p>  <img src="wfc-Rogue-1980.gif" alt="Rouge-1980"></p>
+</li>
+<li><p>暗黑破坏神II（2000）</p>
+<p>  <img src="wfc-DiabloII_Screen_Shot.png" alt="DiabloII-2000"></p>
+</li>
+<li><p>我的世界（2011）</p>
+</li>
+<li><p>无人深空（2016）</p>
+<p>  <img src="wfc-NoMansSky_Screen_Shot.png" alt="NoMansSky"></p>
+</li>
+<li><p>Dwarf Fortress(2006)</p>
+<p>  <img src="wfc-DwarfFortress_Screen_Shot.png" alt="Dwarf Fortress"></p>
+</li>
+</ul>
+<h3 id="1-4-挑战"><a href="#1-4-挑战" class="headerlink" title="1.4 挑战"></a>1.4 挑战</h3><p>Mathematical uniqueness vs. Perceptual uniqueness</p>
+<hr>
+<h2 id="2-Wave-Function-Collapse-Algorithm"><a href="#2-Wave-Function-Collapse-Algorithm" class="headerlink" title="2. Wave Function Collapse Algorithm"></a>2. Wave Function Collapse Algorithm</h2><h3 id="2-1-概念"><a href="#2-1-概念" class="headerlink" title="2.1 概念"></a>2.1 概念</h3><p><strong>波函数坍缩算法</strong>是受到了量子力学中的相关概念的启发，用来过程化地生成与输入图案<em>局部相似</em>的输出图案的算法。算法将还未生成的结果看作<em>完全未观测状态</em>（即所有可能结果的叠加态），通过观测，得到<em>确定态</em>的过程。</p>
+<p><img src="wfc-patterns.png" alt="局部相似(N=3)"></p>
+<p>局部相似的含义是：</p>
+<ul>
+<li>(C1) 输出位图中的每一个 NxN 的像素图案都至少在输入位图中出现过一次</li>
+<li>(Weak C2) 输入位图中 NxN 的像素图案的概率分布，应该与足够数量的输出位图中 NxN 像素图案的概率分布相同。换句话说，相同的图案在输出中出现的可能性接近输入位图中这个图案的比例。</li>
+</ul>
+<h3 id="2-2-应用"><a href="#2-2-应用" class="headerlink" title="2.2 应用"></a>2.2 应用</h3><ul>
+<li><p>位图生成</p>
+<p>  <img src="wfc-bitmap.gif" alt="bitmap"></p>
+</li>
+<li><p>Townscaper(545个组件)</p>
+<p>  <img src="wfc-Townscaper.gif" alt="Townscaper"></p>
+</li>
+</ul>
+<h3 id="2-3-算法原理"><a href="#2-3-算法原理" class="headerlink" title="2.3 算法原理"></a>2.3 算法原理</h3><ol>
+<li><p>读取输入位图，计算 NxN 的图案</p>
+<ol>
+<li>（可选）通过旋转、翻转扩充图案数据的数量</li>
+</ol>
+</li>
+<li><p>创建输出尺寸相符的数组（wave），数组中每一个元素代表一个 NxN 区域在输出结果中的状态。一个 NxN 区域的一个状态是输入的所有 NxN 图案及其 bool 系数的叠加。</p>
+</li>
+<li><p>将代表 wave 的数组初始化为完全未观测状态（全部 bool 系数值为 True）</p>
+</li>
+<li><p>循环：</p>
+<ol>
+<li>观测：<ol>
+<li>选择一个非零最小熵的数组（波）元素。若找不到符合条件的数组元素（熵为 0 或未定义的熵），跳到<strong>第5步</strong>。</li>
+<li>根据当前的 bool 系数，以及输入的 NxN 图案的分布律，将这个元素 Collapse 到确定态。</li>
+</ol>
+</li>
+<li>传播：将上一个观测阶段得到信息传递到其他元素</li>
+</ol>
+</li>
+<li><p>至此，所有数组元素都处在已观测状态（系数为 one-hot 位元组合，仅容许单一位元为 1，其他位元均为 0），或处在矛盾状态（系数全为 0）</p>
+</li>
+</ol>
+<blockquote>
+<p>可交互版本的 <a target="_blank" rel="noopener" href="http://oskarstalberg.com/game/wave/wave.html">WFC 示例</a></p>
+</blockquote>
+<h3 id="2-4-实现"><a href="#2-4-实现" class="headerlink" title="2.4 实现"></a>2.4 实现</h3><h4 id="2-4-1-算法流程"><a href="#2-4-1-算法流程" class="headerlink" title="2.4.1 算法流程"></a>2.4.1 算法流程</h4><ul>
+<li><p>WFC 算法的主体入口：</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">bool</span> <span class="title">Run</span>(<span class="params"><span class="built_in">int</span> seed, <span class="built_in">int</span> limit</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (wave == <span class="literal">null</span>) Init();</span><br><span class="line"></span><br><span class="line">    Clear();</span><br><span class="line">    random = <span class="keyword">new</span> Random(seed); <span class="comment">// 缓冲随机种子</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> l = <span class="number">0</span>; l &lt; limit || limit == <span class="number">0</span>; l++) <span class="comment">// 步数限制</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">bool</span>? result = Observe(); <span class="comment">// 观测</span></span><br><span class="line">        <span class="keyword">if</span> (result != <span class="literal">null</span>) <span class="keyword">return</span> (<span class="built_in">bool</span>)result; <span class="comment">// 终止条件</span></span><br><span class="line">        Propagate(); <span class="comment">// 传播</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>观测:</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bool</span>? Observe()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">double</span> min = <span class="number">1E+3</span>; <span class="comment">// 最小熵</span></span><br><span class="line">    <span class="built_in">int</span> argmin = <span class="number">-1</span>; <span class="comment">// 最小熵索引</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; wave.Length; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (OnBoundary(i % FMX, i / FMX)) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> amount = sumsOfOnes[i]; <span class="comment">// 当前叠加态叠加数量</span></span><br><span class="line">        <span class="keyword">if</span> (amount == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">double</span> entropy = entropies[i]; <span class="comment">// 提取缓存的熵</span></span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">1</span> &amp;&amp; entropy &lt;= min)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">double</span> noise = <span class="number">1E-6</span> * random.NextDouble(); <span class="comment">// 使用扰动来随机在相同熵值的区域进行选择</span></span><br><span class="line">            <span class="keyword">if</span> (entropy + noise &lt; min)</span><br><span class="line">            &#123;</span><br><span class="line">                min = entropy + noise;</span><br><span class="line">                argmin = i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argmin == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        observed = <span class="keyword">new</span> <span class="built_in">int</span>[FMX * FMY];</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; wave.Length; i++) <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; T; t++) <span class="keyword">if</span> (wave[i][t]) &#123; observed[i] = t; <span class="keyword">break</span>; &#125; <span class="comment">// 构建 observed 输出结果</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">double</span>[] distribution = <span class="keyword">new</span> <span class="built_in">double</span>[T];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; T; t++) distribution[t] = wave[argmin][t] ? weights[t] : <span class="number">0</span>; <span class="comment">// 被禁用的权重为 0，未禁用的默认值</span></span><br><span class="line">    <span class="built_in">int</span> r = distribution.Random(random.NextDouble()); <span class="comment">// 扩展方法，选择未禁用的一个图案索引</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">bool</span>[] w = wave[argmin]; <span class="comment">// 当前熵最小的区域的叠加态</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; T; t++) <span class="keyword">if</span> (w[t] != (t == r)) Ban(argmin, t); <span class="comment">// 禁用未选中状态</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>熵的计算：</p>
+<script type="math/tex; mode=display">\log w_{sum} - \frac{\sum_{i=1}^n w_i\times\log w_i}{w_{sum}}</script><blockquote>
+<p>$w<em>i$表示当前位置，第$i$个状态的权重值，$w</em>{sum}$表示所有状态的权重和。</p>
+<p>可选的状态越少，计算得到的熵越高；仅有一种状态可行时，熵为$0$。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>传播:</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">Propagate</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (stacksize &gt; <span class="number">0</span>) <span class="comment">// 对全部更新过的区域进行传播</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> e1 = stack[stacksize - <span class="number">1</span>]; <span class="comment">// 被禁用的索引和图案</span></span><br><span class="line">        stacksize--;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> i1 = e1.Item1;</span><br><span class="line">        <span class="built_in">int</span> x1 = i1 % FMX, y1 = i1 / FMX; <span class="comment">// 计算坐标</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> d = <span class="number">0</span>; d &lt; <span class="number">4</span>; d++) <span class="comment">// 处理四个方向相邻</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">int</span> dx = DX[d], dy = DY[d];</span><br><span class="line">            <span class="built_in">int</span> x2 = x1 + dx, y2 = y1 + dy;</span><br><span class="line">            <span class="keyword">if</span> (OnBoundary(x2, y2)) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (x2 &lt; <span class="number">0</span>) x2 += FMX;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (x2 &gt;= FMX) x2 -= FMX;</span><br><span class="line">            <span class="keyword">if</span> (y2 &lt; <span class="number">0</span>) y2 += FMY;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (y2 &gt;= FMY) y2 -= FMY;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">int</span> i2 = x2 + y2 * FMX;</span><br><span class="line">            <span class="built_in">int</span>[] p = propagator[d][e1.Item2]; <span class="comment">// 被禁用的图案可连接当前方向的所有类型的图案</span></span><br><span class="line">            <span class="built_in">int</span>[][] compat = compatible[i2]; <span class="comment">// 传播到的索引位置，对每种图案在每个方向的可能数量</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> l = <span class="number">0</span>; l &lt; p.Length; l++) <span class="comment">// 对于当前方向每种曾经可连接的图案</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">int</span> t2 = p[l]; <span class="comment">// 取得图案的索引（派生类中用来索引patterns）</span></span><br><span class="line">                <span class="built_in">int</span>[] comp = compat[t2]; <span class="comment">// 要连接 t2 类型的图案的所有方向的可能数量</span></span><br><span class="line"></span><br><span class="line">                comp[d]--; <span class="comment">// 取得t2类型在当前方向上可能的连接数量，并排除已经禁用的 e1.Item2 图案</span></span><br><span class="line">                <span class="keyword">if</span> (comp[d] == <span class="number">0</span>) Ban(i2, t2); <span class="comment">// 如果被禁用的 e1.Item2 是最后一个可行的连接图案，那么将图案t2在i2位置禁用</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="2-4-2-数据准备"><a href="#2-4-2-数据准备" class="headerlink" title="2.4.2 数据准备"></a>2.4.2 数据准备</h4><p>对输入数据进行处理，这里将输入数据分成位图和图集两种类型分别处理。</p>
+<ul>
+<li><p>位图图案 (bitmap)</p>
+<ul>
+<li><p>对图案进行采样，得到原始数据</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">byte</span>[] <span class="title">pattern</span>(<span class="params">Func&lt;<span class="built_in">int</span>, <span class="built_in">int</span>, <span class="built_in">byte</span>&gt; f</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">byte</span>[] result = <span class="keyword">new</span> <span class="built_in">byte</span>[N * N];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> y = <span class="number">0</span>; y &lt; N; y++) <span class="keyword">for</span> (<span class="built_in">int</span> x = <span class="number">0</span>; x &lt; N; x++) result[x + y * N] = f(x, y);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">byte</span>[] <span class="title">patternFromSample</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y</span>)</span> =&gt; pattern((dx, dy) =&gt; sample[(x + dx) % SMX, (y + dy) % SMY]); <span class="comment">//从(x, y)来取样</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过旋转、镜像扩充原始数据集</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> y = <span class="number">0</span>; y &lt; (periodicInput ? SMY : SMY - N + <span class="number">1</span>); y++) <span class="keyword">for</span> (<span class="built_in">int</span> x = <span class="number">0</span>; x &lt; (periodicInput ? SMX : SMX - N + <span class="number">1</span>); x++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">byte</span>[][] ps = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">8</span>][];</span><br><span class="line"></span><br><span class="line">    ps[<span class="number">0</span>] = patternFromSample(x, y); <span class="comment">// 每个位置取得8种变换的结果</span></span><br><span class="line">    ps[<span class="number">1</span>] = reflect(ps[<span class="number">0</span>]);</span><br><span class="line">    ps[<span class="number">2</span>] = rotate(ps[<span class="number">0</span>]);</span><br><span class="line">    ps[<span class="number">3</span>] = reflect(ps[<span class="number">2</span>]);</span><br><span class="line">    ps[<span class="number">4</span>] = rotate(ps[<span class="number">2</span>]);</span><br><span class="line">    ps[<span class="number">5</span>] = reflect(ps[<span class="number">4</span>]);</span><br><span class="line">    ps[<span class="number">6</span>] = rotate(ps[<span class="number">4</span>]);</span><br><span class="line">    ps[<span class="number">7</span>] = reflect(ps[<span class="number">6</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; symmetry; k++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">long</span> ind = index(ps[k]);</span><br><span class="line">        <span class="keyword">if</span> (weights.ContainsKey(ind)) weights[ind]++; <span class="comment">// 累加重复的图案的权重</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            weights.Add(ind, <span class="number">1</span>);</span><br><span class="line">            ordering.Add(ind);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>得到邻接元素之间的连接信息</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">bool</span> <span class="title">agrees</span>(<span class="params"><span class="built_in">byte</span>[] p1, <span class="built_in">byte</span>[] p2, <span class="built_in">int</span> dx, <span class="built_in">int</span> dy</span>) <span class="comment">// 图案之间各方向的可能性判断，边界像素完全相同为 true</span></span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> xmin = dx &lt; <span class="number">0</span> ? <span class="number">0</span> : dx, xmax = dx &lt; <span class="number">0</span> ? dx + N : N, ymin = dy &lt; <span class="number">0</span> ? <span class="number">0</span> : dy, ymax = dy &lt; <span class="number">0</span> ? dy + N : N;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> y = ymin; y &lt; ymax; y++) <span class="keyword">for</span> (<span class="built_in">int</span> x = xmin; x &lt; xmax; x++) <span class="keyword">if</span> (p1[x + N * y] != p2[x - dx + N * (y - dy)]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">propagator = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">4</span>][][]; <span class="comment">// 每个方向 每个图案 可连接的图案索引</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> d = <span class="number">0</span>; d &lt; <span class="number">4</span>; d++)</span><br><span class="line">&#123;</span><br><span class="line">    propagator[d] = <span class="keyword">new</span> <span class="built_in">int</span>[T][];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; T; t++)</span><br><span class="line">    &#123;</span><br><span class="line">        List&lt;<span class="built_in">int</span>&gt; list = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> t2 = <span class="number">0</span>; t2 &lt; T; t2++) <span class="keyword">if</span> (agrees(patterns[t], patterns[t2], DX[d], DY[d])) list.Add(t2);</span><br><span class="line">        propagator[d][t] = <span class="keyword">new</span> <span class="built_in">int</span>[list.Count];</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> c = <span class="number">0</span>; c &lt; list.Count; c++) propagator[d][t][c] = list[c];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>Tiles</p>
+<ul>
+<li><p>图集中全部元素的连接数据文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">size</span>=<span class="string">&quot;10&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tiles</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tile</span> <span class="attr">name</span>=<span class="string">&quot;corner&quot;</span> <span class="attr">symmetry</span>=<span class="string">&quot;L&quot;</span> <span class="attr">weight</span>=<span class="string">&quot;0.5&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tile</span> <span class="attr">name</span>=<span class="string">&quot;cross&quot;</span> <span class="attr">symmetry</span>=<span class="string">&quot;I&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tile</span> <span class="attr">name</span>=<span class="string">&quot;empty&quot;</span> <span class="attr">symmetry</span>=<span class="string">&quot;X&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tile</span> <span class="attr">name</span>=<span class="string">&quot;line&quot;</span> <span class="attr">symmetry</span>=<span class="string">&quot;I&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tile</span> <span class="attr">name</span>=<span class="string">&quot;t&quot;</span> <span class="attr">symmetry</span>=<span class="string">&quot;T&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tiles</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">left</span>=<span class="string">&quot;corner 1&quot;</span> <span class="attr">right</span>=<span class="string">&quot;empty&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">left</span>=<span class="string">&quot;corner&quot;</span> <span class="attr">right</span>=<span class="string">&quot;cross&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">left</span>=<span class="string">&quot;corner&quot;</span> <span class="attr">right</span>=<span class="string">&quot;cross 1&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">left</span>=<span class="string">&quot;corner&quot;</span> <span class="attr">right</span>=<span class="string">&quot;line&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">left</span>=<span class="string">&quot;corner 1&quot;</span> <span class="attr">right</span>=<span class="string">&quot;line 1&quot;</span>/&gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">left</span>=<span class="string">&quot;t 1&quot;</span> <span class="attr">right</span>=<span class="string">&quot;t&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">neighbor</span> <span class="attr">left</span>=<span class="string">&quot;t 3&quot;</span> <span class="attr">right</span>=<span class="string">&quot;t 1&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">neighbors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对称类型</p>
+<p>通过不同的对称类型（X、L、T、I、/），来描述不同方向的连接信息是否可以统一</p>
+</li>
+<li><p>通过旋转、镜像扩充原始数据集，通过索引代替对原始数据的操作</p>
+<p><img src="wfc-simpletiles-symmetry-counts.png" alt="不同对称类型经过旋转、镜像操作的全部图案"></p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (XElement xtile <span class="keyword">in</span> xroot.Element(<span class="string">&quot;tiles&quot;</span>).Elements(<span class="string">&quot;tile&quot;</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> tilename = xtile.Get&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (subset != <span class="literal">null</span> &amp;&amp; !subset.Contains(tilename)) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">    Func&lt;<span class="built_in">int</span>, <span class="built_in">int</span>&gt; a, b; <span class="comment">// a &quot;逆时针旋转90°&quot; b &quot;水平镜像&quot; 对8张图的索引进行变换</span></span><br><span class="line">    <span class="built_in">int</span> cardinality; <span class="comment">// 集合的势，简单来说表示对称类型下全部图案（旋转、镜像）后</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">char</span> sym = xtile.Get(<span class="string">&quot;symmetry&quot;</span>, <span class="string">&#x27;X&#x27;</span>);</span><br><span class="line">    <span class="keyword">if</span> (sym == <span class="string">&#x27;L&#x27;</span>) <span class="comment">// 每两个相邻互为镜像</span></span><br><span class="line">    &#123;</span><br><span class="line">        cardinality = <span class="number">4</span>; </span><br><span class="line">        a = i =&gt; (i + <span class="number">1</span>) % <span class="number">4</span>; <span class="comment">// 循环取下一个索引的图案</span></span><br><span class="line">        b = i =&gt; i % <span class="number">2</span> == <span class="number">0</span> ? i + <span class="number">1</span> : i - <span class="number">1</span>; <span class="comment">// 奇数索引取下一个，偶数索引取上一个</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (sym == <span class="string">&#x27;T&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cardinality = <span class="number">4</span>;</span><br><span class="line">        a = i =&gt; (i + <span class="number">1</span>) % <span class="number">4</span>;</span><br><span class="line">        b = i =&gt; i % <span class="number">2</span> == <span class="number">0</span> ? i : <span class="number">4</span> - i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (sym == <span class="string">&#x27;I&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cardinality = <span class="number">2</span>;</span><br><span class="line">        a = i =&gt; <span class="number">1</span> - i;</span><br><span class="line">        b = i =&gt; i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (sym == <span class="string">&#x27;\\&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cardinality = <span class="number">2</span>;</span><br><span class="line">        a = i =&gt; <span class="number">1</span> - i;</span><br><span class="line">        b = i =&gt; <span class="number">1</span> - i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (sym == <span class="string">&#x27;F&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cardinality = <span class="number">8</span>;</span><br><span class="line">        a = i =&gt; i &lt; <span class="number">4</span> ? (i + <span class="number">1</span>) % <span class="number">4</span> : <span class="number">4</span> + (i - <span class="number">1</span>) % <span class="number">4</span>;</span><br><span class="line">        b = i =&gt; i &lt; <span class="number">4</span> ? i + <span class="number">4</span> : i - <span class="number">4</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        cardinality = <span class="number">1</span>;</span><br><span class="line">        a = i =&gt; i;</span><br><span class="line">        b = i =&gt; i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    T = action.Count;</span><br><span class="line">    firstOccurrence.Add(tilename, T); <span class="comment">// 累加</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span>[][] map = <span class="keyword">new</span> <span class="built_in">int</span>[cardinality][];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; cardinality; t++)</span><br><span class="line">    &#123;</span><br><span class="line">        map[t] = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">8</span>]; <span class="comment">// t、t逆时针90、t逆时针180、t逆时针270、t镜像、t逆时针90镜像、t逆时针180镜像、t逆时针270镜像</span></span><br><span class="line"></span><br><span class="line">        map[t][<span class="number">0</span>] = t; <span class="comment">// 对 tiles 表的索引</span></span><br><span class="line">        map[t][<span class="number">1</span>] = a(t);</span><br><span class="line">        map[t][<span class="number">2</span>] = a(a(t));</span><br><span class="line">        map[t][<span class="number">3</span>] = a(a(a(t)));</span><br><span class="line">        map[t][<span class="number">4</span>] = b(t);</span><br><span class="line">        map[t][<span class="number">5</span>] = b(a(t));</span><br><span class="line">        map[t][<span class="number">6</span>] = b(a(a(t)));</span><br><span class="line">        map[t][<span class="number">7</span>] = b(a(a(a(t))));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> s = <span class="number">0</span>; s &lt; <span class="number">8</span>; s++) map[t][s] += T; <span class="comment">// 偏移，</span></span><br><span class="line"></span><br><span class="line">        action.Add(map[t]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (unique) <span class="comment">// 表示图集中对称元素旋转后用到的图案不同</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; cardinality; t++)</span><br><span class="line">        &#123;</span><br><span class="line">            Bitmap bitmap = <span class="keyword">new</span> Bitmap(<span class="string">$&quot;samples/<span class="subst">&#123;name&#125;</span>/<span class="subst">&#123;tilename&#125;</span> <span class="subst">&#123;t&#125;</span>.png&quot;</span>);</span><br><span class="line">            tiles.Add(tile((x, y) =&gt; bitmap.GetPixel(x, y)));</span><br><span class="line">            tilenames.Add(<span class="string">$&quot;<span class="subst">&#123;tilename&#125;</span> <span class="subst">&#123;t&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Bitmap bitmap = <span class="keyword">new</span> Bitmap(<span class="string">$&quot;samples/<span class="subst">&#123;name&#125;</span>/<span class="subst">&#123;tilename&#125;</span>.png&quot;</span>);</span><br><span class="line">        tiles.Add(tile((x, y) =&gt; bitmap.GetPixel(x, y)));</span><br><span class="line">        tilenames.Add(<span class="string">$&quot;<span class="subst">&#123;tilename&#125;</span> 0&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">1</span>; t &lt; cardinality; t++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (t &lt;= <span class="number">3</span>) tiles.Add(rotate(tiles[T + t - <span class="number">1</span>]));</span><br><span class="line">            <span class="keyword">if</span> (t &gt;= <span class="number">4</span>) tiles.Add(reflect(tiles[T + t - <span class="number">4</span>]));</span><br><span class="line">            tilenames.Add(<span class="string">$&quot;<span class="subst">&#123;tilename&#125;</span> <span class="subst">&#123;t&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; cardinality; t++) tempStationary.Add(xtile.Get(<span class="string">&quot;weight&quot;</span>, <span class="number">1.0f</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过xml数据得到邻接元素之间的连接信息</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">propagator = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">4</span>][][];</span><br><span class="line"><span class="keyword">var</span> tempPropagator = <span class="keyword">new</span> <span class="built_in">bool</span>[<span class="number">4</span>][][]; <span class="comment">//存储了所有状态之间的兼容情况是true还是false，[d][t1][t2] -&gt; t1在d方向上能否与t2兼容 -&gt; t2在d的反方向(opposite[d])上与t1兼容</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> d = <span class="number">0</span>; d &lt; <span class="number">4</span>; d++)</span><br><span class="line">&#123;</span><br><span class="line">    tempPropagator[d] = <span class="keyword">new</span> <span class="built_in">bool</span>[T][];</span><br><span class="line">    propagator[d] = <span class="keyword">new</span> <span class="built_in">int</span>[T][];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; T; t++) tempPropagator[d][t] = <span class="keyword">new</span> <span class="built_in">bool</span>[T];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (XElement xneighbor <span class="keyword">in</span> xroot.Element(<span class="string">&quot;neighbors&quot;</span>).Elements(<span class="string">&quot;neighbor&quot;</span>)) <span class="comment">// 通过读表来初始化 propagator 数组</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span>[] left = xneighbor.Get&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;left&quot;</span>).Split(<span class="keyword">new</span> <span class="built_in">char</span>[] &#123; <span class="string">&#x27; &#x27;</span> &#125;, StringSplitOptions.RemoveEmptyEntries); <span class="comment">// 只关注每种图案（原图案的衍生）的左右邻接</span></span><br><span class="line">    <span class="built_in">string</span>[] right = xneighbor.Get&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;right&quot;</span>).Split(<span class="keyword">new</span> <span class="built_in">char</span>[] &#123; <span class="string">&#x27; &#x27;</span> &#125;, StringSplitOptions.RemoveEmptyEntries);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (subset != <span class="literal">null</span> &amp;&amp; (!subset.Contains(left[<span class="number">0</span>]) || !subset.Contains(right[<span class="number">0</span>]))) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// firstOccurrence 取出原图案在 action 中的位置</span></span><br><span class="line">    <span class="comment">// xml 中的 left 和 right 是相互约束的</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> L = action[firstOccurrence[left[<span class="number">0</span>]]][left.Length == <span class="number">1</span> ? <span class="number">0</span> : <span class="built_in">int</span>.Parse(left[<span class="number">1</span>])], D = action[L][<span class="number">1</span>]; <span class="comment">// L对应的图案逆时针90度</span></span><br><span class="line">    <span class="built_in">int</span> R = action[firstOccurrence[right[<span class="number">0</span>]]][right.Length == <span class="number">1</span> ? <span class="number">0</span> : <span class="built_in">int</span>.Parse(right[<span class="number">1</span>])], U = action[R][<span class="number">1</span>]; <span class="comment">// R对应的图案逆时针90度</span></span><br><span class="line"></span><br><span class="line">    tempPropagator[<span class="number">0</span>][R][L] = <span class="literal">true</span>; <span class="comment">// R 放在右边 与 L 放在左边 可以相连</span></span><br><span class="line">    tempPropagator[<span class="number">0</span>][action[R][<span class="number">6</span>]][action[L][<span class="number">6</span>]] = <span class="literal">true</span>; <span class="comment">// R &quot;逆时针180度并镜像&quot; 放在右边 与 L &quot;逆时针180度并镜像&quot; 放在左边 可以相连</span></span><br><span class="line">    tempPropagator[<span class="number">0</span>][action[L][<span class="number">4</span>]][action[R][<span class="number">4</span>]] = <span class="literal">true</span>; <span class="comment">// L &quot;镜像&quot; 放在右边 与 R &quot;镜像&quot; 放在左边 可以相连</span></span><br><span class="line">    tempPropagator[<span class="number">0</span>][action[L][<span class="number">2</span>]][action[R][<span class="number">2</span>]] = <span class="literal">true</span>; <span class="comment">// L &quot;逆时针180&quot; 放在右边 与 R &quot;逆时针180&quot; 放在左边 可以相连</span></span><br><span class="line"></span><br><span class="line">    tempPropagator[<span class="number">1</span>][U][D] = <span class="literal">true</span>;</span><br><span class="line">    tempPropagator[<span class="number">1</span>][action[D][<span class="number">6</span>]][action[U][<span class="number">6</span>]] = <span class="literal">true</span>;</span><br><span class="line">    tempPropagator[<span class="number">1</span>][action[U][<span class="number">4</span>]][action[D][<span class="number">4</span>]] = <span class="literal">true</span>;</span><br><span class="line">    tempPropagator[<span class="number">1</span>][action[D][<span class="number">2</span>]][action[U][<span class="number">2</span>]] = <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> t2 = <span class="number">0</span>; t2 &lt; T; t2++) <span class="keyword">for</span> (<span class="built_in">int</span> t1 = <span class="number">0</span>; t1 &lt; T; t1++)</span><br><span class="line">&#123;</span><br><span class="line">    tempPropagator[<span class="number">2</span>][t2][t1] = tempPropagator[<span class="number">0</span>][t1][t2]; <span class="comment">// 更新方向反向的情况</span></span><br><span class="line">    tempPropagator[<span class="number">3</span>][t2][t1] = tempPropagator[<span class="number">1</span>][t1][t2];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">List&lt;<span class="built_in">int</span>&gt;[][] sparsePropagator = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt;[<span class="number">4</span>][]; <span class="comment">// Propagator的稀疏表示</span></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> d = <span class="number">0</span>; d &lt; <span class="number">4</span>; d++)</span><br><span class="line">&#123;</span><br><span class="line">    sparsePropagator[d] = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt;[T];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t = <span class="number">0</span>; t &lt; T; t++) sparsePropagator[d][t] = <span class="keyword">new</span> List&lt;<span class="built_in">int</span>&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">int</span> d = <span class="number">0</span>; d &lt; <span class="number">4</span>; d++) <span class="keyword">for</span> (<span class="built_in">int</span> t1 = <span class="number">0</span>; t1 &lt; T; t1++)</span><br><span class="line">&#123;</span><br><span class="line">    List&lt;<span class="built_in">int</span>&gt; sp = sparsePropagator[d][t1];</span><br><span class="line">    <span class="built_in">bool</span>[] tp = tempPropagator[d][t1];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> t2 = <span class="number">0</span>; t2 &lt; T; t2++) <span class="keyword">if</span> (tp[t2]) sp.Add(t2); <span class="comment">// 统计全部兼容图案索引</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> ST = sp.Count;</span><br><span class="line">    <span class="keyword">if</span> (ST == <span class="number">0</span>) Console.WriteLine(<span class="string">$&quot;ERROR: tile <span class="subst">&#123;tilenames[t1]&#125;</span> has no neighbors in direction <span class="subst">&#123;d&#125;</span>&quot;</span>);</span><br><span class="line">    propagator[d][t1] = <span class="keyword">new</span> <span class="built_in">int</span>[ST];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> st = <span class="number">0</span>; st &lt; ST; st++) propagator[d][t1][st] = sp[st];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-5-Unity-Demo"><a href="#2-5-Unity-Demo" class="headerlink" title="2.5 Unity Demo"></a>2.5 Unity Demo</h3><p>通过 prefab 之间的连接约束，得到邻接约束信息，在线或离线地进行过程化生成。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%BF%87%E7%A8%8B%E5%8C%96%E7%94%9F%E6%88%90%EF%BC%88%E7%BB%BC%E8%BF%B0%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">1. 过程化生成（综述）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E8%BF%87%E7%A8%8B%E5%8C%96%E7%94%9F%E6%88%90%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 过程化生成的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E6%8C%91%E6%88%98"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 挑战</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Wave-Function-Collapse-Algorithm"><span class="toc-number">2.</span> <span class="toc-text">2. Wave Function Collapse Algorithm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%BA%94%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 算法原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1-%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1 算法流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2 数据准备</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-Unity-Demo"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 Unity Demo</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2021/03/30/WFC_3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2021/03/30/WFC_3/&text=WFC-从入门到放弃"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2021/03/30/WFC_3/&is_video=false&description=WFC-从入门到放弃"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WFC-从入门到放弃&body=Check out this article: http://shiheuan.github.io/2021/03/30/WFC_3/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2021/03/30/WFC_3/&title=WFC-从入门到放弃"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2021/03/30/WFC_3/&name=WFC-从入门到放弃&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2021/03/30/WFC_3/&t=WFC-从入门到放弃"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

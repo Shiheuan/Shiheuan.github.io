@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00这是又一次翻以前的代码，用协程写了控制动画播放的逻辑，比如通过时间，检测动画是否播放完成等等。 为了更加通用的场景，这次决定用 Animation Event 来实现，进行尝试。 前面有用过一个 UIEventListener 的脚本组件作为 UI 对象统一添加事件，感兴趣可以点这里去看看…… 0x01在开发过程中，判断一个动画是否播放完成是一个常见的需求，如何在 Unity 中处理这些，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity Animation System 动画播放控制">
+<meta property="og:url" content="http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00这是又一次翻以前的代码，用协程写了控制动画播放的逻辑，比如通过时间，检测动画是否播放完成等等。 为了更加通用的场景，这次决定用 Animation Event 来实现，进行尝试。 前面有用过一个 UIEventListener 的脚本组件作为 UI 对象统一添加事件，感兴趣可以点这里去看看…… 0x01在开发过程中，判断一个动画是否播放完成是一个常见的需求，如何在 Unity 中处理这些，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-16T06:29:30.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.924Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="unity">
+<meta property="article:tag" content="foundations">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Unity Animation System 动画播放控制</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/08/22/easy.lua.for.caiji/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/08/06/Attribute.and.Reflection/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&text=Unity Animation System 动画播放控制"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&is_video=false&description=Unity Animation System 动画播放控制"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity Animation System 动画播放控制&body=Check out this article: http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&name=Unity Animation System 动画播放控制&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&t=Unity Animation System 动画播放控制"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E5%9C%A8%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%AD%E6%B7%BB%E5%8A%A0"><span class="toc-number">3.1.</span> <span class="toc-text">（1）在编辑器中添加</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%8A%A8%E7%94%BB%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.2.</span> <span class="toc-text">（2）在代码中添加动画事件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03"><span class="toc-number">4.</span> <span class="toc-text">0x03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04"><span class="toc-number">5.</span> <span class="toc-text">0x04</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Unity Animation System 动画播放控制
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-08-16T06:29:30.000Z" class="dt-published" itemprop="datePublished">2019-08-16</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/foundations/" rel="tag">foundations</a>, <a class="p-category" href="/tags/unity/" rel="tag">unity</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>这是又一次翻以前的代码，用协程写了控制动画播放的逻辑，比如通过时间，检测动画是否播放完成等等。</p>
+<p>为了更加通用的场景，这次决定用 Animation Event 来实现，进行尝试。</p>
+<p>前面有用过一个 UIEventListener 的脚本组件作为 UI 对象统一添加事件，感兴趣可以点<a href="https://shiheuan.github.io/2019/07/17/EventTrigger/">这里</a>去看看……</p>
+<h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><p>在开发过程中，判断一个动画是否播放完成是一个常见的需求，如何在 Unity 中处理这些，首先来解决这些小问题：</p>
+<ul>
+<li>控制播放流</li>
+</ul>
+<p>在 Animator 组件中，播放特定动画片段</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">animator.Play(<span class="built_in">string</span> stateName, <span class="built_in">int</span> layer, <span class="built_in">float</span> normalizedTime);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>停止播放</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">animator.speed = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取当前状态机的全部动画片段（AnimationClip[]）</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> clips = animator.runtimeAnimatorController.animationClips;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取当前播放的动画片段</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">animator.GetCurrentAnimatorClipInfo();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取当前播放的动画信息</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AnimatorClipInfo info = anim.GetCurrentAnimatorStateInfo(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (info.IsName(statename))&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>使用 Animation Event，在动画 Animation clip 中添加</p>
+<h3 id="（1）在编辑器中添加"><a href="#（1）在编辑器中添加" class="headerlink" title="（1）在编辑器中添加"></a>（1）在编辑器中添加</h3><p>此处添在动画结尾处添加了一个事件，回调 AnimCallback 函数。</p>
+<p>对于动画事件的回调函数，必须是在 Animator 组件同级的脚本组件中的公共方法。</p>
+<h3 id="（2）在代码中添加动画事件"><a href="#（2）在代码中添加动画事件" class="headerlink" title="（2）在代码中添加动画事件"></a>（2）在代码中添加动画事件</h3><p>限制：只能在 animator 同级的 gameobject 绑定组件回调函数</p>
+<p>目前的解决方法是通过添加事件分发的组件，来回调当前控制器中的事件处理程序。</p>
+<p>同时要修改 clip 转换的参数设置</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AnimationEventTrigger</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">AnimDelegate</span>(<span class="params">GameObject go, AnimatorStateInfo info</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> AnimDelegate AnimOnEvent;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AnimationEventTrigger <span class="title">GetListener</span>(<span class="params">GameObject go</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        AnimationEventTrigger listener = go.GetComponent&lt;AnimationEventTrigger&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == listener)</span><br><span class="line">        &#123;</span><br><span class="line">            listener = go.AddComponent&lt;AnimationEventTrigger&gt;();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> listener;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AddEventToClip</span>(<span class="params"><span class="built_in">string</span> clipName, <span class="built_in">float</span> triggerTime</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> animator = gameObject.GetComponent&lt;Animator&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (animator != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            AnimationEvent evt = <span class="keyword">new</span> AnimationEvent()</span><br><span class="line">            &#123;</span><br><span class="line">                time = triggerTime,</span><br><span class="line">                functionName = <span class="string">&quot;AnimCallback&quot;</span>,</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> clips = animator.runtimeAnimatorController.animationClips;</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="keyword">var</span> c <span class="keyword">in</span> clips)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (c.name == clipName)</span><br><span class="line">                &#123;</span><br><span class="line">                    c.AddEvent(evt);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AnimCallback</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> != AnimOnEvent)</span><br><span class="line">        &#123;</span><br><span class="line">            AnimOnEvent(gameObject, gameObject.GetComponent&lt;Animator&gt;().GetCurrentAnimatorStateInfo(<span class="number">0</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><p>其他问题：</p>
+<p>在 Game 视图下，对动画中子对象激活状态的控制无效，测试时 起始状态为无效时就能正常显示，否则显示动画显示错误。</p>
+<p>在对象没有激活时，是没有办法获取到对象的组件的。</p>
+<h2 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h2><p>很多时候不犯错是记不得的，</p>
+<p>很多时候很久没犯错也会忘记了错误是怎么避免的，</p>
+<p>可能不对，但我就是想瞎白话。</p>
+<p>絮叨模式开启，</p>
+<p>我作为菜狗子经常犯的错误是让不同的对象同时访问同一份数据，期望他们足够聪明，能知道我想让谁先用，并且，别把东西弄坏了，任何东西，但是……</p>
+<p>好吧，感觉多线程要解决的就是这个问题吧。</p>
+<p>之所以这么说，是因为前段时间有做一个上色的小功能，当时在区分不同区域时用了 static 原本是想作为标记，因为所有公用一个变量，让我觉得是互斥的关系，也就同一时刻，无论是谁修改了这个值，大家都知道了，但碰上了update更新顺序的问题，扑街，那时候了解了其实要进行这种操作，在控制器脚本的位置进行处理时最好的，在事件发生时转到控制器脚本进行处理就可以了，是我之前的一篇文章里的解决方案。（好像都是在处理事件的时候出现的诶）。</p>
+<p>这次又是同样，其实是一个尝试性的需求，同时对四个对象进行相同的操作，让他们同时访问了同一个当前值作为显示，用同一个值进行检测判断停止，然后……反正就跑起来很诡异了。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E5%9C%A8%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%AD%E6%B7%BB%E5%8A%A0"><span class="toc-number">3.1.</span> <span class="toc-text">（1）在编辑器中添加</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%8A%A8%E7%94%BB%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.2.</span> <span class="toc-text">（2）在代码中添加动画事件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03"><span class="toc-number">4.</span> <span class="toc-text">0x03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04"><span class="toc-number">5.</span> <span class="toc-text">0x04</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&text=Unity Animation System 动画播放控制"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&is_video=false&description=Unity Animation System 动画播放控制"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity Animation System 动画播放控制&body=Check out this article: http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&title=Unity Animation System 动画播放控制"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&name=Unity Animation System 动画播放控制&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/16/Unity.Animator.ABC/&t=Unity Animation System 动画播放控制"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

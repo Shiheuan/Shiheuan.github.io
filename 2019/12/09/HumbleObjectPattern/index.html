@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00新坑《游戏编程模式》（作者 Robert Nystrom）。 不过这次要写的这个模式并非来自这本书中，而是 Youtuber Jason Weimann 在视频中介绍的一种可以用来单元测试的设计模式，叫做 Humble Object Pattern。 给同时具备软件条件与硬件条件的小伙伴一个传送门。 在 Unity 下，用 C# 做了简单的实现，传送门： 链接：https:&#x2F;&#x2F;pan.ba">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏编程模式 - Humble Object Pattern">
+<meta property="og:url" content="http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00新坑《游戏编程模式》（作者 Robert Nystrom）。 不过这次要写的这个模式并非来自这本书中，而是 Youtuber Jason Weimann 在视频中介绍的一种可以用来单元测试的设计模式，叫做 Humble Object Pattern。 给同时具备软件条件与硬件条件的小伙伴一个传送门。 在 Unity 下，用 C# 做了简单的实现，传送门： 链接：https:&#x2F;&#x2F;pan.ba">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shiheuan.github.io/2019/12/09/HumbleObjectPattern/fig1_UnityTestRunner.png">
+<meta property="article:published_time" content="2019-12-09T09:59:39.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.777Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="design pattern">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/12/09/HumbleObjectPattern/fig1_UnityTestRunner.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>游戏编程模式 - Humble Object Pattern</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/12/12/ObjectPoolPattern/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/12/06/PrototypeAndTypeObjectPattern/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&text=游戏编程模式 - Humble Object Pattern"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&is_video=false&description=游戏编程模式 - Humble Object Pattern"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏编程模式 - Humble Object Pattern&body=Check out this article: http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&name=游戏编程模式 - Humble Object Pattern&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&t=游戏编程模式 - Humble Object Pattern"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">0x01 单元测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Unity-%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-number">3.</span> <span class="toc-text">0x02 Unity 的单元测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Humble-Object-Pattern"><span class="toc-number">4.</span> <span class="toc-text">0x03 Humble Object Pattern</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">5.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        游戏编程模式 - Humble Object Pattern
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-12-09T09:59:39.000Z" class="dt-published" itemprop="datePublished">2019-12-09</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/design-pattern/" rel="tag">design pattern</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>新坑《游戏编程模式》（作者 Robert Nystrom）。</p>
+<p>不过这次要写的这个模式并非来自这本书中，而是 Youtuber Jason Weimann 在视频中介绍的一种可以用来单元测试的设计模式，叫做 Humble Object Pattern。</p>
+<p>给同时具备软件条件与硬件条件的小伙伴一个<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=3O_rpTWdGps&amp;list=PLB5_EOMkLx_VOmnIytx37lFMiajPHppmj&amp;index=4">传送门</a>。</p>
+<p>在 Unity 下，用 C# 做了简单的实现，传送门：</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1nNTgBZ3mIBL2b7uBopDcmQ">https://pan.baidu.com/s/1nNTgBZ3mIBL2b7uBopDcmQ</a><br>提取码：mz4d </p>
+<p>其他模式传送门：</p>
+<p><a href="https://shiheuan.github.io/2019/11/26/CommandPattern/">命令模式</a></p>
+<p><a href="https://shiheuan.github.io/2019/12/04/ObserverPattern/">观察者模式</a></p>
+<p><a href="https://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/">原型模式、类型对象模式</a></p>
+<p>这次的主题突然有了两个，题目中的模式，以及单元测试。</p>
+<h2 id="0x01-单元测试"><a href="#0x01-单元测试" class="headerlink" title="0x01 单元测试"></a>0x01 单元测试</h2><p>单元测试（Unit Test）又称为模块测试，即针对程序中的最小单位进行的功能测试，在测试中，我们不关心实现方式与代码结构，只关心代码模块是否能够完成所需功能，通过测试。（相较集成测试，在实际嗯嗯环境下是否可用）</p>
+<p>通常测试的结构分为三步：1. 初始化模块；2. 调用方法；3. 进行断言。（Arrange; Act; Assert）</p>
+<p>要求我们写出可测试的代码，而不是在修改后一次次运行程序，查看行为是否符合预期，或者疯狂打印日志。</p>
+<p>但是呢？测试驱动开发（Test-Driven Development，TDD）为了让写出的代码可测试，依然需要一些方法，遵守一些规则。</p>
+<ul>
+<li>方法和数据源解耦，不依赖于特定的数据获取方式。</li>
+<li>单一职责原则（Single Responsibility Principle），同时涵盖了职责是否清晰（能否从 API 的名字涵盖其功能）</li>
+<li>不要依赖可变的全局状态，如果存在多个类似的依赖，将很难预测方法的行为，使得维护变得困难。</li>
+<li>使用<a href="https://shiheuan.github.io/2019/09/24/Dependency.Injection.for.Starter/">依赖注入]</a>，降低类与类之间的耦合，将依赖项的获取从硬编码，改成了在构造阶段注入依赖项，这样我们就可以在测试时将依赖项传入。</li>
+<li>单例模式在方法中的使用，使方法产生了副作用（Side Effects），也会影响方法的可测试性。</li>
+</ul>
+<h2 id="0x02-Unity-的单元测试"><a href="#0x02-Unity-的单元测试" class="headerlink" title="0x02 Unity 的单元测试"></a>0x02 Unity 的单元测试</h2><p>Unity 使用 NUnit 实现了一个内部的单元测试，在编辑器中「Window」-「General」-「Test Runner」打开单元测试测试窗口。</p>
+<p><img src="https://Shiheuan.github.io/2019/12/09/HumbleObjectPattern/fig1_UnityTestRunner.png" alt=""></p>
+<p>图中是在示例中，进行的单元测试。在 Unity 代码中使用时，需要引用 NUnit.Framework 来使用。测试代码需要加上“[Test]”特性，放在 Editor 目录下即可。</p>
+<p>早先在进行异常测试时，使用“[ExpectedException()]”特性，如果在执行测试用例时抛出了指定异常，则通过测试。现在这种异常测试的方法已经被移除了，而是改用 Throws Constraint 这样的构造（NUnit 3.0）。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line">[<span class="meta">ExpectedException(typeof(IndexOutOfRangeException))</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SomeTestCode</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    ...Exception <span class="keyword">in</span> function</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SomeTestCode</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    ...Some Code</span><br><span class="line">    Assert.That(() =&gt; stack.push(item), <span class="comment">// Exception in particular instruction.</span></span><br><span class="line">        Throws.Typeof&lt;IndexOutOfRangeException&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（较老版本的 Unity 可能无法找到对应动态链接库可以手动将链接库复制到 Unity 工程 Plugins 目录下。与原生 C# 工程不同，Unity 会自动将 Plugins 目录下的动态链接库引用到工程中，在 Unity 的工程中，无法通过右键单击「引用」-「添加新引用」来添加）。</p>
+<blockquote>
+<p>Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</p>
+</blockquote>
+<h2 id="0x03-Humble-Object-Pattern"><a href="#0x03-Humble-Object-Pattern" class="headerlink" title="0x03 Humble Object Pattern"></a>0x03 Humble Object Pattern</h2><p>没有找到这个模式的具体描述，但通过 Jason 的描述，主要通过为代码进行界限分离，使其变得可测或更容易移植。</p>
+<p>在示例中，我们第一个版本实现了一个控制小球上下移动并带有限位的脚本组件，但是如果我们想对 Move() 方法进行测试，就需要处理此方法对 MonoBehaviour 的依赖，如果在测试时修改了对象的 transform 组件，则会产生副作用。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Bird</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">SerializeField</span>]</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span> maxHeight = <span class="number">3</span>;</span><br><span class="line">    [<span class="meta">SerializeField</span>]</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span> minHeight = <span class="number">-3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">float</span> vertical = Input.GetAxis(<span class="string">&quot;Vertical&quot;</span>);</span><br><span class="line">        Move(vertical);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Move</span>(<span class="params"><span class="built_in">float</span> vertical</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        transform.position += Vector3.up * vertical;</span><br><span class="line">        <span class="keyword">if</span> (transform.position.y &gt; maxHeight)</span><br><span class="line">            transform.position = <span class="keyword">new</span> Vector3(transform.position.x, maxHeight, transform.position.z);</span><br><span class="line">        <span class="keyword">if</span> (transform.position.y &lt; minHeight)</span><br><span class="line">            transform.position = <span class="keyword">new</span> Vector3(transform.position.x, minHeight, transform.position.z);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单的通过增加一层抽象，即可将 MonoBehaviour 和移动的逻辑进行分离，抽象的接口中包含了我们所关心的数据。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IBird</span> </span><br><span class="line">&#123;</span><br><span class="line">    Vector3 Position &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="built_in">float</span> MaxHeight &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="built_in">float</span> MinHeight &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新的 Bird 类继承了接口，将 MonoBehaviour 的 Transform 组件所表示的位置，通过接口中定义的 Vector3 来表示。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Bird</span> : <span class="title">MonoBehaviour</span>, <span class="title">IBird</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">public</span> Vector3 Position</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> transform.position; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; transform.position = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">SerializeField</span>]</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> _maxHeight = <span class="number">3</span>;</span><br><span class="line">    [<span class="meta">SerializeField</span>]</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> _minHeight = <span class="number">-3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> MaxHeight &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _maxHeight; &#125; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> MinHeight &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _minHeight; &#125; &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Move() 方法就可以避免直接对 transform 的引用，而是使用接口中的数据成员。我们定义一个 BirdController 类，用来控制对象的移动。控制类保存着一个符合接口定义的引用，并通过引用来对对象进行移动和限位。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BirdController</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> IBird _bird;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BirdController</span>(<span class="params">IBird bird</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _bird = bird;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Move</span>(<span class="params"><span class="built_in">float</span> vertical</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        _bird.Position += Vector3.up * vertical;</span><br><span class="line">        <span class="keyword">if</span> (_bird.Position.y &gt; _bird.MaxHeight)</span><br><span class="line">            _bird.Position = <span class="keyword">new</span> Vector3(_bird.Position.x, _bird.MaxHeight, _bird.Position.z);</span><br><span class="line">        <span class="keyword">if</span> (_bird.Position.y &lt; _bird.MinHeight)</span><br><span class="line">            _bird.Position = <span class="keyword">new</span> Vector3(_bird.Position.x, _bird.MinHeight, _bird.Position.z);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后把分离后的 Bird 类补充完整，首先需要保存自己的控制器的引用，用自己作为控制器的构造函数的参数传入，并在 Update 中对输入进行处理，通过控制器进行移动的处理。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Bird</span> : <span class="title">MonoBehaviour</span>, <span class="title">IBird</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> BirdController _birdController;</span><br><span class="line">    <span class="keyword">public</span> Vector3 Position</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> transform.position; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; transform.position = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">SerializeField</span>]</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> _maxHeight = <span class="number">3</span>;</span><br><span class="line">    [<span class="meta">SerializeField</span>]</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> _minHeight = <span class="number">-3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> MaxHeight &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _maxHeight; &#125; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> MinHeight &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _minHeight; &#125; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        _birdController = <span class="keyword">new</span> BirdController(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">float</span> vertical = Input.GetAxis(<span class="string">&quot;Vertical&quot;</span>);</span><br><span class="line">        _birdController.Move(vertical);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这，我们通过更复杂的方式，实现了我们原本一个脚本几行代码就可以达到的功能。好处当然是前面说的可测性。要对分离出来的控制器 Move() 方法进行测试，只需要实现相应的接口，通过 Unity 提供的单元测试方法来测试即可：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MockBird</span> : <span class="title">IBird</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> Vector3 Position &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> MaxHeight &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> MinHeight &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> NUnit.Framework;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BirdTest</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Test</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BirdStopsAtMinHeight</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        IBird bird = <span class="keyword">new</span> MockBird() &#123;MaxHeight = <span class="number">3</span>, MinHeight = <span class="number">-3</span>&#125;;</span><br><span class="line">        BirdController birdController = <span class="keyword">new</span> BirdController(bird);</span><br><span class="line">        birdController.Move(<span class="number">-10f</span>);</span><br><span class="line">        Assert.AreEqual(<span class="number">-3f</span>, bird.Position.y);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Test</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BirdStopsAtMaxHeight</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        IBird bird = <span class="keyword">new</span> MockBird() &#123; MaxHeight = <span class="number">3</span>, MinHeight = <span class="number">-3</span> &#125;;</span><br><span class="line">        BirdController birdController = <span class="keyword">new</span> BirdController(bird);</span><br><span class="line">        birdController.Move(<span class="number">10f</span>);</span><br><span class="line">        Assert.AreEqual(<span class="number">3f</span>, bird.Position.y);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Test</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BirdMoveUpOne</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        IBird bird = <span class="keyword">new</span> MockBird() &#123; MaxHeight = <span class="number">3</span>, MinHeight = <span class="number">-3</span> &#125;;</span><br><span class="line">        BirdController birdController = <span class="keyword">new</span> BirdController(bird);</span><br><span class="line">        birdController.Move(<span class="number">1f</span>);</span><br><span class="line">        Assert.AreEqual(<span class="number">1f</span>, bird.Position.y);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><p>测试驱动开发从这个小例子中，似乎是进行了过度设计，但这种开发模式可以很有效的在工程达到一定规模时，避免修改一处就要人工检查很多内容。并且为了写出可测试的代码，就要尽可能遵从更多的规则，从这方面考虑我们的代码也会更可靠。</p>
+<p>当然有些时候，要写出可测试的代码，也可能是一项挑战。以后都试着挑战一下吧。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">0x01 单元测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Unity-%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-number">3.</span> <span class="toc-text">0x02 Unity 的单元测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Humble-Object-Pattern"><span class="toc-number">4.</span> <span class="toc-text">0x03 Humble Object Pattern</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">5.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&text=游戏编程模式 - Humble Object Pattern"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&is_video=false&description=游戏编程模式 - Humble Object Pattern"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏编程模式 - Humble Object Pattern&body=Check out this article: http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&title=游戏编程模式 - Humble Object Pattern"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&name=游戏编程模式 - Humble Object Pattern&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/09/HumbleObjectPattern/&t=游戏编程模式 - Humble Object Pattern"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

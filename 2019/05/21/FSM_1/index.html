@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="〇、先暂停我简单说两句啊有限状态机是一个很常用的技术，在流程控制和游戏AI中都比较实用，因为状态机编程简单又很符合直觉。本文是参考《Programming Game AI by Example》从零开始使用C++搭一个状态机的轮子，主要有以下几个点： 我会在搭建的过程中穿插一些C++知识的介绍，适合不甚了解C++或是状态机的小伙伴，手把手的编程教程。  游戏框架的实现 状态类以及游戏对象的状态转换">
+<meta property="og:type" content="article">
+<meta property="og:title" content="来来来，用 C++ 写个有限状态机（一）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/05/21/FSM_1/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="〇、先暂停我简单说两句啊有限状态机是一个很常用的技术，在流程控制和游戏AI中都比较实用，因为状态机编程简单又很符合直觉。本文是参考《Programming Game AI by Example》从零开始使用C++搭一个状态机的轮子，主要有以下几个点： 我会在搭建的过程中穿插一些C++知识的介绍，适合不甚了解C++或是状态机的小伙伴，手把手的编程教程。  游戏框架的实现 状态类以及游戏对象的状态转换">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-05-21T03:23:00.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.776Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="FSM">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>来来来，用 C++ 写个有限状态机（一）</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/06/10/AnonymousMethod/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/02/25/unity.and.android.debug/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/05/21/FSM_1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/05/21/FSM_1/&text=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/05/21/FSM_1/&is_video=false&description=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=来来来，用 C++ 写个有限状态机（一）&body=Check out this article: http://shiheuan.github.io/2019/05/21/FSM_1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/05/21/FSM_1/&name=来来来，用 C++ 写个有限状态机（一）&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/05/21/FSM_1/&t=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81%E5%85%88%E6%9A%82%E5%81%9C%E6%88%91%E7%AE%80%E5%8D%95%E8%AF%B4%E4%B8%A4%E5%8F%A5%E5%95%8A"><span class="toc-number">1.</span> <span class="toc-text">〇、先暂停我简单说两句啊</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81"><span class="toc-number">2.</span> <span class="toc-text">一、</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        来来来，用 C++ 写个有限状态机（一）
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-05-21T03:23:00.000Z" class="dt-published" itemprop="datePublished">2019-05-21</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/FSM/" rel="tag">FSM</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="〇、先暂停我简单说两句啊"><a href="#〇、先暂停我简单说两句啊" class="headerlink" title="〇、先暂停我简单说两句啊"></a>〇、先暂停我简单说两句啊</h2><p>有限状态机是一个很常用的技术，在流程控制和游戏AI中都比较实用，因为状态机编程简单又很符合直觉。本文是参考《Programming Game AI by Example》从零开始使用C++搭一个状态机的轮子，主要有以下几个点：</p>
+<p>我会在搭建的过程中穿插一些C++知识的介绍，适合不甚了解C++或是状态机的小伙伴，手把手的编程教程。</p>
+<ol>
+<li>游戏框架的实现</li>
+<li>状态类以及游戏对象的状态转换</li>
+<li>状态机实现</li>
+<li>消息机制的实现</li>
+</ol>
+<p>完整的代码在 github 中给出。</p>
+<h2 id="一、"><a href="#一、" class="headerlink" title="一、"></a>一、</h2><p>记得最开始工作时候也接触过有限状态机，当时是一个长长的用switch写成的状态机，理解它的时候真的很困难。</p>
+<p>所以现在使用一套内置规则到状态内部去，来控制状态的转换。</p>
+<p>现在就来制作一个有限状态机。</p>
+<p>作为一个关于使用状态机创建一个智能体的实际案例，我们先模拟这样一个场景。想象一个我们控制的角色“我”，在上海延安西路附近工作学习和玩耍，“我”相当的佛系，有钱不愁吃喝就去上学，自由自在地给技能树加点，没钱了就去实习赚外块，渴了累了就近“啤酒阿姨”两瓶啤酒……</p>
+<p>但是，这个例子要全靠想象力了，因为这是在控制台中的文本演示。</p>
+<p>[图1 这个状态机的示意图，surface画一下，忍一忍买pro7吧]</p>
+<p>因此，这个例子中有四个位置：一个学校，可以让“我”提高能力；一个实习公司，根据“我”的能力，给我发实习津贴；一个啤酒阿姨酒吧，让“我”可以解除压力；最后还有一个温馨的家吼，能够解除疲劳。</p>
+<p>而这些位置每一个都代表了一个状态，因为我们是使用内置规则来控制状态机的转换，“我”在到达一个位置之后要干什么，都会由当前所处的状态和一些属性值来决定。</p>
+<p>&amp;&amp;&amp;&amp;逐个介绍一下，要点的扩展写成补充的blog放到前面，加链接。</p>
+<p>BaseGameEntity类，用来作为所有游戏对象的基类，主要为游戏对象提供了一个ID，以及每一帧更新时调用的纯虚函数Update。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BaseGameEntity</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="type">int</span> m_ID;</span><br><span class="line">	<span class="comment">// Should be static</span></span><br><span class="line">	<span class="type">static</span> <span class="type">int</span> m_iNextValidID;</span><br><span class="line">	<span class="comment">//int m_iNextValidID;</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">SetID</span><span class="params">(<span class="type">int</span> val)</span></span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">BaseGameEntity</span>(<span class="type">int</span> id)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">SetID</span>(id);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">virtual</span>  ~<span class="built_in">BaseGameEntity</span>()&#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Update</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">ID</span><span class="params">()</span><span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_ID; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>使用一个枚举类型管理所有可能到达的地点，sweetHome、school、company、beerLady 分别代表家、学校、实习公司、啤酒阿姨这四个地点。在 Me 类中，对“我”所特有的属性进行了定义，如心情值（ m_iMoodForDoingStuffs ），金钱数（ m_iMoneyInCard ），能力（ m_iAbilityLevel ），疲劳（ m_iFatigue ），以及这些属性的阈值，用来在状态转移中起作用。随后定义的方法表明了这些属性如何变化，并为其他类查看这些属性暴露了接口。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">location_type</span></span><br><span class="line">&#123;</span><br><span class="line">	sweetHome,</span><br><span class="line">	school,</span><br><span class="line">	company,</span><br><span class="line">	beerLady,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Me</span> : <span class="keyword">public</span> BaseGameEntity</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	State* m_pCurrentState;</span><br><span class="line">	location_type m_Location;</span><br><span class="line">	<span class="comment">// should be early than those variables use them.</span></span><br><span class="line">	<span class="type">const</span> <span class="type">int</span> Max_Mood = <span class="number">5</span>;</span><br><span class="line">	<span class="type">const</span> <span class="type">int</span> TirednessThreshold = <span class="number">5</span>;</span><br><span class="line">	<span class="type">const</span> <span class="type">int</span> LowMoodThreshold = <span class="number">1</span>;</span><br><span class="line">	<span class="type">const</span> <span class="type">int</span> LowMoneyThreshold = <span class="number">2000</span>;</span><br><span class="line">	<span class="comment">// </span></span><br><span class="line">	<span class="type">int</span> m_iMoneyInCard;</span><br><span class="line">	<span class="type">int</span> m_iMoodForDoingStuffs;</span><br><span class="line">	<span class="type">int</span> m_iAbilityLevel;</span><br><span class="line">	<span class="type">int</span> m_iFatigue;</span><br><span class="line">	</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">Me</span>(<span class="type">int</span> ID);				</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">Update</span><span class="params">()</span></span>; </span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">ChangeState</span><span class="params">(State *pNewState)</span></span>;</span><br><span class="line">	<span class="comment">// interface</span></span><br><span class="line">	<span class="function">location_type <span class="title">Location</span><span class="params">()</span><span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_Location; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">ChangeLocation</span><span class="params">(<span class="type">const</span> location_type goal)</span> </span>&#123; m_Location = goal; &#125;</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">Ability</span><span class="params">()</span><span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_iAbilityLevel; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">SetAbilityLevel</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span> </span>&#123; m_iAbilityLevel = val; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">AddToAbility</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span></span>;</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">MoneyInCard</span><span class="params">()</span><span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_iMoneyInCard; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">SetMoneyInCard</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span> </span>&#123; m_iMoneyInCard = val; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">ThePayDay</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span></span>;</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">Fatigued</span><span class="params">()</span><span class="type">const</span></span>;</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">Rested</span><span class="params">()</span><span class="type">const</span></span>;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">DecreaseFatigue</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span> </span>&#123; m_iFatigue -= val; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">IncreaseFatigue</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span> </span>&#123; m_iFatigue += val; &#125;</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">LowMood</span><span class="params">()</span><span class="type">const</span></span>;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">DecreaseMood</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span> </span>&#123; m_iMoodForDoingStuffs -= val; &#125;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">IncreaseMood</span><span class="params">(<span class="type">const</span> <span class="type">int</span> val)</span> </span>&#123; m_iMoodForDoingStuffs += val; &#125;</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">FeelPoor</span><span class="params">()</span><span class="type">const</span></span>;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">BuyTheBeer</span><span class="params">()</span> </span>&#123; m_iMoodForDoingStuffs = Max_Mood; m_iMoneyInCard -= <span class="number">500</span>; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>接下来是状态 State 类，这是一个纯虚类（抽象类），作为状态对象的一个通用接口。类中所有方法都是虚函数，需要在继承自 State 的类中实现具体逻辑。Enter() 方法在进入状态时调用一次，随后执行 Execute() 方法处理状态的主要逻辑，在状态退出时，会执行 Exit() 方法。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">State</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">State</span>()&#123;&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Enter</span><span class="params">(Me*)</span> </span>= <span class="number">0</span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Execute</span><span class="params">(Me*)</span> </span>= <span class="number">0</span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Exit</span><span class="params">(Me*)</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在这里使用单例模式实现每一个状态，一切从简，不考虑线程安全。分别针对不同的地点，定义在每个地点的状态类，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// My States</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GoWorkAndEarnMoney</span>:<span class="keyword">public</span> State</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="built_in">GoWorkAndEarnMoney</span>() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">static</span> GoWorkAndEarnMoney* <span class="title">Instance</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Enter</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Execute</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Exit</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GoSchoolAndStudy</span>:<span class="keyword">public</span> State</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="built_in">GoSchoolAndStudy</span>() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">static</span> GoSchoolAndStudy* <span class="title">Instance</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Enter</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Execute</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Exit</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GoHomeAndSleep</span>:<span class="keyword">public</span> State</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="built_in">GoHomeAndSleep</span>() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">static</span> GoHomeAndSleep* <span class="title">Instance</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Enter</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Execute</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Exit</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GoBar</span>:<span class="keyword">public</span> State</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="built_in">GoBar</span>() = <span class="keyword">default</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">static</span> GoBar* <span class="title">Instance</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Enter</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Execute</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">Exit</span><span class="params">(Me* pMe)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81%E5%85%88%E6%9A%82%E5%81%9C%E6%88%91%E7%AE%80%E5%8D%95%E8%AF%B4%E4%B8%A4%E5%8F%A5%E5%95%8A"><span class="toc-number">1.</span> <span class="toc-text">〇、先暂停我简单说两句啊</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81"><span class="toc-number">2.</span> <span class="toc-text">一、</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/05/21/FSM_1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/05/21/FSM_1/&text=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/05/21/FSM_1/&is_video=false&description=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=来来来，用 C++ 写个有限状态机（一）&body=Check out this article: http://shiheuan.github.io/2019/05/21/FSM_1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/05/21/FSM_1/&title=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/05/21/FSM_1/&name=来来来，用 C++ 写个有限状态机（一）&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/05/21/FSM_1/&t=来来来，用 C++ 写个有限状态机（一）"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

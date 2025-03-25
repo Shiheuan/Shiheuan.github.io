@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00 相当难过先说说题外话 正常的 UI 事件是这样的（我的理解中）：在 UI 对象上挂载脚本，脚本中处理对应的逻辑，比如：在处理指针按下，要在脚本中处理实现一个 IPointerDown 的接口。这看起来很直接，但是在使用中会让逻辑很分散。这就是让我相当难受的做法。  而 EventTrigger 的做法类似，也是将一个实现了所有接口的脚本绑定在要触发事件的 UI 对象上，但是……他只触发一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过 EventTrigger 使用 c# 事件">
+<meta property="og:url" content="http://shiheuan.github.io/2019/07/17/EventTrigger/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00 相当难过先说说题外话 正常的 UI 事件是这样的（我的理解中）：在 UI 对象上挂载脚本，脚本中处理对应的逻辑，比如：在处理指针按下，要在脚本中处理实现一个 IPointerDown 的接口。这看起来很直接，但是在使用中会让逻辑很分散。这就是让我相当难受的做法。  而 EventTrigger 的做法类似，也是将一个实现了所有接口的脚本绑定在要触发事件的 UI 对象上，但是……他只触发一">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-07-17T13:54:13.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.775Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="unity">
+<meta property="article:tag" content="foundations">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>通过 EventTrigger 使用 c# 事件</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/07/24/DrawLineInUnity/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/07/15/Csharp.Lua.MoonSharp_1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/07/17/EventTrigger/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&text=通过 EventTrigger 使用 c# 事件"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&is_video=false&description=通过 EventTrigger 使用 c# 事件"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=通过 EventTrigger 使用 c# 事件&body=Check out this article: http://shiheuan.github.io/2019/07/17/EventTrigger/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&name=通过 EventTrigger 使用 c# 事件&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/07/17/EventTrigger/&t=通过 EventTrigger 使用 c# 事件"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E7%9B%B8%E5%BD%93%E9%9A%BE%E8%BF%87"><span class="toc-number">1.</span> <span class="toc-text">0x00 相当难过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03"><span class="toc-number">4.</span> <span class="toc-text">0x03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff-%E9%99%84%E5%BD%95"><span class="toc-number">5.</span> <span class="toc-text">0xff 附录</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        通过 EventTrigger 使用 c# 事件
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-07-17T13:54:13.000Z" class="dt-published" itemprop="datePublished">2019-07-17</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/foundations/" rel="tag">foundations</a>, <a class="p-category" href="/tags/unity/" rel="tag">unity</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00-相当难过"><a href="#0x00-相当难过" class="headerlink" title="0x00 相当难过"></a>0x00 相当难过</h2><p>先说说题外话</p>
+<p>正常的 UI 事件是这样的（我的理解中）：在 UI 对象上挂载脚本，脚本中处理对应的逻辑，比如：在处理指针按下，要在脚本中处理实现一个 IPointerDown 的接口。这看起来很直接，但是在使用中会让逻辑很分散。这就是让我相当难受的做法。 </p>
+<p>而 EventTrigger 的做法类似，也是将一个实现了所有接口的脚本绑定在要触发事件的 UI 对象上，但是……他只触发一个特定事件。</p>
+<p>我不确定从 UI 在 EventSystem 中的实现是不是通过事件的方式（我以为是，需要学习一下，搞搞清楚），之前我也是并不理解为什么要在事件触发的回调中触发另一个事件。</p>
+<h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><p>处理 UI 事件的 EventTrigger 是什么：</p>
+<blockquote>
+<p>接受从 EventSystem 触发的事件，并为每一个事件调用注册的回调函数。EventTrigger 可以用来指定为每个 EventSystem 事件调用的函数。可以将多个函数注册给单个事件，每当 EventTrigger 收到该事件时，都会按照这些函数的提供顺序调用它们。（这个组件要挂载到 GameObject 上使用，这会导致该对象拦截所有的事件，并且这些时间都不会传播到父对象上。）</p>
+</blockquote>
+<ol>
+<li>要挂上</li>
+<li>要实现</li>
+<li>要有注册的回调方法</li>
+</ol>
+<p>关于 EventTrigger 的原理这点，在<a href="https://shiheuan.github.io/2019/07/11/Csharp.delegate.event/">c#委托和事件</a>中有所介绍，在这里是通过 EventSystem 触发绑定在对象上脚本的处理函数，在处理函数中，再触发定义的事件，通过事件调用实际上要执行的逻辑代码。</p>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>在官网文档中，有介绍 EventTrigger 的两种使用方式：</p>
+<ol>
+<li>扩展 EventTrigger，重写（ override ）需要拦截的事件的函数：</li>
+</ol>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventTriggerExample</span> : <span class="title">EventTrigger</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnBeginDrag</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnBeginDrag called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...<span class="comment">// 长，代码见附录I</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnPointerClick</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnPointerClick called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>其实这里的用法，就和原本自己定义脚本实现接口的方式相同了，将处理的逻辑写在事件的处理函数中。在上面提出的让逻辑在统一的位置处理，可以在这里触发事件。像这样……（传了一个 <a target="_blank" rel="noopener" href="https://gist.github.com/Shiheuan/70e8536a83d9cdd428ae479a1df18c15">gist</a>）</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UIEventListener</span> : <span class="title">EventTrigger</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">UIDelegate</span>(<span class="params">GameObject go</span>)</span>; </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> UIDelegate onPointerEnter;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnPointerEnter</span>(<span class="params">PointerEventData eventData</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="literal">null</span> != onPointerEnter)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 传入挂载对象作为参数可以方便在主逻辑脚本中处理</span></span><br><span class="line">                onPointerEnter(gameObject);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样，这个脚本也要挂在对象上，但这里的逻辑只触发了自定义的事件，而事件就可以调用放在任意位置的逻辑代码了。但是手动挂脚本还是不怎么方便日后的修改与维护，所以添加一个静态方法用来获取特定对象的 UIEventListener 组件：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> UIEventListener <span class="title">GetListener</span>(<span class="params">GameObject go</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    UIEventListener listener = go.GetComponent&lt;UIEventListener&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == listener)</span><br><span class="line">    &#123;<span class="comment">// 如果找不到，那就挂一个</span></span><br><span class="line">        listener = go.AddComponent&lt;UIEventListener&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> listener;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样这个问题就解决了。</p>
+<ol>
+<li>也可以指定单个委托：</li>
+</ol>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventTriggerDelegateExample</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        EventTrigger trigger = GetComponent&lt;EventTrigger&gt;();</span><br><span class="line">        EventTrigger.Entry entry = <span class="keyword">new</span> EventTrigger.Entry(); <span class="comment">// 保存有事件类型，和回调函数</span></span><br><span class="line">        entry.eventID = EventTriggerType.PointerDown;</span><br><span class="line">        entry.callback.AddListener((data) =&gt; &#123; OnPointerDownDelegate((PointerEventData)data); &#125;);</span><br><span class="line">        trigger.triggers.Add(entry); <span class="comment">// triggers 是在 EventTrigger 中注册的所有函数</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// PointerEventData 是 EventSystem 定义的数据类型</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnPointerDownDelegate</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnPointerDownDelegate called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码，获取到了挂载的对象上的 EventTrigger 组件，然后监听对象的某个事件，执行特定的回调方法。</p>
+<p>当然也可以类似的将这段代码与自动添加组件一起封装一下再使用：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 添加EventTrigger的监听事件</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;obj&quot;&gt;</span>添加监听的对象<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventID&quot;&gt;</span>添加的监听类型<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;action&quot;&gt;</span>触发方法<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">AddTriggersListener</span>(<span class="params">GameObject obj, EventTriggerType eventID, UnityAction&lt;BaseEventData&gt; action</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    EventTrigger trigger = obj.GetComponent&lt;EventTrigger&gt;();</span><br><span class="line">    <span class="keyword">if</span> (trigger == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        trigger = obj.AddComponent&lt;EventTrigger&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (trigger.triggers.Count == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        trigger.triggers = <span class="keyword">new</span> List&lt;EventTrigger.Entry&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    UnityAction&lt;BaseEventData&gt; callback = <span class="keyword">new</span> UnityAction&lt;BaseEventData&gt;(action);</span><br><span class="line">    EventTrigger.Entry entry = <span class="keyword">new</span> EventTrigger.Entry();</span><br><span class="line">    entry.eventID = eventID;</span><br><span class="line">    entry.callback.AddListener(callback);</span><br><span class="line">    trigger.triggers.Add(entry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><p>在 PC 端与移动端处理 UI 事件会有所不同，可以通过实机调试就可以看出不同。比方说在 PC 端，通过鼠标来操作时，指针离开区域和指针放开的事件是可以明确区分的，但是在移动端，由于没有“指针”，在处理这两个事件时其实是同时的，如果在这两个事件之间处理逻辑，就不会符合预期了。</p>
+<p>关于前面抛出的问题，依旧占坑，先去改我费尽苦心写下的 bug 了，明明知道 update 执行是随机的，还在触发事件时用 static 对象来拼人品……</p>
+<p>（ps 好了，我“辛辛苦苦”改完了我“辛辛苦苦”写的bug……0点15了……</p>
+<p>（占坑以后聊 EventSystem</p>
+<h2 id="0xff-附录"><a href="#0xff-附录" class="headerlink" title="0xff 附录"></a>0xff 附录</h2><p>附录I</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventTriggerExample</span> : <span class="title">EventTrigger</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnBeginDrag</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnBeginDrag called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnCancel</span>(<span class="params">BaseEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnCancel called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnDeselect</span>(<span class="params">BaseEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnDeselect called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnDrag</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnDrag called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnDrop</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnDrop called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnEndDrag</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnEndDrag called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnInitializePotentialDrag</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnInitializePotentialDrag called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnMove</span>(<span class="params">AxisEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnMove called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnPointerClick</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnPointerClick called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnPointerDown</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnPointerDown called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnPointerEnter</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnPointerEnter called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnPointerExit</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnPointerExit called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnPointerUp</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnPointerUp called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnScroll</span>(<span class="params">PointerEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnScroll called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnSelect</span>(<span class="params">BaseEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnSelect called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnSubmit</span>(<span class="params">BaseEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnSubmit called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnUpdateSelected</span>(<span class="params">BaseEventData data</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;OnUpdateSelected called.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E7%9B%B8%E5%BD%93%E9%9A%BE%E8%BF%87"><span class="toc-number">1.</span> <span class="toc-text">0x00 相当难过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03"><span class="toc-number">4.</span> <span class="toc-text">0x03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff-%E9%99%84%E5%BD%95"><span class="toc-number">5.</span> <span class="toc-text">0xff 附录</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/07/17/EventTrigger/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&text=通过 EventTrigger 使用 c# 事件"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&is_video=false&description=通过 EventTrigger 使用 c# 事件"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=通过 EventTrigger 使用 c# 事件&body=Check out this article: http://shiheuan.github.io/2019/07/17/EventTrigger/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&title=通过 EventTrigger 使用 c# 事件"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/07/17/EventTrigger/&name=通过 EventTrigger 使用 c# 事件&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/07/17/EventTrigger/&t=通过 EventTrigger 使用 c# 事件"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

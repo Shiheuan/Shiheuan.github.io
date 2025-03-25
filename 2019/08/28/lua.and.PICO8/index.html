@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00先两句话说说都是啥！ lua 在上一篇有过介绍了，是速度最快的嵌入式脚本语言之一。 而今天提到的这个 PICO-8 是使用了基本符合 lua 语法的脚本语言的开发平台，被称作 fantasy console 的平台，不仅包含了代码，精灵图像，声效音乐的编辑器，还集成了发布到论坛，导出 html，甚至是导出 .png 格式文件，没错，整个游戏就存放在这一张图片之中，这也是为什么，PICO-8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊 lua 和 PICO-8">
+<meta property="og:url" content="http://shiheuan.github.io/2019/08/28/lua.and.PICO8/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00先两句话说说都是啥！ lua 在上一篇有过介绍了，是速度最快的嵌入式脚本语言之一。 而今天提到的这个 PICO-8 是使用了基本符合 lua 语法的脚本语言的开发平台，被称作 fantasy console 的平台，不仅包含了代码，精灵图像，声效音乐的编辑器，还集成了发布到论坛，导出 html，甚至是导出 .png 格式文件，没错，整个游戏就存放在这一张图片之中，这也是为什么，PICO-8">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://shiheuan.github.io/2019/08/28/lua.and.PICO8/lua.and.PICO8.1.png">
+<meta property="article:published_time" content="2019-08-28T15:45:20.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:08.112Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="engine">
+<meta property="article:tag" content="lua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://shiheuan.github.io/2019/08/28/lua.and.PICO8/lua.and.PICO8.1.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>聊聊 lua 和 PICO-8</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/09/20/unity.sfx/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/08/22/easy.lua.for.caiji/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&text=聊聊 lua 和 PICO-8"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&is_video=false&description=聊聊 lua 和 PICO-8"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=聊聊 lua 和 PICO-8&body=Check out this article: http://shiheuan.github.io/2019/08/28/lua.and.PICO8/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&name=聊聊 lua 和 PICO-8&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&t=聊聊 lua 和 PICO-8"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-PICO-8-%E5%A4%8D%E5%8F%A4%E6%B8%B8%E6%88%8F%E5%92%8C%E6%B8%B8%E6%88%8F%E6%9C%BA%E5%88%B6%E7%9A%84%E6%9E%81%E9%99%90%E8%A1%A8%E8%BE%BE"><span class="toc-number">2.</span> <span class="toc-text">0x01 PICO-8 复古游戏和游戏机制的极限表达</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">4.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        聊聊 lua 和 PICO-8
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-08-28T15:45:20.000Z" class="dt-published" itemprop="datePublished">2019-08-28</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/engine/" rel="tag">engine</a>, <a class="p-category" href="/tags/lua/" rel="tag">lua</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>先两句话说说都是啥！</p>
+<p>lua 在上一篇有过介绍了，是速度最快的嵌入式脚本语言之一。</p>
+<p>而今天提到的这个 PICO-8 是使用了基本符合 lua 语法的脚本语言的开发平台，被称作 fantasy console 的平台，不仅包含了代码，精灵图像，声效音乐的编辑器，还集成了发布到论坛，导出 html，甚至是导出 .png 格式文件，没错，整个游戏就存放在这一张图片之中，这也是为什么，PICO-8 开发的游戏被称作卡带的原因了。</p>
+<p>之前，我硬着头皮自己报名了机核网与 clockwork 联合举办的 Gamejam 活动，幸运地拿到了机核提供的开发机，心心念想着不能浪费这次玩耍的好机会。</p>
+<p>再加上前段时间在 Unity 用了一段时间的 MoonSharp 和 lua，手痒痒决定再进一步，在 PICO-8 上，用 lua 写一个复古游戏（-12刀）。</p>
+<h2 id="0x01-PICO-8-复古游戏和游戏机制的极限表达"><a href="#0x01-PICO-8-复古游戏和游戏机制的极限表达" class="headerlink" title="0x01 PICO-8 复古游戏和游戏机制的极限表达"></a>0x01 PICO-8 复古游戏和游戏机制的极限表达</h2><p>在得知这样一款开发平台之后，马上就被这形形色色的创意吸引了，我一直是一个不懂游戏性的人，很难说什么设计好玩什么设计蠢，我甚至仔细想过，为什么 E 胖做了一个 GameJam 来讽刺社交游戏通过滥用游戏来操纵玩家，叫做《AVGM ( Abusive Video Game Manipulation )》（这里放上了卡姐的<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av30456197/">视频地址</a>），但我却难以理解为什么，一个简单开关灯的游戏，也能让那么多人真的点击上万次，不理解，这个游戏，和《以撒》的本质不同在哪里，驱动力是好像没什么不同？ </p>
+<p>所以这就是我为什么用 PICO-8 了，在这里，你能使用的精灵有限制，你能写的代码长度也有限制，在有限的空间中，专注于游戏机制的更迭，我觉得是这个小巧的开发引擎最吸引我的。当然，想必很多人知道这款艺术品的途径和我一样，就是《Celeste》里那一个可以解锁出来的原型，而这个原型也正是这个 PICO-8 上最有名气的作品了。</p>
+<p>毕竟，有限制的自由才是真正的自由，啊哈哈哈哈哈哈哈哈，我真是太有学问了。</p>
+<p>这种在如此有限的“机能”下，压榨玩法的理念很酷。当然也有相对来说比较麻烦的方面，比如没有主流引擎中的很多常用的功能，如碰撞，物理等等，这些都需要自己去造轮子。</p>
+<p>PICO-8 在网上资料虽然不算多，但也足够我们来从零开始了，而且在论坛上，每一张卡带都是一本经验书，看到眼前一亮的作品，马上可以去研究实现方式，这真的很酷。下面是随便在搜索框里键入“Pico-8”就能看到的东西了。</p>
+<ul>
+<li>显示</li>
+</ul>
+<p>在屏幕上，PICO-8 是固定了显示分辨率的， 128 * 128</p>
+<p>左上角为坐标 (0, 0) 右下角为 (127, 127)</p>
+<ul>
+<li>游戏循环</li>
+</ul>
+<p>PICO-8 简单的使用：</p>
+<p>记住几个入口函数即可，完成我们的游戏主循环：</p>
+<p>_init()</p>
+<p>用来初始化游戏内容，仅在开始时执行一次。通常会在这里载入标题界面，以及之前想展示的画面</p>
+<p>_update()</p>
+<p>每秒执行 30 次的更新函数，相应的有 _update60() 每秒执行 60 次，但不能同时使用这两个函数（后者会屏蔽前者）。</p>
+<p>_draw()</p>
+<p>在 _update() 执行之后，同样是每秒 30 次。</p>
+<p>好了，这么基础的东西再多说就是凑字数了，有没有人按字数给我稿费，看这个吧<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ZLOO0JCVvZiJZEm00Vdung">《GameDev_with_PICO-8》</a>，神秘代码”zwv7”… </p>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><p>其实在开发过程中，真的挺多困难的，最大的困难就是外界诱惑太多了，火锅！罗小黑！人生一串！李诞……太多了，能坚持在电脑前坐好看代码，已经很难了，更要命的是，真的是什么都要自己写，我最后的成品，是一个两分钟就能玩完的假冒伪劣冒险游戏，我真的敢放<a target="_blank" rel="noopener" href="https://shi-yuan.itch.io/shift-to-cyberspacehttps://shi-yuan.itch.io/shift-to-cyberspace">链接</a>，这里虽然不能评论，如果恶心到你了可以去那里发泄一下。</p>
+<p>遇到的困难蛮多，首先就是，对 lua 中表的不熟悉，简直是寸步难行，难怪说，就算认识了语法，但也甚至编程的门都没入。我语法认识蛮久了吼……</p>
+<p>lua 的 table 是实现了一种保存键值对的功能，但这个值，在 lua 中可以是任何你能想象的东西，有了这个便利，lua 的面向对象也就有着落了，我这等小白，也就别想随便看懂了。</p>
+<p>小声）来个自问自答，那么我在这都研究了些什么呢？</p>
+<ul>
+<li>碰撞系统</li>
+</ul>
+<p>单说这个说是一个系统，感觉都抬举我了。还是要说，假装高大上的说，首先作为一个冒险游戏，我要实现碰撞，只需要实现最简单的矩形碰撞即可，那这个有很方便的方法来实现。两个矩形的关系无非这几种：</p>
+<p><img src="lua.and.PICO8.1.png" alt=""></p>
+<p>而所谓碰撞，就是要检测从第二种，到第一种的过程，那么</p>
+<p>这里遵循 PICO-8 的规矩，用 top-left 为 (0, 0) 向下向右生长，以左上角的点 (x, y) 和右下角的 (x+n, y+n) 来指定一个矩形（这是正方形啦，一样一样），有 r1 和 r2 两个矩形，那么这两个不相交即：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r1.x+n &lt; r2.x || r1.x &gt; r2.x+n || r1.y &gt; r2.y+n || r1.y+n &lt;  r2.y</span><br></pre></td></tr></table></figure>
+<p>也就是说啊，如果两个矩形相交需要同时满足条件，一个矩形的左界要在另一个矩形的右界的左边，右在左的右边，上在下的上面，下在上的下面。简单吧……</p>
+<ul>
+<li>面向对象</li>
+</ul>
+<p>这个矩形碰撞貌似没多大用处啊，现在这么看啊，是没啥用，但是配合面向对象就舒服多了，对于不同的对象，赋予不同的碰撞体积，通过对象的碰撞检测函数，检测下次更新移动的位置是否会产生交叉，就灵活多了嘛。</p>
+<p>那么，lua 中面向对象怎么做嗯？</p>
+<p>看这个吧<a href="https://shiheuan.github.io/2019/08/22/easy.lua.for.caiji/">(●’◡’●)(●’◡’●)</a></p>
+<p>其实我是真没想好怎么简单讲这个过程，留个坑。</p>
+<ul>
+<li><p>系统</p>
+<ul>
+<li><p>初始化：入口 init</p>
+</li>
+<li><p>更新系统：入口 update</p>
+</li>
+<li><p>渲染系统：入口 draw</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>我们看到这个，熟悉吧，其实就是应用上面，面向对象，在空对象表中管理好游戏中的每个对象，在每一帧主循环中，对每个对象的相关函数进行执行，嗯嗯，这个板块也在坑里，让我好好理理顺。</p>
+<ul>
+<li>用户信息</li>
+</ul>
+<p>PICO-8 另一个让我觉得很酷的设计，是类似于微机系统（单片机系统）内存控制的感觉，比如说，屏幕图像数据是从 0x6000 ram 地址开始的 8k 空间，有了这个，我们是可以做很多文章的，比如实现 glitch 感觉：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">distort</span><span class="params">(t, func)</span></span></span><br><span class="line"><span class="comment">--  local __cls=cls</span></span><br><span class="line"><span class="comment">--  cls=_cls</span></span><br><span class="line">  </span><br><span class="line">  func(t+rnd(<span class="number">5</span>))</span><br><span class="line">  <span class="comment">-- time()</span></span><br><span class="line">  </span><br><span class="line">  g=t</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> i=<span class="number">1</span>,rnd(g)^<span class="number">2</span>*<span class="number">10</span> <span class="keyword">do</span></span><br><span class="line">    memcpy(<span class="number">0x6000</span>,<span class="number">0x4000</span>+rnd(<span class="number">0x4000</span>),<span class="number">8192</span>) </span><br><span class="line">    <span class="comment">-- sfx 0x3200</span></span><br><span class="line">    <span class="comment">-- userdata 0x4300 to 0x5dff</span></span><br><span class="line">    <span class="comment">-- screen (8k) start at 0x6000</span></span><br><span class="line">    <span class="comment">-- here we move some userdata(8192, exactly 8k data) to screen, and using random func to make some glich effect</span></span><br><span class="line">    <span class="comment">-- here random plus source memories include the origin screen data(maybe), so there are parts of origin.</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="comment">--  cls,_cls=__cls,cls</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>而在 sprite editor 中，对不同类型 tiles 的 sprite 通过 flag 值区分，也可以在代码中为这些不同类型的精灵，为对象进行初始化，添加不同的碰撞体等操作。</p>
+<p>要注意的是，这些 sprite 的 flag 要怎么用，完全取决于我们自己，数量上可以设置最多 8 个 flag。而且使用的方式也跟嵌入式编程似曾相识，使用 fget(sp) 直接获取一个整型值，包含了所有 flag；相应的，使用 fset(sp, flags) 就会将 flags 中的值直接设置到精灵上，而如果带上了布尔值，那么就只能使用 0 到 7 的索引了，看个例子就懂了。</p>
+<p>如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">fset(<span class="number">2</span>, <span class="number">1</span>+<span class="number">2</span>+<span class="number">8</span>)   <span class="comment">-- sets bits 0,1 and 3</span></span><br><span class="line">fset(<span class="number">2</span>, <span class="number">4</span>, <span class="literal">true</span>) <span class="comment">-- sets bit 4</span></span><br><span class="line"><span class="built_in">print</span>(fget(<span class="number">2</span>))   <span class="comment">-- 27 (1+2+8+16)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 其实，区别在于参数 v 是否被传入，如果带有布尔值，f 指定的即为单个 index；相应如果没有指定 v，则只是将 f 设置到对应编号的精灵上，而不会与之前叠加，如</span></span><br><span class="line"></span><br><span class="line">fset(<span class="number">2</span>, <span class="number">4</span>, <span class="literal">true</span>)</span><br><span class="line">fset(<span class="number">2</span>, <span class="number">1</span>+<span class="number">2</span>+<span class="number">8</span>)</span><br><span class="line"><span class="built_in">print</span>(fget(<span class="number">2</span>))  <span class="comment">-- &gt; 11(1 + 2 + 8)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 当使用 fget 时，带 flag 参数，则返回单个 flag 对应的 index 所在是否被置位，没有 flag 参数时，返回所有 flag 位对应值之和。</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>游戏流程控制</li>
+</ul>
+<p>与 Unity 中分不同场景不同，我们在 Pico-8 中只有这么一个场景，为了实现所谓标题页面，不同场景切换的感觉，可以通过将主循环的三个主要函数名，指向其他更新函数的方式来实现，并不复杂。</p>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><p>老弟儿，你说，这东西是不是很酷，那么希望你现在别去看我这个 demo，我会改的，真的！</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-PICO-8-%E5%A4%8D%E5%8F%A4%E6%B8%B8%E6%88%8F%E5%92%8C%E6%B8%B8%E6%88%8F%E6%9C%BA%E5%88%B6%E7%9A%84%E6%9E%81%E9%99%90%E8%A1%A8%E8%BE%BE"><span class="toc-number">2.</span> <span class="toc-text">0x01 PICO-8 复古游戏和游戏机制的极限表达</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02"><span class="toc-number">3.</span> <span class="toc-text">0x02</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">4.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&text=聊聊 lua 和 PICO-8"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&is_video=false&description=聊聊 lua 和 PICO-8"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=聊聊 lua 和 PICO-8&body=Check out this article: http://shiheuan.github.io/2019/08/28/lua.and.PICO8/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&title=聊聊 lua 和 PICO-8"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&name=聊聊 lua 和 PICO-8&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/28/lua.and.PICO8/&t=聊聊 lua 和 PICO-8"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="〇、随便写的话硬盘里的电子书已经达到了一定数量级，经常性的忘记自己存过什么书，想看的时候又去网上 down 了一份新的，久而久之，副本无数……网上有人说解决办法是都看了，看完删了……拜托完全没有解决好吗，就算我看得完，像我这种查阅多过阅读的人，到时候不是还会去 down 吗……所以，有没有一个有效的方法把这些堆在一起的，名字也乱七八糟的电子书归归类呢？  一、获取书籍信息首先如何获得电子书的全部信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="个人电子图书馆【一】 通过豆瓣API获取图书详细信息">
+<meta property="og:url" content="http://shiheuan.github.io/2018/03/06/library_1/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="〇、随便写的话硬盘里的电子书已经达到了一定数量级，经常性的忘记自己存过什么书，想看的时候又去网上 down 了一份新的，久而久之，副本无数……网上有人说解决办法是都看了，看完删了……拜托完全没有解决好吗，就算我看得完，像我这种查阅多过阅读的人，到时候不是还会去 down 吗……所以，有没有一个有效的方法把这些堆在一起的，名字也乱七八糟的电子书归归类呢？  一、获取书籍信息首先如何获得电子书的全部信">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shiheuan.github.io/2018/03/06/library_1/GameDesignWorkshop.gif">
+<meta property="og:image" content="https://shiheuan.github.io/2018/03/06/library_1/isbn.PNG">
+<meta property="article:published_time" content="2018-03-06T14:57:00.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:08.092Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="web crawler">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shiheuan.github.io/2018/03/06/library_1/GameDesignWorkshop.gif">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>个人电子图书馆【一】 通过豆瓣API获取图书详细信息</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2018/03/08/TensorFlow_2/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018/03/06/TensorFlow_1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/03/06/library_1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/03/06/library_1/&text=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/03/06/library_1/&is_video=false&description=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=个人电子图书馆【一】 通过豆瓣API获取图书详细信息&body=Check out this article: http://shiheuan.github.io/2018/03/06/library_1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/03/06/library_1/&name=个人电子图书馆【一】 通过豆瓣API获取图书详细信息&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/03/06/library_1/&t=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81%E9%9A%8F%E4%BE%BF%E5%86%99%E7%9A%84%E8%AF%9D"><span class="toc-number">1.</span> <span class="toc-text">〇、随便写的话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%8E%B7%E5%8F%96%E4%B9%A6%E7%B1%8D%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text">一、获取书籍信息</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        个人电子图书馆【一】 通过豆瓣API获取图书详细信息
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-03-06T14:57:00.000Z" class="dt-published" itemprop="datePublished">2018-03-06</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/web-crawler/" rel="tag">web crawler</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="〇、随便写的话"><a href="#〇、随便写的话" class="headerlink" title="〇、随便写的话"></a>〇、随便写的话</h2><p>硬盘里的电子书已经达到了一定数量级，经常性的忘记自己存过什么书，想看的时候又去网上 down 了一份新的，久而久之，副本无数……<br>网上有人说解决办法是都看了，看完删了……拜托完全没有解决好吗，就算我看得完，像我这种查阅多过阅读的人，到时候不是还会去 down 吗……<br>所以，有没有一个有效的方法把这些堆在一起的，名字也乱七八糟的电子书归归类呢？</p>
+<hr>
+<h2 id="一、获取书籍信息"><a href="#一、获取书籍信息" class="headerlink" title="一、获取书籍信息"></a>一、获取书籍信息</h2><p>首先如何获得电子书的全部信息呢，</p>
+<blockquote>
+<p>ISBN（International Standard Book Number，国际标准书号），是国际通用的图书或独立的出版物（定期出版的期刊除外）代码。出版社可以通过国际标准书号清晰地辨认所有非期刊书籍。一个国际标准书号只有一个或一份相应的出版物与之对应。一本书的每一版或其他的变化，能够申请到一个新的国际标准书号。新版本如果在原来旧版的基础上没有内容上太大的变动，在出版时不会得到新的国际标准书号。当一本书同时有平装本与精装本出版时，平装本的国际标准书号不得用于精装本，反之亦然。</p>
+</blockquote>
+<p>那么对于硬盘里这些扫描的图书，就应该可以通过查询 ISBN 的方式来获取书籍的详细信息了。</p>
+<p>一个简单的查询方式是通过豆瓣提供的<a target="_blank" rel="noopener" href="https://developers.douban.com/wiki/?title=api_v2">开发者 API</a> 查询，</p>
+<blockquote>
+<p>“<a target="_blank" rel="noopener" href="https://api.douban.com/v2/book/isbn/[isbn">https://api.douban.com/v2/book/isbn/[isbn</a>]”</p>
+</blockquote>
+<p>将‘[isbn]’修改为具体书籍的ISBN，即可在网页中查询到包含了对应书籍全部信息的 json 代码了。</p>
+<p>以这本《Game Design Workshop: A Playcentric Approach to Creating Innovative Games》为例，如下图，ISBN 为 978-0-240-80974-8.</p>
+<p><img src="https://Shiheuan.github.io/2018/03/06/library_1/GameDesignWorkshop.gif" alt=""></p>
+<p>去掉间隔符，访问豆瓣 API，<a target="_blank" rel="noopener" href="https://api.douban.com/v2/book/isbn/9780240809748">https://api.douban.com/v2/book/isbn/9780240809748</a> ，即可得到书籍的标题和作者等信息了。</p>
+<p><img src="https://Shiheuan.github.io/2018/03/06/library_1/isbn.PNG" alt=""></p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%87%E3%80%81%E9%9A%8F%E4%BE%BF%E5%86%99%E7%9A%84%E8%AF%9D"><span class="toc-number">1.</span> <span class="toc-text">〇、随便写的话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%8E%B7%E5%8F%96%E4%B9%A6%E7%B1%8D%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text">一、获取书籍信息</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/03/06/library_1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/03/06/library_1/&text=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/03/06/library_1/&is_video=false&description=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=个人电子图书馆【一】 通过豆瓣API获取图书详细信息&body=Check out this article: http://shiheuan.github.io/2018/03/06/library_1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/03/06/library_1/&title=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/03/06/library_1/&name=个人电子图书馆【一】 通过豆瓣API获取图书详细信息&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/03/06/library_1/&t=个人电子图书馆【一】 通过豆瓣API获取图书详细信息"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

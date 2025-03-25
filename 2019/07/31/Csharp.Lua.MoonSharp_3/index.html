@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00官网的教程 请配合我的代码食用Github 0x01 Proxy objects处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API 过于复杂，MoonSharp 提供了一种脚本 DTO，也就是 Proxy Objects. DTO（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoonSharp 从一知到半解（3）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00官网的教程 请配合我的代码食用Github 0x01 Proxy objects处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API 过于复杂，MoonSharp 提供了一种脚本 DTO，也就是 Proxy Objects. DTO（">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png">
+<meta property="article:published_time" content="2019-07-31T12:04:20.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.759Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="c#">
+<meta property="article:tag" content="MoonSharp">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>MoonSharp 从一知到半解（3）</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/08/01/Csharp.Lua.MoonSharp_4/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/07/30/Csharp.Lua.MoonSharp_2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&text=MoonSharp 从一知到半解（3）"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&is_video=false&description=MoonSharp 从一知到半解（3）"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（3）&body=Check out this article: http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&name=MoonSharp 从一知到半解（3）&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&t=MoonSharp 从一知到半解（3）"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Proxy-objects"><span class="toc-number">2.</span> <span class="toc-text">0x01 Proxy objects</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Error-handling"><span class="toc-number">3.</span> <span class="toc-text">0x02 Error handling</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Script-Loaders"><span class="toc-number">4.</span> <span class="toc-text">0x03 Script Loaders</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%AE%9A%E4%B9%89%E8%84%9A%E6%9C%AC%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-number">4.1.</span> <span class="toc-text">预定义脚本加载器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E5%AE%9A%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-number">4.2.</span> <span class="toc-text">指定加载器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#require-%E6%96%B9%E6%B3%95"><span class="toc-number">4.3.</span> <span class="toc-text">require 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-EmbeddedResourcesScriptLoader"><span class="toc-number">4.4.</span> <span class="toc-text">使用 EmbeddedResourcesScriptLoader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%9C%AC%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-number">4.5.</span> <span class="toc-text">创建自己的脚本加载器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-Platform-accessors"><span class="toc-number">5.</span> <span class="toc-text">0x04 Platform accessors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-Script-options"><span class="toc-number">6.</span> <span class="toc-text">0x05 Script options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">7.</span> <span class="toc-text">0xff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95I"><span class="toc-number">7.1.</span> <span class="toc-text">附录I</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        MoonSharp 从一知到半解（3）
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-07-31T12:04:20.000Z" class="dt-published" itemprop="datePublished">2019-07-31</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Lua/" rel="tag">Lua</a>, <a class="p-category" href="/tags/MoonSharp/" rel="tag">MoonSharp</a>, <a class="p-category" href="/tags/c/" rel="tag">c#</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p><a target="_blank" rel="noopener" href="https://www.moonsharp.org/getting_started.html">官网的教程</a></p>
+<p>请配合我的代码食用<a target="_blank" rel="noopener" href="https://github.com/Shiheuan/MoonSharpTutorial">Github</a></p>
+<h2 id="0x01-Proxy-objects"><a href="#0x01-Proxy-objects" class="headerlink" title="0x01 Proxy objects"></a>0x01 Proxy objects</h2><p>处于安全性和兼容性的考虑，使用 Proxy Objects，将实现细节封装，保证 API 不会调用任何不应调用的字段，让内部实现与 API 独立，因此可以在不破坏脚本的情况下修改内部的实现。为了不让封装 API 过于复杂，MoonSharp 提供了一种脚本 DTO，也就是 Proxy Objects.</p>
+<p>DTO（Data Transfer Object，数据传输模型），是一个在进程之间传递数据的对象，常用在与远程接口的通讯上（如 web 服务）（expensive operation）。</p>
+<p>这个概念非常简单。对于要封装的脚本所暴露的每种类型，必须提供“代理类型”类，它通过所封装的类型的一个实例类进行相关的操作。</p>
+<p>这个示例就是示例，Github 里可以直接执行。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Declare a proxy class</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">MyProxy</span></span><br><span class="line">&#123;</span><br><span class="line">    MyType target;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">MoonSharpHidden</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyProxy</span>(<span class="params">MyType p</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>.target = p;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">GetValue</span>()</span> &#123; <span class="keyword">return</span> target.GetValue(); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Register the proxy, using a function which creates a proxy from the target type</span></span><br><span class="line">UserData.RegisterProxyType&lt;MyProxy, MyType&gt;(r =&gt; <span class="keyword">new</span> MyProxy(r));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Test with a script - only the proxy type is really exposed to scripts, yet everything it works</span></span><br><span class="line"><span class="comment">// just as if the target type was actually used..</span></span><br><span class="line"></span><br><span class="line">Script S = <span class="keyword">new</span> Script();</span><br><span class="line"></span><br><span class="line">S.Globals[<span class="string">&quot;mytarget&quot;</span>] = <span class="keyword">new</span> MyType(...);</span><br><span class="line">S.Globals[<span class="string">&quot;func&quot;</span>] = (Action&lt;MyType&gt;)SomeFunction;</span><br><span class="line"></span><br><span class="line">S.DoString(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">        x = mytarget.GetValue();</span></span><br><span class="line"><span class="string">        func(mytarget);</span></span><br><span class="line"><span class="string">&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>稍微理解一下，这里其实是通过 MyProxy 通过一个实例转调了 MyType 的方法，在脚本中访问 MyType 实际上是通过 MyProxy 进行的。</p>
+<p>除了封装之外，可以使用“代理对象”完成一些巧妙的技巧。</p>
+<p>一个非常简单，但非常有用的例子是提供对值类型的正确访问;</p>
+<p>例如，你可以包装 Unity Transform 类——它完全由值类型组成，但本身是一个引用类型——使其具有不同的接口，并且可以正确保留引用！</p>
+<p>（哈？）</p>
+<h2 id="0x02-Error-handling"><a href="#0x02-Error-handling" class="headerlink" title="0x02 Error handling"></a>0x02 Error handling</h2><p>MoonSharp 从 InterpreterException 类型派生出了四种异常类型：</p>
+<ul>
+<li>InternalErrorException 解释器内部错误，脚本引擎致命错误，联系开发者吧？</li>
+<li>SyntaxErrorException 解释器无法解析脚本代码；</li>
+<li>ScriptRuntimeException 最常见的错误，引发 Lua 错误时会抛出，git 中有个例子，可以在 c# 中捕获异常，或向 lua 抛出异常（pcall 进行处理）。</li>
+<li>DynamicExpressionException 解释器遇到动态表达式（Dynamic expression，假装了解的样子……）错误时抛出。</li>
+</ul>
+<p>当然，也可能由于调用代码或 MoonSharp 代码导致其他的异常，但至少理论上不会由脚本产生。上面的异常类型还有一个包含错误信息的 DecorativeMessage 属性，它使用抛出异常的源码的引用进行修饰。</p>
+<h2 id="0x03-Script-Loaders"><a href="#0x03-Script-Loaders" class="headerlink" title="0x03 Script Loaders"></a>0x03 Script Loaders</h2><p>如何修改 MoonSharp 读取文件中脚本的方式。MoonSharp 旨在支持多平台，所以要适配用户选择的平台。因此 MoonSharp 提供了两个对象层级：</p>
+<ul>
+<li>Script loaders 用来自定义 API 如何从文件加载脚本，（emmmm，可以简单理解为用在 Script 类中咯）；</li>
+<li>Platform accessors 用来自定义如何完成对 OS 的低级访问。</li>
+</ul>
+<h3 id="预定义脚本加载器"><a href="#预定义脚本加载器" class="headerlink" title="预定义脚本加载器"></a>预定义脚本加载器</h3><p>根据使用的平台不同可以选择的脚本加载器：</p>
+<ul>
+<li>FileSystemScriptLoader：对文件系统上文件的原始访问，可以自定义，但是不支持可移植库；</li>
+<li>ReplInterpreterScriptLoader：与 FileSystemScriptLoader 相同，加上使用与 Lua 相同的逻辑来获取环境变量的路径（MOONSHARP_PATH，LUA_PATH 或 “?;?.lua”）；</li>
+<li>EmbeddedResourcesScriptLoader：提供对给定程序集的嵌入资源的访问，而非文件系统；</li>
+<li>InvalidScriptLoader：抛出异常；</li>
+<li>UnityAssetsScriptLoader：适用于 Unity3D，从文本资源加载脚本。</li>
+</ul>
+<p>如果不重定义，MoonSharp 会使用的默认脚本加载器：</p>
+<p>在 Unity 下，默认脚本加载器是 Assets/Resources/MoonSharp/Scripts 路径的 UnityAssetsScriptLoader，而文件名必须具有“.txt”扩展名，奇怪的 Unity 为什么只认识 txt。</p>
+<p>如果构建可移植类库，选择 InvalidScriptLoader（除非执行某些操作，否则无法从文件进行加载）。</p>
+<p>其他情况下，使用 FileSystemScriptLoade。</p>
+<h3 id="指定加载器"><a href="#指定加载器" class="headerlink" title="指定加载器"></a>指定加载器</h3><p>如果希望从当前程序集的嵌入资源加载，可以有两种方式（全局或局部）：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 给定一个 script 实例，指定此实例的加载器</span></span><br><span class="line">script.Options.ScriptLoader = <span class="keyword">new</span> EmbeddedResourcesScriptLoader();</span><br><span class="line"><span class="comment">// 后续创建的所有新 script 的加载器</span></span><br><span class="line">Script.DefaultOptions.ScriptLoader = <span class="keyword">new</span> EmbeddedResourcesScriptLoader();</span><br></pre></td></tr></table></figure>
+<h3 id="require-方法"><a href="#require-方法" class="headerlink" title="require 方法"></a>require 方法</h3><p>通常的需求是改变 require 方法使用的加载目录。脚本加载器扩展自 ScriptLoaderBase 类，通过修改 ModulePaths 属性即可。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// These two lines are equivalent:</span></span><br><span class="line">((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = <span class="keyword">new</span> <span class="built_in">string</span>[] &#123; <span class="string">&quot;MyPath/?&quot;</span>, <span class="string">&quot;MyPath/?.lua&quot;</span> &#125;;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line">((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = ScriptLoaderBase.UnpackStringPaths(<span class="string">&quot;MyPath/?;MyPath/?.lua&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>如果想忽略 LUA_PATH（全局变量），可以这样：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((ScriptLoaderBase)script.Options.ScriptLoader).IgnoreLuaPathGlobal = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="使用-EmbeddedResourcesScriptLoader"><a href="#使用-EmbeddedResourcesScriptLoader" class="headerlink" title="使用 EmbeddedResourcesScriptLoader"></a>使用 EmbeddedResourcesScriptLoader</h3><p>很简单，在 VS 里：</p>
+<ol>
+<li>在工程中创建一个“Scripts”文件夹；</li>
+<li>添加文本文件重命名为“test.lua”；</li>
+<li>写 Lua…</li>
+</ol>
+<p>将文件添加到工程（添加文件夹直接拖拽到工程中就好，我不知道你会不会，反正我刚会……），然后将开开“.lua”的属性，修改“生成操作（Build Action）”为“嵌入的资源（Embedded Resource）”如图。</p>
+<p><img src="https://Shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/embedded.png" alt=""></p>
+<p>然后，就是最喜欢的写两行代码环节：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">EmbeddedResourceScriptLoader</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Script script = <span class="keyword">new</span> Script();</span><br><span class="line">    script.Options.ScriptLoader = <span class="keyword">new</span> EmbeddedResourcesScriptLoader();</span><br><span class="line">    script.DoFile(<span class="string">&quot;Scripts/Test.lua&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么，这种嵌入资源方式和直接读取文件有啥区别呢？</p>
+<h3 id="创建自己的脚本加载器"><a href="#创建自己的脚本加载器" class="headerlink" title="创建自己的脚本加载器"></a>创建自己的脚本加载器</h3><ul>
+<li>继承 ScriptLoaderBase（官方推荐）</li>
+<li>实现 IScriptLoader</li>
+</ul>
+<p>不言自明~</p>
+<h2 id="0x04-Platform-accessors"><a href="#0x04-Platform-accessors" class="headerlink" title="0x04 Platform accessors"></a>0x04 Platform accessors</h2><p>平台访问器与脚本加载器非常相似（是不是可以结束这一 part 了）。</p>
+<p>平台访问器提供了对操作系统 API 的访问，主要是 io，file 和 os 模块。</p>
+<ul>
+<li>StandardPlatformAccessor：实现所有相关方法；</li>
+<li>LimitedPlatformAccessor：禁用操作系统模块（构建可移植类库时默认使用）。</li>
+</ul>
+<p>要注意的是，修改了平台访问器会影响所有脚本。一旦创建了脚本，就不应该更改平台访问器了。</p>
+<p>类似地，要实现自己的平台访问器可以继承 PlatformAccessorBase 或实现 IPlatformAccessor。通常一些功能（打印输出重定向）都是可以通过脚本选项定制的。</p>
+<h2 id="0x05-Script-options"><a href="#0x05-Script-options" class="headerlink" title="0x05 Script options"></a>0x05 Script options</h2><p>Script 对象提供了选项来调整其行为，有全局和局部两种选项，放到附录请查阅。</p>
+<p>本地选项可以为每一个 Script 对象实例赋不同的值。而全局选项通过 Script.GlobalOptions 访问，对所有脚本有效。</p>
+<hr>
+<hr>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><h3 id="附录I"><a href="#附录I" class="headerlink" title="附录I"></a>附录I</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>局部选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ScriptLoader</td>
+<td>This is the IScriptLoader for this script. See the section on script loaders for more details.</td>
+</tr>
+<tr>
+<td>DebugPrint</td>
+<td>This is a Action<string> delegate which will be called everytime print is called by Lua code.</td>
+</tr>
+<tr>
+<td>DebugInput</td>
+<td>This is a Func<string, string> delegate which will be called everytime MoonSharp requires line-input from a console, for example in the case of debug.debug.</td>
+</tr>
+<tr>
+<td>UseLuaErrorLocations</td>
+<td>If this is set to true, locations in error messages will only include the line numbers instead of lines and columns. Use this for compatibility with legacy Lua code which parses error messages.</td>
+</tr>
+<tr>
+<td>Stdin, Stdout and Stderr</td>
+<td>Default streams to be used in io/file functions.</td>
+</tr>
+<tr>
+<td>TailCallOptimizationThreshold</td>
+<td>This is quite a complex option. Basically Lua uses a technique to drammatically reduce stack usage in certain scenarios at the expense of simplicity and ease of debugging. MoonSharp can behave the same way, but by default doesn’t until it’s needed. This defines the threshold. Refer to the reference help for more details.</td>
+</tr>
+<tr>
+<td>CheckThreadAccess</td>
+<td>Again a complex and unusual option. MoonSharp does some sanity checks to prevent scripts being used by multiple threads concurrently. For reasons detailed in the reference help, these checks can have false positives and false negatives. If you are experiencing false positives, you can disable the checks with this option. But please check that you are not calling MoonSharp execution concurrently from two threads as it is not supported.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>全局选项</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Platform</td>
+<td>the platform accessor we learned about in the previous chapter</td>
+</tr>
+<tr>
+<td>CustomConverters</td>
+<td>the collection of all custom converters</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Proxy-objects"><span class="toc-number">2.</span> <span class="toc-text">0x01 Proxy objects</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Error-handling"><span class="toc-number">3.</span> <span class="toc-text">0x02 Error handling</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Script-Loaders"><span class="toc-number">4.</span> <span class="toc-text">0x03 Script Loaders</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%AE%9A%E4%B9%89%E8%84%9A%E6%9C%AC%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-number">4.1.</span> <span class="toc-text">预定义脚本加载器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E5%AE%9A%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-number">4.2.</span> <span class="toc-text">指定加载器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#require-%E6%96%B9%E6%B3%95"><span class="toc-number">4.3.</span> <span class="toc-text">require 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-EmbeddedResourcesScriptLoader"><span class="toc-number">4.4.</span> <span class="toc-text">使用 EmbeddedResourcesScriptLoader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E8%84%9A%E6%9C%AC%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-number">4.5.</span> <span class="toc-text">创建自己的脚本加载器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-Platform-accessors"><span class="toc-number">5.</span> <span class="toc-text">0x04 Platform accessors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-Script-options"><span class="toc-number">6.</span> <span class="toc-text">0x05 Script options</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">7.</span> <span class="toc-text">0xff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95I"><span class="toc-number">7.1.</span> <span class="toc-text">附录I</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&text=MoonSharp 从一知到半解（3）"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&is_video=false&description=MoonSharp 从一知到半解（3）"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（3）&body=Check out this article: http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&title=MoonSharp 从一知到半解（3）"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&name=MoonSharp 从一知到半解（3）&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/07/31/Csharp.Lua.MoonSharp_3/&t=MoonSharp 从一知到半解（3）"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

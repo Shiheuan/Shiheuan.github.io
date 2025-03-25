@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00官网的教程 请配合我的代码食用Github 这次的从一知到半解只将 MoonSharp 的 Debug。做一个专一的 blog 吧。 0x01 Debugger integrationMoonSharp 提供了两个开箱即用的调试器：  VS Code （更简单易用，但相应地只支持本地进行调试） 在支持 Flash 的浏览器中运行的远程调试器  VS Code debugger需要安装扩展M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoonSharp 从一知到半解（4）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00官网的教程 请配合我的代码食用Github 这次的从一知到半解只将 MoonSharp 的 Debug。做一个专一的 blog 吧。 0x01 Debugger integrationMoonSharp 提供了两个开箱即用的调试器：  VS Code （更简单易用，但相应地只支持本地进行调试） 在支持 Flash 的浏览器中运行的远程调试器  VS Code debugger需要安装扩展M">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/wait.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug2.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/output.png">
+<meta property="og:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/testSyntax.png">
+<meta property="article:published_time" content="2019-08-01T07:04:20.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.762Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="c#">
+<meta property="article:tag" content="MoonSharp">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/wait.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>MoonSharp 从一知到半解（4）</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/08/01/Csharp.Lua.MoonSharp_5/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/07/31/Csharp.Lua.MoonSharp_3/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&text=MoonSharp 从一知到半解（4）"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&is_video=false&description=MoonSharp 从一知到半解（4）"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（4）&body=Check out this article: http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&name=MoonSharp 从一知到半解（4）&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&t=MoonSharp 从一知到半解（4）"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Debugger-integration"><span class="toc-number">2.</span> <span class="toc-text">0x01 Debugger integration</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VS-Code-debugger"><span class="toc-number">2.1.</span> <span class="toc-text">VS Code debugger</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Remote-Debugger"><span class="toc-number">2.2.</span> <span class="toc-text">Remote Debugger</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Debug-in-Unity"><span class="toc-number">3.</span> <span class="toc-text">0x02 Debug in Unity</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        MoonSharp 从一知到半解（4）
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-08-01T07:04:20.000Z" class="dt-published" itemprop="datePublished">2019-08-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Lua/" rel="tag">Lua</a>, <a class="p-category" href="/tags/MoonSharp/" rel="tag">MoonSharp</a>, <a class="p-category" href="/tags/c/" rel="tag">c#</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p><a target="_blank" rel="noopener" href="https://www.moonsharp.org/getting_started.html">官网的教程</a></p>
+<p>请配合我的代码食用<a target="_blank" rel="noopener" href="https://github.com/Shiheuan/MoonSharpTutorial">Github</a></p>
+<p>这次的从一知到半解只将 MoonSharp 的 Debug。做一个专一的 blog 吧。</p>
+<h2 id="0x01-Debugger-integration"><a href="#0x01-Debugger-integration" class="headerlink" title="0x01 Debugger integration"></a>0x01 Debugger integration</h2><p>MoonSharp 提供了两个开箱即用的调试器：</p>
+<ul>
+<li>VS Code （更简单易用，但相应地只支持本地进行调试）</li>
+<li>在支持 Flash 的浏览器中运行的远程调试器</li>
+</ul>
+<h3 id="VS-Code-debugger"><a href="#VS-Code-debugger" class="headerlink" title="VS Code debugger"></a>VS Code debugger</h3><p>需要安装扩展<a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=xanathar.moonsharp-debug">MoonSharp Debug extension for VsCode</a>。要进行调试，还需要引用 MoonSharp.VsCodeDebugger.dll（NuGet 或手动添加），如果使用 Unity 包，那已经包含在其中了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">PM&gt; </span><span class="language-bash">Install-Package MoonSharp.Debugger.VsCode</span></span><br></pre></td></tr></table></figure>
+<p>引用了动态链接库后，简单设置一下就可以了：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//using MoonSharp.VsCodeDebugger;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Create the debugger server</span></span><br><span class="line">MoonSharpVsCodeDebugServer server = <span class="keyword">new</span> MoonSharpVsCodeDebugServer();</span><br><span class="line"><span class="comment">// Start the debugger server</span></span><br><span class="line">server.Start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a script</span></span><br><span class="line">Script script = <span class="keyword">new</span> Script();</span><br><span class="line"><span class="comment">// Attach the script to the debugger</span></span><br><span class="line">server.AttachToScript(script1, <span class="string">&quot;Name for the script&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>可以不受限地将多个脚本附加到调试器上。通过设置 MoonSharpVsCodeDebugServer 对象的 Current 属性，可以在一个新的调试器添加后选择首先被调试的脚本。VsCode 中的调试器插件可以使用命令行，用户可以通过“!list”和“!switch”命令切换脚本。</p>
+<p>当不再需要调试某个脚本时，可以调用 MoonSharpVsCodeDebugServer 对象的 Detach 方法断开调试此脚本的调试器，释放内存。</p>
+<p>VsCode 调试器以来文件系统，如果找不到文件，则会动态保存脚本内容到临时文件（当文件目录与加载应用程序的相对路径不同，脚本为嵌入资源，或者使用 LoadString 加载文件时同样）。AttachToScript 的第三个参数可以映射到文件名。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> server = <span class="keyword">new</span> MoonSharpVsCodeDebugServer().Start();</span><br><span class="line"><span class="keyword">var</span> script  = <span class="keyword">new</span> Script();</span><br><span class="line"></span><br><span class="line">server.AttachToScript(script, <span class="string">&quot;My script&quot;</span>, s =&gt; <span class="string">&quot;/temp/lua/&quot;</span> + s.Name);</span><br><span class="line"></span><br><span class="line">script.DoFile(<span class="string">&quot;fact.lua&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>也可以使用 LoadString 中 friendlyName 参数来避免这个问题。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> server = <span class="keyword">new</span> MoonSharpVsCodeDebugServer().Start();</span><br><span class="line"><span class="keyword">var</span> script  = <span class="keyword">new</span> Script();</span><br><span class="line"></span><br><span class="line">server.AttachToScript(script, <span class="string">&quot;My script&quot;</span>);</span><br><span class="line"></span><br><span class="line">script.DoString(File.ReadAllText(<span class="string">@&quot;/temp/lua/fact.lua&quot;</span>), <span class="literal">null</span>, <span class="string">@&quot;/temp/lua/fact.lua&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>百看不如一练，一直说 VSCode 多强多强，今天我调试试试了（写个傻瓜版跟着做）。</p>
+<p>首先准备调试代码，直接在前面教程中建立的 Scripts 文件夹下新建一个 debug.lua 用来调试。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- debug.lua</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">local</span> chars = <span class="string">&quot;&quot;</span><span class="string">&quot;&quot;</span></span><br><span class="line">    chars = <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>Hello world<span class="string">&quot;&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>脚本中只有一个 main 函数，并调用了一个 print，利用前面学到的，这里将 print 方法重定向为自定义的方法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestVsDebugger</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> script = <span class="keyword">new</span> Script();</span><br><span class="line">    script.Globals[<span class="string">&quot;print&quot;</span>] = <span class="keyword">new</span> Func&lt;<span class="built_in">string</span>, <span class="built_in">int</span>&gt;(text =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(text);</span><br><span class="line">        <span class="keyword">return</span> text.Length;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//debug</span></span><br><span class="line">    MoonSharpVsCodeDebugServer server = <span class="keyword">new</span> MoonSharpVsCodeDebugServer();</span><br><span class="line">    server.Start();</span><br><span class="line">    server.AttachToScript(script, <span class="string">&quot;DebugScript&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">string</span> scriptCode = File.ReadAllText(<span class="string">@&quot;X:\gitdir\TestMoonSharp\TestMoonSharp\Scripts\debug.lua&quot;</span>);</span><br><span class="line">    script.DoString(scriptCode, <span class="literal">null</span>, <span class="string">@&quot;X:\gitdir\TestMoonSharp\TestMoonSharp\Scripts\debug.lua&quot;</span>);</span><br><span class="line"></span><br><span class="line">    script.Call(script.Globals[<span class="string">&quot;main&quot;</span>]);</span><br><span class="line">    Console.ReadKey();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码中与前面讲到的唯一的不同的是从文件中读取，需要注意的就只是读取时的路径，使用绝对路径比较保险，相对路径的话，注意是相对于生成的可执行程序的位置。</p>
+<p>接下来为了进行调试，工程中引用 MoonSharp.VsCodeDebugger.dll，VsCode 中安装调试插件。</p>
+<p>添加脚本文件夹中的 .vscode 配置文件夹，新建 launch.json：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MoonSharp Attach&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;moonsharp-debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;attach&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;debugServer&quot;</span> <span class="punctuation">:</span> <span class="number">41912</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;HELP&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Please set &#x27;debugServer&#x27;:41912 (or whatever port you ar connecting to) right after the &#x27;version&#x27; field in this json.&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>万事俱备，但是，手速不太够，我们需要在工程中添加一个等待调试连接的方法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestVsDebugger</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    script.DoString(...);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">bool</span> attached = AwaitDebuggerAttach(server);</span><br><span class="line">    <span class="keyword">if</span> (!attached)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;VS Code debugger did not attach. Running the script.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    script.Call(...);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">AwaitDebuggerAttach</span>(<span class="params">MoonSharpVsCodeDebugServer server</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// as soon as a client has attached, &#x27;m_Client__&#x27; field of &#x27;m_Current&#x27; isn&#x27;t null anymore</span></span><br><span class="line">    <span class="comment">// </span></span><br><span class="line">    <span class="comment">// we wait for ~60 seconds for a client to attach</span></span><br><span class="line"></span><br><span class="line">    BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.NonPublic;</span><br><span class="line">    FieldInfo field = server.GetType().GetField(<span class="string">&quot;m_Current&quot;</span>, bindFlags);</span><br><span class="line">    <span class="built_in">object</span> current = field.GetValue(server);</span><br><span class="line"></span><br><span class="line">    FieldInfo property = current.GetType().GetField(<span class="string">&quot;m_Client__&quot;</span>, bindFlags);</span><br><span class="line"></span><br><span class="line">    Stopwatch stopwatch = <span class="keyword">new</span> Stopwatch();</span><br><span class="line">    stopwatch.Start();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Waiting for VS Code debugger to attach&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (property.GetValue(current) == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        Thread.Sleep(<span class="number">500</span>);</span><br><span class="line">        <span class="keyword">if</span> (stopwatch.Elapsed.TotalSeconds &gt; <span class="number">60</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    stopwatch.Stop();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;VS Code debugger attached&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来，执行程序，等待连接调试器。</p>
+<p><img src="https://Shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/wait.png" alt=""></p>
+<p>在 VsCode 中，点击 [debug]-[start debugging]，开始调试：</p>
+<p><img src="https://Shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug.png" alt=""></p>
+<p>调试可以看到重定义的 print 函数返回值变成了字符数。</p>
+<p><img src="https://Shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/debug2.png" alt=""></p>
+<p>最后的输出：</p>
+<p><img src="https://Shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/output.png" alt=""></p>
+<h3 id="Remote-Debugger"><a href="#Remote-Debugger" class="headerlink" title="Remote Debugger"></a>Remote Debugger</h3><p>使用远程调试，同样需要 MoonSharp.RemoteDebugger.dll 并进行设置（单例）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">PM&gt; </span><span class="language-bash">Install-Package MoonSharp.Debugger</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">RemoteDebuggerService remoteDebugger;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ActivateRemoteDebugger</span>(<span class="params">Script script</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (remoteDebugger == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        remoteDebugger = <span class="keyword">new</span> RemoteDebuggerService();</span><br><span class="line">        <span class="comment">// the last boolean is to specify if the script is free to run </span></span><br><span class="line">        <span class="comment">// after attachment, defaults to false</span></span><br><span class="line">        remoteDebugger.Attach(script, <span class="string">&quot;Description of the script&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// start the web-browser at the correct url. Replace this or just</span></span><br><span class="line">    <span class="comment">// pass the url to the user in some way.</span></span><br><span class="line">    Process.Start(remoteDebugger.HttpUrlStringLocalHost);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过配置 RemoteDebuggerOptions 对象来进行一些简单的配置：</p>
+<ul>
+<li>NetworkOptions：Utf8TcpServerOptions.LocalHostOnly 只接受本地连接；Utf8TcpServerOptions.SingleClientOnly 只接受一个客户端连接；</li>
+<li>SingleScriptMode：布尔，为真时跳过入口 web 并开始调试，只能用在一次只实例化一个 Script 的程序；</li>
+<li>HttpPort：端口；</li>
+<li>RpcPortBase：接收第一个 Script 对象的命令的端口。其他脚本以此递增。</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> RemoteDebuggerOptions()</span><br><span class="line">&#123;<span class="comment">// default</span></span><br><span class="line">    NetworkOptions = Utf8TcpServerOptions.LocalHostOnly | Utf8TcpServerOptions.SingleClientOnly,</span><br><span class="line">    SingleScriptMode = <span class="literal">false</span>,</span><br><span class="line">    HttpPort = <span class="number">2705</span>,</span><br><span class="line">    RpcPortBase = <span class="number">2006</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>依然是个例子：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">DebuggerDemo</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Script script = <span class="keyword">new</span> Script();</span><br><span class="line"></span><br><span class="line">    ActivateRemoteDebugger(script);</span><br><span class="line"></span><br><span class="line">    script.DoString(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">        function accum(n, f)</span></span><br><span class="line"><span class="string">            if (n == 0) then</span></span><br><span class="line"><span class="string">                return 1;</span></span><br><span class="line"><span class="string">            else</span></span><br><span class="line"><span class="string">                return n * f(n);</span></span><br><span class="line"><span class="string">            end</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        local sum = 0;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        for i = 1, 5 do</span></span><br><span class="line"><span class="string">            -- let&#x27;s use a lambda to spice things up</span></span><br><span class="line"><span class="string">            sum = sum + accum(i, | x | x * 2);</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string">    &quot;</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;The script has ended..&quot;</span>);</span><br><span class="line">    Console.ReadKey();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这边有一个 lambda 语法，“|x|x*2”其中“|x|”作为参数，执行后面的运算，这是 MoonSharp 提供的非原生 Lua 语法，在 lua5.3 中测试了一下，并不能使用。</p>
+<p><img src="https://Shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/testSyntax.png" alt=""></p>
+<p>例子执行后，会自动开启调试器，允许 flash 执行，尝试一下吧。</p>
+<p>最后，可以自定义调试器，首先要实现 MoonSharp.Interpreter.Debugging.IDebugger 接口，实现的所有方法在附加脚本后由引擎调用。</p>
+<h2 id="0x02-Debug-in-Unity"><a href="#0x02-Debug-in-Unity" class="headerlink" title="0x02 Debug in Unity"></a>0x02 Debug in Unity</h2><p>调试是必需的功能，</p>
+<p>关于在 unity 中调试 moonsharp 脚本的问题，由于 unity 中无法加载 .lua 扩展名的文件，需要使用 .lua.txt 但是这样以来，在 VsCode 中便无法给 .txt 文件打断点进行调试。</p>
+<p>因此使用 VsCode 进行调试的路似乎就这样被堵上了。</p>
+<p>那么远程调试呢？MoonSharp 的 Unity 包没有集成远程调试的文件。</p>
+<p>还记得映射到文件的功能吗，</p>
+<p>将 MoonSharp 中执行的脚本映射到本地的文件上，通过这种办法，我们可以在本地创建一个用来调试的脚本文件 “.lua” 然后通过 VsCode 进行调试，这样一来，是不是依然很麻烦呀！！（再者说，实际应用中很可能并不会将显式地加载每一个脚本，而是通过 require()，这样的情况下是不能分别指定每一个脚本的，那么应该如何处理呢）</p>
+<p>神特么，</p>
+<p>同样还有一个问题是，连接到调试器的时机问题，需要在开启调试的情况下，等待连接，然后才能在 VsCode 中进行调试。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Debugger-integration"><span class="toc-number">2.</span> <span class="toc-text">0x01 Debugger integration</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VS-Code-debugger"><span class="toc-number">2.1.</span> <span class="toc-text">VS Code debugger</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Remote-Debugger"><span class="toc-number">2.2.</span> <span class="toc-text">Remote Debugger</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-Debug-in-Unity"><span class="toc-number">3.</span> <span class="toc-text">0x02 Debug in Unity</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&text=MoonSharp 从一知到半解（4）"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&is_video=false&description=MoonSharp 从一知到半解（4）"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（4）&body=Check out this article: http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&title=MoonSharp 从一知到半解（4）"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&name=MoonSharp 从一知到半解（4）&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_4/&t=MoonSharp 从一知到半解（4）"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

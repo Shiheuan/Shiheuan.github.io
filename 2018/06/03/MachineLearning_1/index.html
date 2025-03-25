@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="机器学习的典型任务： 回归  是指把实函数在样本点附近加以近似的有监督的模式识别问题。对一个或多个自变量和因变量之间关系进行建模，求解的一种统计方法。  分类  是指对于指定的模式进行识别的有监督的模式识别问题。  异常检测  是指寻找输入样本${\vec xi}{i&#x3D;1}^n$中所包含的异常数据的问题。 常采用密度估计的方法：正常数据为靠近密度中心的数据；异常数据为偏离密度中心的数据。  聚类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习【一】 概要">
+<meta property="og:url" content="http://shiheuan.github.io/2018/06/03/MachineLearning_1/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="机器学习的典型任务： 回归  是指把实函数在样本点附近加以近似的有监督的模式识别问题。对一个或多个自变量和因变量之间关系进行建模，求解的一种统计方法。  分类  是指对于指定的模式进行识别的有监督的模式识别问题。  异常检测  是指寻找输入样本${\vec xi}{i&#x3D;1}^n$中所包含的异常数据的问题。 常采用密度估计的方法：正常数据为靠近密度中心的数据；异常数据为偏离密度中心的数据。  聚类">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-06-03T08:28:00.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.846Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="machine learning">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>机器学习【一】 概要</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2018/06/05/MachineLearning_2/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018/03/22/ML-Agents_1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/06/03/MachineLearning_1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&text=机器学习【一】 概要"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&is_video=false&description=机器学习【一】 概要"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=机器学习【一】 概要&body=Check out this article: http://shiheuan.github.io/2018/06/03/MachineLearning_1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&name=机器学习【一】 概要&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&t=机器学习【一】 概要"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%85%B8%E5%9E%8B%E4%BB%BB%E5%8A%A1%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">机器学习的典型任务：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%B8%BB%E8%A6%81%E6%B5%81%E6%B4%BE"><span class="toc-number">2.</span> <span class="toc-text">机器学习的主要流派</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">学习模型</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        机器学习【一】 概要
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-06-03T08:28:00.000Z" class="dt-published" itemprop="datePublished">2018-06-03</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/machine-learning/" rel="tag">machine learning</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="机器学习的典型任务："><a href="#机器学习的典型任务：" class="headerlink" title="机器学习的典型任务："></a>机器学习的典型任务：</h2><ol>
+<li><p><strong>回归</strong></p>
+<p> 是指把实函数在样本点附近加以近似的有监督的模式识别问题。对一个或多个自变量和因变量之间关系进行建模，求解的一种统计方法。</p>
+</li>
+<li><p><strong>分类</strong></p>
+<p> 是指对于指定的模式进行识别的有监督的模式识别问题。</p>
+</li>
+<li><p><strong>异常检测</strong></p>
+<p> 是指寻找输入样本${\vec x<em>i}</em>{i=1}^n$中所包含的异常数据的问题。<br> 常采用密度估计的方法：正常数据为靠近密度中心的数据；异常数据为偏离密度中心的数据。</p>
+</li>
+<li><p><strong>聚类</strong></p>
+<p> 与分类问题类似，是无监督的模式识别问题（在聚类问题中常用簇代表类别）。性质→簇，关进课题是计算样本之间的相似度。</p>
+</li>
+<li><p><strong>降维</strong></p>
+<p> 是指从高维度数据中提取关键信息，将其转换为易于计算的低维度问题进而求解的方法。</p>
+</li>
+</ol>
+<h2 id="机器学习的主要流派"><a href="#机器学习的主要流派" class="headerlink" title="机器学习的主要流派"></a>机器学习的主要流派</h2><p>一个经典的分类问题，对模式$\vec x$的类别$y$进行预测，记为$\hat y$.</p>
+<script type="math/tex; mode=display">\hat y=\underset{y} P(y|\vec x)</script><p>在已知模式$\vec x$时，求得使分类类别$y$的条件概率（模式识别中称为<strong>后验概率</strong>）$P(y|\vec x)$达到最大值的类别$\hat y$. $\underset{y}{argmax} P(y|\vec x)$是指当条件概率$P(y|\vec x)$取最大值时对应的$y$值。</p>
+<ol>
+<li><p>判别式分类</p>
+<p> 应用训练集直接对后验概率$P(y|\vec x)$进行学习的过程。</p>
+<p> 著有《统计学理论的本质》一书的弗拉基米尔·万普尼克（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/弗拉基米尔·万普尼克">Vladimir Vapnik</a>）提到：“要试图得到所需要的答案，而不是更一般的答案。很可能你拥有足够的信息来很好地解决一个感兴趣的特定问题，但却没有足够的信息来解决一个一般性的问题。”</p>
+</li>
+<li><p>产生式分类（生成的分类）</p>
+<p> 通过预测数据生成概率（联合概率）$P(\vec x,y)$来进行模式识别的分类方法。</p>
+<script type="math/tex; mode=display">P(y|\vec x)=\frac{P(\vec x,y)}{P(\vec x)}</script><script type="math/tex; mode=display">P(\vec x)=\sum_yP(\vec x,y)</script><p> 可见，数据生成概率是更一般的问题。</p>
+</li>
+<li><p>概率派（统计概率）</p>
+<p> （包含参数$\vec \theta$的模型$q(\vec x_i,y_i|\vec \theta)$为例，说明计算数据生成概率的问题）</p>
+<p> 将模式$\vec \theta$作为决定性的变量，用训练样本$\mathcal D={(\vec x<em>i,y_i)}</em>{i=1}^n$对模型$\vec \theta$进行学习。</p>
+<p> 在最大似然估计（Maximum Likelihood Estimation）算法中，对生成训练集$\mathcal D$的最容易的方法所对应的模式$\vec \theta$进行学习。</p>
+<script type="math/tex; mode=display">\underset{\vec \theta}{max}\prod_{i=1}^n q(\vec x_i,y_i;\vec \theta)</script><p> $\vec x<em>i$服从独立同分布（i.i.d），概率密度$f(x_1,x_2,\cdots,x_n|\theta)=\prod</em>{i=1}^nf(x_i|\theta)$.<br> 在结果（$\vec x_i$）与参数（$\vec \theta$）相互对应时，似然和概率在数值上是相等的，因此似然可以定义为:</p>
+<script type="math/tex; mode=display">\mathcal L(\theta;x_1,x_2,\cdots,x_n)=f(x_1,x_2,\cdots,x_n|\theta)=\prod_{i=1}^nf(x_i|\theta)</script><p> 而最大似然估计为：</p>
+<script type="math/tex; mode=display">\ln \mathcal L(\theta;\vec x)=\sum_{i=1}^n \ln f(\vec x_i|\theta)</script></li>
+<li><p>贝叶斯派（朴素贝叶斯）</p>
+<p> （包含参数$\vec \theta$的模型$q(\vec x_i,y_i|\vec \theta)$为例，说明计算数据生成概率的问题）</p>
+<p> 将模式$\vec \theta$作为概率变量，对其先验概率$P(\vec \theta$加以考虑，计算与训练集相对应的后验概率$P(\vec \theta|\mathcal D)$.</p>
+<script type="math/tex; mode=display">P(\vec \theta|\mathcal D)=\frac{P(\mathcal D|\vec \theta)P(\vec \theta)}{P(\mathcal D)}=\frac{\prod_{i=1}^n q(\vec x_i,y_i|\vec \theta)P(\vec \theta)}{\int \prod_{i=1}^n q(\vec x_i,y_i|\vec \theta)P(\vec \theta)d \vec \theta}</script><p> 这里$P(\mathcal D)$是数据实际分布的情况，$q(\vec x_i,y_i|\vec \theta)$是似然函数值。</p>
+</li>
+</ol>
+<p><em>在《图解机器学习》一书中，以基于频率派的识别式机器学习算法为主。</em></p>
+<h2 id="学习模型"><a href="#学习模型" class="headerlink" title="学习模型"></a>学习模型</h2><p>机器学习算法的学习模型大多着重于如何使特定函数与数据集相近似。</p>
+<blockquote>
+<p>魏尔斯特拉斯（Weierstrass）第一逼近定理：假设$f(x)$是闭区间$[a,b]$上的连续函数，对任意的$\epsilon&gt;0$，则存在多项式$P(x)$使得对于所有的$x\in [a,b]$，有$|f(x)-P(x)|&lt;\epsilon$.</p>
+</blockquote>
+<ol>
+<li><p>线性模型</p>
+<p> 线性模型并非仅仅指自变量与因变量为线性的模型（$y=kx$），也表示基于参数的线性模型，可以用来表示非线性的输入输出关系。</p>
+<script type="math/tex; mode=display">f_\theta(x)=\theta x</script><script type="math/tex; mode=display">f_\theta(\vec x)=\sum_{j=1}^b\theta _j\phi _j(\vec x)=\vec\theta ^T\vec\Phi(\vec x)</script><p> 这里的$\phi(x)$为基函数，$\vec x$为高维输入数据。</p>
+</li>
+<li><p>乘法模型</p>
+<p> 把一维基函数作为因子，通过使其<strong>相乘</strong>获得多维基函数(参数个数为$b’^d$)。</p>
+<script type="math/tex; mode=display">f_\theta(\vec x)=\sum_{j_1=1}^{b'}\cdots\sum_{j_d=1}^{b'} \theta_{j_1,\cdots,j_d}\phi_{j_1}(x^{(1)})\cdots\phi_{j_d}(x^{(d)})</script></li>
+<li><p>加法模型</p>
+<p> 把一维基函数作为因子，通过使其<strong>相加</strong>获得多维基函数(参数个数为$b’d$)。</p>
+<script type="math/tex; mode=display">f_\theta(\vec x)=\sum_{k=1}^{d}\sum_{j=1}^{b'}\theta_{k,j}\phi_j(x^{(k)})</script></li>
+<li><p>核模型</p>
+<p> 使用核函数，以$K(\vec x,\vec x<em>j)</em>{j=1}^n$线性结合的方式定义（输入样本${x<em>i}</em>{i=1}^n$）。</p>
+<script type="math/tex; mode=display">f_\theta(\vec x)=\sum_{j=1}^n\theta_jK(\vec x,\vec x_j)</script><p> 高斯核函数：</p>
+<script type="math/tex; mode=display">K(\vec x,\vec c)=exp(-\frac{\|\vec x-\vec c\|_2^2}{2h^2})</script><p> 这里的$h$为带宽，$\vec c$为均值。</p>
+<blockquote>
+<p>欧几里得范数（L2-Norm）： $|\vec x|_2=\sqrt {x_1^2+x_2^2+\cdots+x_n^2}$</p>
+</blockquote>
+</li>
+<li><p>层级模型</p>
+<p> 是非线性模型之一，人工神经网络模型。</p>
+<script type="math/tex; mode=display">f_\theta(\vec x)=\sum_{j=1}^b\alpha_j\phi(\vec x;\beta_j)</script><p> 关于参数向量$\vec \alpha$的线性形式；关于参数向量$\vec \theta=(\vec \alpha^T,\vec \beta^T)^T$的非线性形式。</p>
+</li>
+</ol>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%85%B8%E5%9E%8B%E4%BB%BB%E5%8A%A1%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">机器学习的典型任务：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%B8%BB%E8%A6%81%E6%B5%81%E6%B4%BE"><span class="toc-number">2.</span> <span class="toc-text">机器学习的主要流派</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">学习模型</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2018/06/03/MachineLearning_1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&text=机器学习【一】 概要"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&is_video=false&description=机器学习【一】 概要"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=机器学习【一】 概要&body=Check out this article: http://shiheuan.github.io/2018/06/03/MachineLearning_1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&title=机器学习【一】 概要"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&name=机器学习【一】 概要&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2018/06/03/MachineLearning_1/&t=机器学习【一】 概要"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

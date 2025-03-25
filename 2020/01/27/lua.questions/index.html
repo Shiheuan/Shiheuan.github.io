@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00 〇关于，我，为什么这么久，没发文章。那还要从 1 月 2 号说起，想我们在 2 号放完仅仅一天的元旦假期之后，回到工位，愕然发现：工作室没了。 然后就，这么久了，还没缓过来。 0x01 一 问题目录基础 Q1-什么叫动态类型语言（Dynamically-typed language）？ Q2-Lua 中全局变量的默认值是什么，如何删除全局变量？ Q3-Lua 中的条件测试（以及逻辑运算符">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于 Lua 的那些问题（长期更新）">
+<meta property="og:url" content="http://shiheuan.github.io/2020/01/27/lua.questions/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00 〇关于，我，为什么这么久，没发文章。那还要从 1 月 2 号说起，想我们在 2 号放完仅仅一天的元旦假期之后，回到工位，愕然发现：工作室没了。 然后就，这么久了，还没缓过来。 0x01 一 问题目录基础 Q1-什么叫动态类型语言（Dynamically-typed language）？ Q2-Lua 中全局变量的默认值是什么，如何删除全局变量？ Q3-Lua 中的条件测试（以及逻辑运算符">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-01-27T11:30:45.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:08.115Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="foundations">
+<meta property="article:tag" content="Lua">
+<meta property="article:tag" content="QnA">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>关于 Lua 的那些问题（长期更新）</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2020/10/29/lua.dll/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/12/24/NUnitTest/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2020/01/27/lua.questions/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2020/01/27/lua.questions/&text=关于 Lua 的那些问题（长期更新）"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2020/01/27/lua.questions/&is_video=false&description=关于 Lua 的那些问题（长期更新）"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于 Lua 的那些问题（长期更新）&body=Check out this article: http://shiheuan.github.io/2020/01/27/lua.questions/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2020/01/27/lua.questions/&name=关于 Lua 的那些问题（长期更新）&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2020/01/27/lua.questions/&t=关于 Lua 的那些问题（长期更新）"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E3%80%87"><span class="toc-number">1.</span> <span class="toc-text">0x00 〇</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E4%B8%80-%E9%97%AE%E9%A2%98%E7%9B%AE%E5%BD%95"><span class="toc-number">2.</span> <span class="toc-text">0x01 一 问题目录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-number">2.1.</span> <span class="toc-text">基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%80%BC"><span class="toc-number">2.2.</span> <span class="toc-text">数值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">2.3.</span> <span class="toc-text">字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8"><span class="toc-number">2.4.</span> <span class="toc-text">表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">2.5.</span> <span class="toc-text">函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="toc-number">2.6.</span> <span class="toc-text">输入输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-number">2.7.</span> <span class="toc-text">补充</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%8C%85"><span class="toc-number">2.8.</span> <span class="toc-text">闭包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D"><span class="toc-number">2.9.</span> <span class="toc-text">模式匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E5%92%8C%E5%AD%97%E8%8A%82"><span class="toc-number">2.10.</span> <span class="toc-text">位和字节</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">2.11.</span> <span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">2.12.</span> <span class="toc-text">数据文件和序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E3%80%81%E6%89%A7%E8%A1%8C%E5%92%8C%E9%94%99%E8%AF%AF"><span class="toc-number">2.13.</span> <span class="toc-text">编译、执行和错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85"><span class="toc-number">2.14.</span> <span class="toc-text">模块和包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E6%B3%9B%E5%9E%8B-for"><span class="toc-number">2.15.</span> <span class="toc-text">迭代器和泛型 for</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E8%A1%A8"><span class="toc-number">2.16.</span> <span class="toc-text">元表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B"><span class="toc-number">2.17.</span> <span class="toc-text">面向对象编程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">2.18.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86"><span class="toc-number">2.19.</span> <span class="toc-text">垃圾收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E7%A8%8B"><span class="toc-number">2.20.</span> <span class="toc-text">协程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84"><span class="toc-number">2.21.</span> <span class="toc-text">反射</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E4%BA%8C-%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94"><span class="toc-number">3.</span> <span class="toc-text">0x02 二 问题解答</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Q1"><span class="toc-number">3.1.</span> <span class="toc-text">Q1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q2"><span class="toc-number">3.2.</span> <span class="toc-text">Q2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q3"><span class="toc-number">3.3.</span> <span class="toc-text">Q3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q4"><span class="toc-number">3.4.</span> <span class="toc-text">Q4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q5"><span class="toc-number">3.5.</span> <span class="toc-text">Q5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q6"><span class="toc-number">3.6.</span> <span class="toc-text">Q6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q7"><span class="toc-number">3.7.</span> <span class="toc-text">Q7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q8"><span class="toc-number">3.8.</span> <span class="toc-text">Q8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q9"><span class="toc-number">3.9.</span> <span class="toc-text">Q9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q10"><span class="toc-number">3.10.</span> <span class="toc-text">Q10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q11"><span class="toc-number">3.11.</span> <span class="toc-text">Q11</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q12"><span class="toc-number">3.12.</span> <span class="toc-text">Q12</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q13"><span class="toc-number">3.13.</span> <span class="toc-text">Q13</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q14"><span class="toc-number">3.14.</span> <span class="toc-text">Q14</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q15"><span class="toc-number">3.15.</span> <span class="toc-text">Q15</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q16"><span class="toc-number">3.16.</span> <span class="toc-text">Q16</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q17"><span class="toc-number">3.17.</span> <span class="toc-text">Q17</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q18"><span class="toc-number">3.18.</span> <span class="toc-text">Q18</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q19"><span class="toc-number">3.19.</span> <span class="toc-text">Q19</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q20"><span class="toc-number">3.20.</span> <span class="toc-text">Q20</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q21"><span class="toc-number">3.21.</span> <span class="toc-text">Q21</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q22"><span class="toc-number">3.22.</span> <span class="toc-text">Q22</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q23"><span class="toc-number">3.23.</span> <span class="toc-text">Q23</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q24"><span class="toc-number">3.24.</span> <span class="toc-text">Q24</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q25"><span class="toc-number">3.25.</span> <span class="toc-text">Q25</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q26"><span class="toc-number">3.26.</span> <span class="toc-text">Q26</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q27"><span class="toc-number">3.27.</span> <span class="toc-text">Q27</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q28"><span class="toc-number">3.28.</span> <span class="toc-text">Q28</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q29"><span class="toc-number">3.29.</span> <span class="toc-text">Q29</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q30"><span class="toc-number">3.30.</span> <span class="toc-text">Q30</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q31"><span class="toc-number">3.31.</span> <span class="toc-text">Q31</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q32"><span class="toc-number">3.32.</span> <span class="toc-text">Q32</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q33"><span class="toc-number">3.33.</span> <span class="toc-text">Q33</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q34"><span class="toc-number">3.34.</span> <span class="toc-text">Q34</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q35"><span class="toc-number">3.35.</span> <span class="toc-text">Q35</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q36"><span class="toc-number">3.36.</span> <span class="toc-text">Q36</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q37"><span class="toc-number">3.37.</span> <span class="toc-text">Q37</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q38"><span class="toc-number">3.38.</span> <span class="toc-text">Q38</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q39"><span class="toc-number">3.39.</span> <span class="toc-text">Q39</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q40"><span class="toc-number">3.40.</span> <span class="toc-text">Q40</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q41"><span class="toc-number">3.41.</span> <span class="toc-text">Q41</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q42"><span class="toc-number">3.42.</span> <span class="toc-text">Q42</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q43"><span class="toc-number">3.43.</span> <span class="toc-text">Q43</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q44"><span class="toc-number">3.44.</span> <span class="toc-text">Q44</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q45"><span class="toc-number">3.45.</span> <span class="toc-text">Q45</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q46"><span class="toc-number">3.46.</span> <span class="toc-text">Q46</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q47"><span class="toc-number">3.47.</span> <span class="toc-text">Q47</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q48"><span class="toc-number">3.48.</span> <span class="toc-text">Q48</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q49"><span class="toc-number">3.49.</span> <span class="toc-text">Q49</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q50"><span class="toc-number">3.50.</span> <span class="toc-text">Q50</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q51"><span class="toc-number">3.51.</span> <span class="toc-text">Q51</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q52"><span class="toc-number">3.52.</span> <span class="toc-text">Q52</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q53"><span class="toc-number">3.53.</span> <span class="toc-text">Q53</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q54"><span class="toc-number">3.54.</span> <span class="toc-text">Q54</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q55"><span class="toc-number">3.55.</span> <span class="toc-text">Q55</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q56"><span class="toc-number">3.56.</span> <span class="toc-text">Q56</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q57"><span class="toc-number">3.57.</span> <span class="toc-text">Q57</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q58"><span class="toc-number">3.58.</span> <span class="toc-text">Q58</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q59"><span class="toc-number">3.59.</span> <span class="toc-text">Q59</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q60"><span class="toc-number">3.60.</span> <span class="toc-text">Q60</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q61"><span class="toc-number">3.61.</span> <span class="toc-text">Q61</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q62"><span class="toc-number">3.62.</span> <span class="toc-text">Q62</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q63"><span class="toc-number">3.63.</span> <span class="toc-text">Q63</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q64"><span class="toc-number">3.64.</span> <span class="toc-text">Q64</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q65"><span class="toc-number">3.65.</span> <span class="toc-text">Q65</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q66"><span class="toc-number">3.66.</span> <span class="toc-text">Q66</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q67"><span class="toc-number">3.67.</span> <span class="toc-text">Q67</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q68"><span class="toc-number">3.68.</span> <span class="toc-text">Q68</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q69"><span class="toc-number">3.69.</span> <span class="toc-text">Q69</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q70"><span class="toc-number">3.70.</span> <span class="toc-text">Q70</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q71"><span class="toc-number">3.71.</span> <span class="toc-text">Q71</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        关于 Lua 的那些问题（长期更新）
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-01-27T11:30:45.000Z" class="dt-published" itemprop="datePublished">2020-01-27</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Lua/" rel="tag">Lua</a>, <a class="p-category" href="/tags/QnA/" rel="tag">QnA</a>, <a class="p-category" href="/tags/foundations/" rel="tag">foundations</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00-〇"><a href="#0x00-〇" class="headerlink" title="0x00 〇"></a>0x00 〇</h2><p>关于，我，为什么这么久，没发文章。那还要从 1 月 2 号说起，想我们在 2 号放完仅仅一天的元旦假期之后，回到工位，愕然发现：工作室没了。</p>
+<p>然后就，这么久了，还没缓过来。</p>
+<h2 id="0x01-一-问题目录"><a href="#0x01-一-问题目录" class="headerlink" title="0x01 一 问题目录"></a>0x01 一 问题目录</h2><h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><ul>
+<li><a href="#Q1">Q1-什么叫动态类型语言（Dynamically-typed language）？</a></li>
+<li><a href="#Q2">Q2-Lua 中全局变量的默认值是什么，如何删除全局变量？</a></li>
+<li><a href="#Q3">Q3-Lua 中的条件测试（以及逻辑运算符）将哪些值视为假？</a></li>
+<li><a href="#Q4">Q4-什么是短路求值（Short-circuit evaluation）原则</a></li>
+<li><a href="#Q5">Q5-Lua 中逻辑运算符（and、or、not）返回运算结果的规则是？</a></li>
+<li><a href="#Q6">Q6-Lua 的独立解析器（Stand-alone interpreter）有哪些特点？</a></li>
+<li><a href="#Q7">Q7-阶乘计算的示例程序中，如果输入负数，会出现什么问题，要如何修改？</a></li>
+<li><a href="#Q8">Q8-解决八皇后问题？</a></li>
+<li><a href="#Q9">Q9-找出皇后问题的所有不重复的解？</a></li>
+<li><a href="#Q10">Q10-如何生成一个数列的排列？</a></li>
+<li><a href="#Q11">Q11-用生成排列的方式获得八皇后问题的解，与示例方法的性能差异？</a></li>
+</ul>
+<h3 id="数值"><a href="#数值" class="headerlink" title="数值"></a>数值</h3><ul>
+<li><a href="#Q12">Q12-双精度浮点数的误差是怎么来的？</a></li>
+<li><a href="#Q13">Q13-如何保留所有浮点数的精度？</a></li>
+</ul>
+<h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><ul>
+<li><a href="#Q14">Q14-为什么要少用字符串连接操作符（..）？</a></li>
+<li><a href="#Q15">Q15-什么是“一组包含歧义的转义字符序列”，可以用来做什么？</a></li>
+<li><a href="#Q16">Q16-处理字符串和 utf-8 字符串的区别在哪里，需要注意些什么？</a></li>
+</ul>
+<h3 id="表"><a href="#表" class="headerlink" title="表"></a>表</h3><ul>
+<li><a href="#Q17">Q17-Lua 中表的本质是什么？</a></li>
+<li><a href="#Q18">Q18-构造表的几种方法？</a></li>
+<li><a href="#Q19">Q19-序列（Sequence）在 Lua 语言中是什么？</a></li>
+<li><a href="#Q20">Q20-如何遍历表？</a></li>
+<li><a href="#Q21">Q21-当进行字符串拼接时，在 Lua 语言中性能比较好的方法是什么？</a></li>
+</ul>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
+<li><a href="#Q22">Q22-当什么时候 Lua 中函数的参数可以不带括号？</a></li>
+<li><a href="#Q23">Q23-什么是尾调用（tail call）？</a></li>
+<li><a href="#Q24">Q24-洗牌算法有哪些？</a></li>
+</ul>
+<h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><ul>
+<li><a href="#Q25">Q25-I/O 操作都包含哪些？</a></li>
+<li><a href="#Q26">Q26-什么是简单 I/O 模型？什么是完整 I/O 模型？</a></li>
+<li><a href="#Q27">Q27-io.write 方法与 print 方法有哪些不同？</a></li>
+</ul>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><ul>
+<li><a href="#Q28">Q28-什么是数据驱动编程？</a></li>
+</ul>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><ul>
+<li><a href="#Q29">Q29-第一类值（first-class value）是什么？</a></li>
+<li><a href="#Q30">Q30-词法定界（lexical scoping）是什么?</a></li>
+<li><a href="#Q31">Q31-为何需要在定义局部递归函数前，先定义局部函数变量？</a></li>
+<li><a href="#Q32">Q32-什么是闭包？</a></li>
+</ul>
+<h3 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h3><ul>
+<li><a href="#Q33">Q33-典型的正则表达式实现？</a></li>
+<li><a href="#Q34">Q34-字符串标准库中基于模式（pattern）的函数有哪些？</a></li>
+<li><a href="#Q35">Q35-Lua 的模式匹配有什么特点？</a></li>
+</ul>
+<h3 id="位和字节"><a href="#位和字节" class="headerlink" title="位和字节"></a>位和字节</h3><ul>
+<li><a href="#Q36">Q36-什么是算术位移，什么是逻辑位移？</a></li>
+<li><a href="#Q37">Q37-大端模式，小端模式？</a></li>
+<li><a href="#Q38">Q38-如何将 windows 格式的文本转换为 POSIX 格式？</a></li>
+</ul>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><ul>
+<li><a href="#39">Q39-Lua 中的数据结构？</a></li>
+</ul>
+<h3 id="数据文件和序列化"><a href="#数据文件和序列化" class="headerlink" title="数据文件和序列化"></a>数据文件和序列化</h3><ul>
+<li><a href="#40">Q40-如何使用 Lua 描述数据？</a></li>
+<li><a href="#41">Q41-何为序列化？</a></li>
+<li><a href="#42">Q42-如何保存带有循环和共享子表的表？</a></li>
+</ul>
+<h3 id="编译、执行和错误"><a href="#编译、执行和错误" class="headerlink" title="编译、执行和错误"></a>编译、执行和错误</h3><ul>
+<li><a href="#43">Q43-什么是解释型语言（interpreted language）？</a></li>
+</ul>
+<h3 id="模块和包"><a href="#模块和包" class="headerlink" title="模块和包"></a>模块和包</h3><ul>
+<li><a href="#44">Q44-什么是 Lua 中的模块（module）以及包（package）？</a></li>
+</ul>
+<h3 id="迭代器和泛型-for"><a href="#迭代器和泛型-for" class="headerlink" title="迭代器和泛型 for"></a>迭代器和泛型 for</h3><ul>
+<li><a href="#Q45">Q45-迭代器（iterator）是什么？</a></li>
+<li><a href="#Q46">Q46-泛型 for 的执行原理和过程？</a></li>
+<li><a href="#Q47">Q47-什么是无状态迭代器（stateless iterator），有什么优势？</a></li>
+<li><a href="#Q48">Q48-实现马尔可夫链算法？</a></li>
+</ul>
+<h3 id="元表"><a href="#元表" class="headerlink" title="元表"></a>元表</h3><ul>
+<li><a href="#Q49">Q49-元表是什么，有什么作用？</a></li>
+<li><a href="#Q50">Q50-有哪些元方法？</a></li>
+<li><a href="#Q51">Q51-在进行关系运算时，什么叫做部分有序（partial order）？</a></li>
+<li><a href="#52">Q52-如何实现具有默认值的表（默认值不为 nil）？</a></li>
+<li><a href="#53">Q53-如何跟踪对表的访问？</a></li>
+<li><a href="#54">Q54-调用元方法时，参数是如何传递的？</a></li>
+<li><a href="#55">Q55-如何实现只读表？</a></li>
+</ul>
+<h3 id="面向对象编程"><a href="#面向对象编程" class="headerlink" title="面向对象编程"></a>面向对象编程</h3><ul>
+<li><a href="#Q56">Q56-表与对象。</a></li>
+<li><a href="#Q57">Q57-Lua 中的面向对象有什么特点？</a></li>
+<li><a href="#Q58">Q58-使用 __index 元方法作为面向对象的实现，单继承与多重继承有哪些区别？</a></li>
+<li><a href="#Q59">Q59-如何实现类的私有性（private）？</a></li>
+<li><a href="#Q60">Q60-通过代理表示对象的对偶表示有什么优点和缺点？</a></li>
+</ul>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+<li><a href="#Q61">Q61-Lua 语言是如何模拟全局变量的？</a></li>
+<li><a href="#Q62">Q62-Lua 中的 _ENV 和 _G 有什么区别？</a></li>
+</ul>
+<h3 id="垃圾收集"><a href="#垃圾收集" class="headerlink" title="垃圾收集"></a>垃圾收集</h3><ul>
+<li><a href="#Q63">Q63-Lua 语言的内存管理（垃圾收集）机制是怎样的？</a></li>
+<li><a href="#Q64">Q64-什么是强/弱引用？</a></li>
+<li><a href="#Q65">Q65-什么是瞬表（ephemeron table，直译蜉蝣表）？</a></li>
+<li><a href="#Q66">Q66-Lua 中的析构器进行析构后为什么仍然可以访问？</a></li>
+</ul>
+<h3 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h3><ul>
+<li><a href="#Q67">Q67-进程，线程和协程？</a></li>
+<li><a href="#Q68">Q68-Lua 语言协程的状态</a></li>
+<li><a href="#69">Q69-Lua 中如何使用协程模拟事件？实现事件驱动编程？</a></li>
+</ul>
+<h3 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h3><ul>
+<li><a href="#70">Q70-什么是反射（reflection）？</a></li>
+<li><a href="#71">Q71-什么是钩子（hook）？</a></li>
+</ul>
+<h2 id="0x02-二-问题解答"><a href="#0x02-二-问题解答" class="headerlink" title="0x02 二 问题解答"></a>0x02 二 问题解答</h2><h3 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h3><blockquote>
+<p>问题：什么叫动态类型语言（Dynamically-typed language）？</p>
+</blockquote>
+<p>动态类型语言，是指在语言中没有类型的定义，不需要声明变量的类型，类型信息由变量自己保存，或者说是由每个值自带其类型信息。Lua 中的基本类型有 8 种：nil（空），boolean（布尔），number（数值），string（字符串），userdata（用户数据），function（函数），thread（线程），table（表）。</p>
+<h3 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h3><blockquote>
+<p>问题：全局变量的默认值是什么？如何删除全局变量？</p>
+</blockquote>
+<p>在 Lua 中，全局变量无须声明即可使用，默认值为 nil，即表示未经初始化的变量。若要删除一个变量，只需要将变量值置为 nil 即可。Lua 不会区分未初始化的 nil 和被赋值为 nil 的变量，并且 Lua 语言会自动回收变量占用的内存。</p>
+<h3 id="Q3"><a href="#Q3" class="headerlink" title="Q3"></a>Q3</h3><blockquote>
+<p>问题：Lua 中的条件测试（以及逻辑运算符）将哪些值视为假？</p>
+</blockquote>
+<p>在 Lua 语言中，条件测试只将 false 和 nil 视为假。有些语言中视为假的“0”在 Lua 中也同样为真。</p>
+<h3 id="Q4"><a href="#Q4" class="headerlink" title="Q4"></a>Q4</h3><blockquote>
+<p>问题：什么是短路求值原则？</p>
+</blockquote>
+<p>短路求值是指只在必要时才对后面的操作数进行求值。例如“true or something”，无论 something 逻辑运算的结果为什么，都不会改变整个“or”运算的结果，因此 something 中的语句都不会被执行，被短路处理。</p>
+<h3 id="Q5"><a href="#Q5" class="headerlink" title="Q5"></a>Q5</h3><blockquote>
+<p>问题：Lua 逻辑运算（and，or，not）返回的运算结果分别是什么？</p>
+</blockquote>
+<p>逻辑运算符 and 和 or 为二目运算符，not 为一目运算符。运算符 and 在第一个操作数为“false”时返回第一个操作数，否则返回第二个操作数；运算符 or 在第一个操作数不为“false”时返回第一个操作数，否则返回第二个操作数；运算符 not 永远返回 boolean 类型的值。</p>
+<h3 id="Q6"><a href="#Q6" class="headerlink" title="Q6"></a>Q6</h3><blockquote>
+<p>问题：Lua 的独立解析器有哪些特点？</p>
+</blockquote>
+<p>Lua 的独立解析器的源文件是“lua.c”，是一个可以直接使用 Lua 语言的 C 程序。在使用 Lua 时，可以使用“#”作为一个 Lua 文件的开头，让系统直接使用独立解释器运行 Lua 脚本。如：“#!/usr/local/bin/lua”，可以通过可选参数运行脚本，通过名为“arg”的表为脚本传递参数。</p>
+<h3 id="Q7"><a href="#Q7" class="headerlink" title="Q7"></a>Q7</h3><blockquote>
+<p>问题：阶乘的示例程序如果输入负数，会出现什么问题？如何修改。</p>
+</blockquote>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这个示例中，没有考虑到输入为负数的情况，程序会一直执行下去直到报错“stack overflow”，需要修改程序的停止条件。</p>
+<h3 id="Q8"><a href="#Q8" class="headerlink" title="Q8"></a>Q8</h3><blockquote>
+<p>问题：解决八皇后问题。</p>
+</blockquote>
+<p>使用回溯法的经典问题。主要思路是查看每行每一个位置的合法性，当一个位置不合法时，返回上一行的下一个位置，继续检查合法性。当每一行都放入了皇后，即得到了一个解。</p>
+<p>解决方案中使用了对每一列的循环，检查每一个位置，在找到一个解后不会停止循环，而是继续检查一下位置。而保存解的表并非保存有所有解，而是将解打印出来前的缓存。</p>
+<h3 id="Q9"><a href="#Q9" class="headerlink" title="Q9"></a>Q9</h3><blockquote>
+<p>问题：找出皇后问题的所有不重复的解。</p>
+</blockquote>
+<p>如何看“重复”这件事呢。</p>
+<h3 id="Q10"><a href="#Q10" class="headerlink" title="Q10"></a>Q10</h3><blockquote>
+<p>问题：如何生成一个数列的排列？</p>
+</blockquote>
+<p>利用回溯，将未排列的数字插入到下一位置。</p>
+<h3 id="Q11"><a href="#Q11" class="headerlink" title="Q11"></a>Q11</h3><blockquote>
+<p>问题：用生成排列的方式获得八皇后问题的解，与示例的性能差异。</p>
+</blockquote>
+<p>使用回溯的方法，比较了17777次，而先生成排列的方法比较了140756次，多了一个数量级。原因在于，回溯的方法并不会对开头部分有重复的错误解进行多次的比较，而全排列的方法，将开头有重复的错误解也作为不同的解来处理，所以多做了很多工作。</p>
+<h3 id="Q12"><a href="#Q12" class="headerlink" title="Q12"></a>Q12</h3><blockquote>
+<p>问题：双精度浮点数的误差是怎么来的？</p>
+</blockquote>
+<p>用十进制表示的小数和用二进制表示的小数可能不同，如12.7 - 20 +7.3 在计算后不为0。<br>而小于2^53（即9007199254740992）的整型值与双精度表示的浮点值是一样的。</p>
+<h3 id="Q13"><a href="#Q13" class="headerlink" title="Q13"></a>Q13</h3><blockquote>
+<p>问题：如何保留所有浮点数的精度？</p>
+</blockquote>
+<p>使用十六进制浮点数来表示浮点数，可以保留所有浮点数的精度，并且比十进制的转换速度更快。</p>
+<h3 id="Q14"><a href="#Q14" class="headerlink" title="Q14"></a>Q14</h3><blockquote>
+<p>问题：为什么要少用字符串连接操作符（..）？</p>
+</blockquote>
+<p>在Lua中，字符串时不可变量，使用连接操作符时总是会创建一个新字符串，而不会改变原来作为操作数的字符串。</p>
+<p>类似C#中，使用“+”也是同样的道理。C#中可以使用StringBuilder类型的变量来进行拼接。</p>
+<h3 id="Q15"><a href="#Q15" class="headerlink" title="Q15"></a>Q15</h3><blockquote>
+<p>问题：什么是“一组包含歧义的转义字符序列”，可以用来做什么？</p>
+</blockquote>
+<h3 id="Q16"><a href="#Q16" class="headerlink" title="Q16"></a>Q16</h3><blockquote>
+<p>问题：处理字符串和utf-8字符串的区别在哪里，需要注意些什么？</p>
+</blockquote>
+<h3 id="Q17"><a href="#Q17" class="headerlink" title="Q17"></a>Q17</h3><blockquote>
+<p>问题：Lua中表的本质是什么？</p>
+</blockquote>
+<p>Lua中的表本质上是一种辅助数组（associative array），不仅可以使用数值作为索引（Lua中索引默认从1开始，但也可以使用0或负数），也可以使用字符串或其他类型的值作为索引（nil除外）。</p>
+<p>Lua中的表是一种动态分配的对象，程序只能操作指向表的引用，Lua语言不会对表进行深拷贝（拷贝的是对象的引用，而非整个对象本身）。</p>
+<h3 id="Q18"><a href="#Q18" class="headerlink" title="Q18"></a>Q18</h3><blockquote>
+<p>问题：构造表的几种方法？</p>
+</blockquote>
+<p>使用表构造器（Table Constructor，空构造器{}，或使用索引从1开始的构造器{…}），即列表式（list-style）；<br>使用初始化记录式（record-style）表的语法，如{a=1, b=2}；<br>两种风格可以在同一个表的构造时混用。</p>
+<p>若要使用负数索引，可以使用方括号显示指定索引，如{[-1]}</p>
+<h3 id="Q19"><a href="#Q19" class="headerlink" title="Q19"></a>Q19</h3><blockquote>
+<p>问题：序列（sequence）在Lua语言中是什么？</p>
+</blockquote>
+<p>序列在Lua语言中指的是由指定的n个正整数数值类型的键所组成的集合{1,2,3…,n}组成的表，不包含空洞（nil）。Lua中获取长度的操作符返回的就是表对应序列的长度。</p>
+<h3 id="Q20"><a href="#Q20" class="headerlink" title="Q20"></a>Q20</h3><blockquote>
+<p>问题：如何遍历表？</p>
+</blockquote>
+<p>可以使用pairs迭代器遍历表，但由于底层实现机制，这种遍历只能保证每个元素会且只会出现一次，但遍历过程中元素的出现顺序可能是随机的，每次运行也可能产生不同的顺序。</p>
+<p>如果是列表（序列），可以使用ipairs迭代器进行遍历，此时会确保是按照顺序进行的。另外，对于序列也可以使用for循环遍历。</p>
+<h3 id="Q21"><a href="#Q21" class="headerlink" title="Q21"></a>Q21</h3><blockquote>
+<p>问题：当进行字符串拼接时，在Lua语言中性能比较好的方法是？</p>
+</blockquote>
+<p>使用table标准库中的table.concat方法对表内的string数据进行拼接。测试1,000个0到1之间的浮点数字符串拼接，“..”操作符使用了0.751秒，table.concat方法使用了0.001秒；10,0000个0到1之间的浮点数字符串的拼接，使用“..”操作符使用了73.426秒，而使用table.concat方法，只用了0.017秒。以上。</p>
+<h3 id="Q22"><a href="#Q22" class="headerlink" title="Q22"></a>Q22</h3><blockquote>
+<p>问题：当什么时候Lua中函数的参数可以不带括号？</p>
+</blockquote>
+<p>当函数只有一个参数，且参数为字符串常量或表构造器时，可以省略括号。</p>
+<h3 id="Q23"><a href="#Q23" class="headerlink" title="Q23"></a>Q23</h3><blockquote>
+<p>问题：什么是尾调用（tail call）？</p>
+</blockquote>
+<p>尾调用是被装饰为函数调用的“goto”语句，当一个函数最后一个动作是调用了另外一个函数而没有进行其他工作时，就形成了尾调用。当使用尾调用时，由于不需要进行其他工作，程序不需要返回最初的调用者，因此不需要在调用栈中保存调用函数的信息。如f调用g，当g返回时，会直接返回到调用f的位置，即Lua语言支持尾调用消除（tail-call elimination），使得在进行尾调用时，不需要任何额外的栈空间（永远不会发生栈溢出）。</p>
+<h3 id="Q24"><a href="#Q24" class="headerlink" title="Q24"></a>Q24</h3><blockquote>
+<p>问题：洗牌算法有哪些？</p>
+</blockquote>
+<p>洗牌算法（Shuffling Algorithm）是用来产生一串等概率随机序列的算法。</p>
+<h3 id="Q25"><a href="#Q25" class="headerlink" title="Q25"></a>Q25</h3><blockquote>
+<p>问题：I/O操作都包含哪些？</p>
+</blockquote>
+<h3 id="Q26"><a href="#Q26" class="headerlink" title="Q26"></a>Q26</h3><blockquote>
+<p>问题：什么是简单I/O模型？什么是完整I/O模型？</p>
+</blockquote>
+<p>简单I/O模型是虚拟了当前输入流和当前输出流（current input stream，current output stream），并初始化为标准输入和标准输出（io.input和io.output可用来改变当前的输入输出流），而I/O操作是通过这些流实现的。</p>
+<p>要同时处理多个文件，需要完整I/O模型。即通过io.open函数建立了不同文件的流，再使用read和write方法进行操作。而且标准输入输出是以文本模式进行的，无法处理二进制流。</p>
+<h3 id="Q27"><a href="#Q27" class="headerlink" title="Q27"></a>Q27</h3><blockquote>
+<p>问题：io.write方法与print方法有哪些不同？</p>
+</blockquote>
+<p>函数io.write不会在输出的结果中添加制表符或换行符；函数io.write允许对输出进行重定向，print只能使用标准输出；print函数会对参数自动调用tostring。</p>
+<h3 id="Q28"><a href="#Q28" class="headerlink" title="Q28"></a>Q28</h3><blockquote>
+<p>问题：什么是数据驱动编程？</p>
+</blockquote>
+<p>数据驱动编程的出发点是相比程序逻辑，人类更擅长处理数据。应将设计的复杂性从程序代码转移至数据端。如消息机制从switch分支，变为自定义的包含了消息处理函数指针的数据结构，<a target="_blank" rel="noopener" href="https://www.cnblogs.com/chgaowei/archive/2011/08/03/2126724.html。">https://www.cnblogs.com/chgaowei/archive/2011/08/03/2126724.html。</a></p>
+<p>优势：可读性强，代码流程一目了然；（机制和策略分离）<br>易于修改，对于新功能的增加只需要增加数据，而不需要修改流程；（隔离变化）<br>重用了重复代码。</p>
+<p>参考《Unix编程艺术》</p>
+<h3 id="Q29"><a href="#Q29" class="headerlink" title="Q29"></a>Q29</h3><blockquote>
+<p>问题：第一类值（first-class value）是什么？</p>
+</blockquote>
+<p>第一类值（也称为first-class object, first-class entity）来源于1960年代，原称为第一类公民（first-class citizen）意指函数可作为电脑语言中的第一类公民。第一类值有以下特征：可以存入变量或其他结构；可以作为参数传递给函数；可以作为函数的返回值；可以在执行期创造而非完全在设计期全部写出；可以是匿名的。</p>
+<p>在Lua语言中，函数是第一类值。可以以另一个函数为参数的函数，被称为高阶函数（higher-order function）。</p>
+<h3 id="Q30"><a href="#Q30" class="headerlink" title="Q30"></a>Q30</h3><blockquote>
+<p>问题：词法定界（lexical scoping）是什么？</p>
+</blockquote>
+<p>定界（scope）是指变量域变量所对应实体之间绑定关系的有效范围。有时也可以与可见性（visibility）混用。</p>
+<p>也被称为静态定界（静态域）（static scoping），指变量只能在其被定义的作用域范围内被使用。与之相对的是动态定界（dynamic scoping），动态定界常见于shell，bash语言。</p>
+<p>对于静态定界，一个变量的可见性范围仅严格与组成程序的静态具体词法上下文有关，而与运行时的具体堆栈调用无关；使用动态定界时，一个变量的可见性范围在编译时是无法确定的，而依赖于运行时的实际堆栈调用情况。</p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Scope_(computer_science">https://en.wikipedia.org/wiki/Scope_(computer_science</a>)</p>
+<p>通俗的讲：词法定界可以当作一种特性，即当在一个函数B中编写一个函数A时（当编写一个被其他函数B包含的函数A时），被包含的函数A可以访问包含它的函数B中的所有局部变量。</p>
+<h3 id="Q31"><a href="#Q31" class="headerlink" title="Q31"></a>Q31</h3><blockquote>
+<p>问题：为何需要在定义局部递归函数前，先定义局部函数变量。</p>
+</blockquote>
+<p>由于使用匿名函数定义后赋值给代表函数名的变量中，而在匿名函数的定义中使用了即将赋值的变量名，（构成局部递归，recursive local function），而此时，局部的变量仍未被定义。因此需要提前定义保存匿名函数的变量。</p>
+<p>而使用函数定义的语法糖不会有这个问题，是因为：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span><span class="params">(params)</span></span> body <span class="keyword">end</span></span><br><span class="line"><span class="keyword">local</span> foo; foo = <span class="function"><span class="keyword">function</span><span class="params">(params)</span></span> body <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>两者等价。前者将会被展开为后者。</p>
+<h3 id="Q32"><a href="#Q32" class="headerlink" title="Q32"></a>Q32</h3><blockquote>
+<p>问题：什么是闭包？</p>
+</blockquote>
+<p>一个闭包由一个函数和能够使这个函数正确访问非局部变量（即不是上层函数的局部变量，也不是全局，如上层函数的形参，也被称为上值）的机制组成。当一个函数返回的是匿名函数时，每次调用这个函数，都会返回一个新的闭包。</p>
+<p>因此，Lua从技术上讲只有闭包没有函数，函数只是闭包的一种原型。</p>
+<h3 id="Q33"><a href="#Q33" class="headerlink" title="Q33"></a>Q33</h3><blockquote>
+<p>问题：典型的正则表达式实现。</p>
+</blockquote>
+<p>典型的POSIX正则表达式实现需要4000行代码。</p>
+<h3 id="Q34"><a href="#Q34" class="headerlink" title="Q34"></a>Q34</h3><blockquote>
+<p>问题：字符串标准库中基于模式（pattern）的函数有哪些？</p>
+</blockquote>
+<p>函数find，gsub，match，gmatch。</p>
+<p>函数find返回匹配位置，用sub来获取匹配到的字符串。<br>函数gsub用来替换。<br>函数match直接返回匹配的子串。<br>函数gmatch会返回一个可以用来遍历所有匹配指定模式的字符串。</p>
+<h3 id="Q35"><a href="#Q35" class="headerlink" title="Q35"></a>Q35</h3><blockquote>
+<p>问题：Lua的模式匹配有什么特点？</p>
+</blockquote>
+<p>在Lua语言中，不使用大多数匹配库使用的反斜杠（backslash）作为转义符。</p>
+<p>对于Lua语言来说，模式仅仅是普通的字符串，只有与模式匹配相关的函数才会将这些字符串作为模式进行解析。Lua中的模式使用“%”作为转义符。</p>
+<p>具有特殊含义的字符有：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">%a %c %d %g %l %p %s %u %w %x</span><br><span class="line">%A %C %D %G %L %P %S %U %W %X</span><br><span class="line">( ) . % + - * ? [ ] ^ $</span><br><span class="line">%( %) %. %% %+ %- %* %? %[ %] %^ %$</span><br><span class="line">%b</span><br><span class="line">%f</span><br><span class="line">%n %2 % 1 %0</span><br></pre></td></tr></table></figure>
+<h3 id="Q36"><a href="#Q36" class="headerlink" title="Q36"></a>Q36</h3><blockquote>
+<p>问题：什么是算术位移，什么是逻辑位移？</p>
+</blockquote>
+<p>逻辑位移（logic shift）是在移位后，用0补充空位。<br>算术位移（arithmetic shift）时，左移与逻辑左移相同，会用0补充右边的空位；而右移时，算术位移会用符号位补充空位。</p>
+<h3 id="Q37"><a href="#Q37" class="headerlink" title="Q37"></a>Q37</h3><blockquote>
+<p>问题：大端模式，小端模式？</p>
+</blockquote>
+<p>大端模式（big-endian）：是指数据的高字节保存在内存的低地址中，低字节保存在内存的高地址中。<br>小端模式（little-endian）：是指数据的高字节保存在内存的高地址中。</p>
+<p>常见的如x86结构，很多ARM（有些可以进行设置）及DSP是小端模式，Keil C51为大端模式。</p>
+<h3 id="Q38"><a href="#Q38" class="headerlink" title="Q38"></a>Q38</h3><blockquote>
+<p>问题：如何将windows格式的文本文件转换为POSIX格式？</p>
+</blockquote>
+<p>将\r\n转换为\n。</p>
+<h3 id="Q39"><a href="#Q39" class="headerlink" title="Q39"></a>Q39</h3><blockquote>
+<p>问题：Lua中的数据结构。</p>
+</blockquote>
+<p>数组，矩阵（多维数组，稀疏矩阵，邻接矩阵），链表（单链表，双向链表，环形表），队列，双端队列，反向表，索引表，集合，包（多重集合），图。</p>
+<h3 id="Q40"><a href="#Q40" class="headerlink" title="Q40"></a>Q40</h3><blockquote>
+<p>问题：如何使用Lua描述数据？</p>
+</blockquote>
+<p>将数据文件写成Lua代码形式（表构造器作为参数，保存有数据，并统一使用预定义的函数进行读取），并在沙盒中执行预定义的函数进行读取。</p>
+<h3 id="Q41"><a href="#Q41" class="headerlink" title="Q41"></a>Q41</h3><blockquote>
+<p>问题：何为序列化？</p>
+</blockquote>
+<p>序列化（Serialization）是将数据转换为字节流或字符流，以便将其存储到文件中或通过网络传输。</p>
+<h3 id="Q42"><a href="#Q42" class="headerlink" title="Q42"></a>Q42</h3><blockquote>
+<p>问题：如何保存带有循环和共享子表的表？</p>
+</blockquote>
+<p>对于要保存的值，使用type函数进行区分，将非表的值使用%q格式化为字符串写入流，对于表，则首先保存表结构，随后保存每一个k-v值。对于带有循环和共享子表的表，可以引入名称作为参数，将已经保存的表进行记录，当有值为已经保存的表时，直接引用即可。如果要保存的几个表有共享内容，可以使用同一个记录集合进行保存。</p>
+<h3 id="Q43"><a href="#Q43" class="headerlink" title="Q43"></a>Q43</h3><blockquote>
+<p>问题：什么是解释型语言（interpreted language）？</p>
+</blockquote>
+<p>相对于编译型语言存在，源代码不直接翻译成机器语言，而是翻译成中间代码进行解释运行。Lua作为解释型语言会在运行代码前预先编译（precompile）源码为中间代码（.lc），并可以轻易执行动态生成的代码（dofile，load，但这些函数会再调用时进行独立的编译，影响性能）。</p>
+<h3 id="Q44"><a href="#Q44" class="headerlink" title="Q44"></a>Q44</h3><blockquote>
+<p>问题：什么Lua中的模块（module）以及包（package）？</p>
+</blockquote>
+<p>包是一个树状结构的模块的集合。<br>模块是一些代码的集合，主要目标是允许共享代码，可以使用函数require来加载模块，得到一个对应模块的表（所以也是第一类值）。</p>
+<p>函数require加载的模块只会在第一次执行，并将模块名保存在package.loaded表中，同名直接返回表中的值。</p>
+<p>Lua模块支持带有层次结构的模块名，使用点分隔名称中的层次。</p>
+<h3 id="Q45"><a href="#Q45" class="headerlink" title="Q45"></a>Q45</h3><blockquote>
+<p>问题：迭代器（iterator）是什么？</p>
+</blockquote>
+<p>迭代器是一种遍历一个集合中所有元素的代码结构（wikipedia中，称其为程序设计的软件设计模式，是可在容器对象上遍访的接口）。</p>
+<p>Lua中的迭代器通常用函数表示，每次调用函数（迭代器）时，都会返回集合中的“下一个”元素。迭代器通过闭包来保存（调用之间的）状态。创建闭包及封装非局部变量的函数成为工厂（factory）。</p>
+<h3 id="Q46"><a href="#Q46" class="headerlink" title="Q46"></a>Q46</h3><blockquote>
+<p>问题：泛型for的执行原理，过程？</p>
+</blockquote>
+<p>泛型for首先对in后面的表达式求值，将返回的3个值保存在变量列表中的对应变量中（多丢少补nil）：迭代函数、不可变状态、控制变量的初始值。随后for使用不可变状态及控制变量作为参数调用迭代器函数，并将返回值继续赋给变量列表中声明的变量。当第一个返回值（控制变量）为nil，则循环终止。</p>
+<h3 id="Q47"><a href="#Q47" class="headerlink" title="Q47"></a>Q47</h3><blockquote>
+<p>问题：什么是无状态迭代器（stateless iterator），有什么优势？</p>
+</blockquote>
+<p>无状态迭代器是本身不保存任何状态的迭代器，只根据传入的不可变状态与控制变量来得到迭代的下一个元素（如ipairs工厂及迭代器）。<br>可以避免在每次循环时创建新的闭包，从而避免了开销。</p>
+<h3 id="Q48"><a href="#Q48" class="headerlink" title="Q48"></a>Q48</h3><blockquote>
+<p>问题：实现马尔可夫链算法？</p>
+</blockquote>
+<h3 id="Q49"><a href="#Q49" class="headerlink" title="Q49"></a>Q49</h3><blockquote>
+<p>问题：元表是什么，有什么作用？</p>
+</blockquote>
+<p>元表可以修改一个值在面对未知操作时的行为。元表可以认为是面向对象领域中的受限制类。Lua中每一个值都可以有元表。表和用户数据类型都有各自独立的元表，其他类型的值共享对应类型所属的同一个元表。在Lua中只能为表设置并修改元表，其他值必须通过C代码或调试库完成。只有所有字符串值都默认设置了同一个元表，其他值默认没有元表。</p>
+<h3 id="Q50"><a href="#Q50" class="headerlink" title="Q50"></a>Q50</h3><blockquote>
+<p>问题：元表有哪些元方法？</p>
+</blockquote>
+<p>算术运算符对应的元方法有：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>元方法</th>
+<th>算术运算符</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>__add</td>
+<td>加法操作，+</td>
+<td></td>
+</tr>
+<tr>
+<td>__mul</td>
+<td>乘法操作，*</td>
+<td></td>
+</tr>
+<tr>
+<td>__sub</td>
+<td>减法操作，-</td>
+<td></td>
+</tr>
+<tr>
+<td>__div</td>
+<td>除法操作，/</td>
+<td></td>
+</tr>
+<tr>
+<td>__idiv</td>
+<td>floor除法操作，//</td>
+<td></td>
+</tr>
+<tr>
+<td>__unm</td>
+<td>负数，-</td>
+<td>一元</td>
+<td></td>
+</tr>
+<tr>
+<td>__mod</td>
+<td>取模，%</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>__pow</td>
+<td>幂运算，^</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>__band</td>
+<td>按位与，&amp;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>__bor</td>
+<td>按位或，</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>__bxor</td>
+<td>按位异或，~</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>__bnot</td>
+<td>按位取反，~</td>
+<td>一元</td>
+<td></td>
+</tr>
+<tr>
+<td>__shl</td>
+<td>按位逻辑左移，&lt;&lt;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>__shr</td>
+<td>按位逻辑右移，&gt;&gt;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>__concat</td>
+<td>字符串连接，..</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>关系运算元方法有：<br>元方法 | 关系运算符 | 备注 |<br>—|—|—<br><strong>eq | 等于，== | |
+</strong>lt | 小于，&lt; | |<br>__le | 小于等于，&lt;= | |</p>
+<p>库定义相关的元方法有：<br>元方法 | 功能 | 备注<br>—|—|—<br><strong>tostring | 格式化输出的tostring函数 | 会在print时自动调用 
+</strong>metatable | 保护元表，get返回此字段，set报错 |<br>__pairs | 函数pairs，进行遍历 | </p>
+<p>表相关元方法有：<br>元方法 | 功能 | 备注<br>—|—|—<br><strong>index | 访问表中不存在的字段时，会查找此元方法 | 表（在表中查找字段）或函数（执行此函数），函数的开销更大但更灵活|
+</strong>newindex | 当对表中不存在的索引赋值时，会查找此方法 | 表（在表中进行赋值）或函数（执行此函数）|<br>__len | 长度操作符，# | |</p>
+<h3 id="Q51"><a href="#Q51" class="headerlink" title="Q51"></a>Q51</h3><blockquote>
+<p>问题：在进行关系运算时，什么叫做部分有序（partial order）？</p>
+</blockquote>
+<p>部分有序是指，并非所有类型的元素都能被正确的排序。NaN（Not a Number）存在，表示未定义的值，如0/0的结果，标准规定下，任何涉及NaN的比较都为假，因此在大多数计算机中浮点数就是部分有序的。</p>
+<h3 id="Q52"><a href="#Q52" class="headerlink" title="Q52"></a>Q52</h3><blockquote>
+<p>问题：如何实现具有默认值的表（默认值不为nil）？</p>
+</blockquote>
+<p>基本思路是在访问一个表时，如果对应字段不存在，则访问__index函数，返回默认值。</p>
+<p>可以避免每一种默认值都创建新的元表和闭包，可以使用默认键或创建排除表作为键，也可以使用对偶表（dual representation）（独立的表，表的键为各种表，值为这些表的默认值），需要使用弱引用表（weak table），便于垃圾收集。</p>
+<h3 id="Q53"><a href="#Q53" class="headerlink" title="Q53"></a>Q53</h3><blockquote>
+<p>问题：如何跟踪对表的访问？</p>
+</blockquote>
+<p>基本思路是对每一次访问都通过<strong>index以及</strong>newindex元方法提供的函数进行，因此要保持进行跟踪的表为空，才能保证所有对表的访问都是通过元方法进行的。所以建立一个对要监控的表的一个代理（proxy），来实现监控。</p>
+<p>在监控多个表时，同样可以将代理和原来的表映射起来，避免为每一个表创建不同的元表。</p>
+<h3 id="Q54"><a href="#Q54" class="headerlink" title="Q54"></a>Q54</h3><blockquote>
+<p>问题：调用元方法时，参数是如何传递的？</p>
+</blockquote>
+<h3 id="Q55"><a href="#Q55" class="headerlink" title="Q55"></a>Q55</h3><blockquote>
+<p>问题：如何实现只读表？</p>
+</blockquote>
+<h3 id="Q56"><a href="#Q56" class="headerlink" title="Q56"></a>Q56</h3><blockquote>
+<p>问题：表与对象。</p>
+</blockquote>
+<p>一个表就可以看作是一个对象：表与对象一样，可以拥有状态；表与对象一样，拥有一个与其值无关的标识（self）（一般用作方法的接受者，receiver，如this指针）；具有相同值的对象（表）是两个不同的对象，一个对象可以拥有不同的值；表与对象都拥有与创建者和被创建位置无关的生命周期；表与对象一样可以拥有自己的操作（方法，method）。</p>
+<h3 id="Q57"><a href="#Q57" class="headerlink" title="Q57"></a>Q57</h3><blockquote>
+<p>问题：Lua的面向对象有什么特点？</p>
+</blockquote>
+<p>C++/C#等的类是一种模板，而对象是某个特定类的实例（instance）。而Lua中没有类的概念，虽然元表在一定程度上与类的概念类似，但仍无法将元表当作类使用。参考JavaScript等语言的基于原型的语言（prototype-based language）的做法，对象不属于类，每个对象都有一个原型（prototype）而原型也是一个普通的对象。当一个对象（类的实例）遇到一个未知操作时，会首先在原型中查找，因此，创建一个专门用作其他对象（类的实例）的原型对象来表示一个类。（类与原型都是一种组织多个对象间共享行为的方式。）</p>
+<p>setmetatable(A, {__index = B}) — B是A的一个原型。</p>
+<h3 id="Q58"><a href="#Q58" class="headerlink" title="Q58"></a>Q58</h3><blockquote>
+<p>问题：使用__index元方法作为面向对象的实现，单继承与多重继承有哪些区别？</p>
+</blockquote>
+<p>Lua中的面向对象使用基于原型的实现方式，这种方式下，类和对象的关系不同于C++等语言，类不是作为模板而是一个普通的对象。因此在这种情况下，单继承的类与对象（类的实例）的关系与子类与父类的关系相同（对象的元表为类，子类的元表为父类）。而在多重继承时，类与对象的关系，与类与超类的关系不同（类的元表是超类的集合，需要单独创建，__index元方法为函数；而对象的元表依然为类）。</p>
+<h3 id="Q59"><a href="#Q59" class="headerlink" title="Q59"></a>Q59</h3><blockquote>
+<p>问题：如何实现类的私有性（Privacy）？</p>
+</blockquote>
+<p>又称为信息隐藏（information hiding），通常对于不想被外部访问的私有名称，通常的做法是在名称后添加一个下划线，但不会阻止外部对其的访问。<br>通过Lua的元机制（meta-mechanism）可以模拟私有性，通过两个表来表示一个对象，一个表保存对象的状态，另一个表保存对象的操作（接口）。表示对象状态的表不保存在其他字段中，而是只保存在方法的闭包中。</p>
+<p>另外还可使用单方法对象，通过返回唯一的入口函数，通过闭包来保存一个对象，入口函数根据参数进行分发。</p>
+<p>通过对偶表示来实现私有性，对偶表示是将一个表（永远不会被垃圾收集，可使用弱引用表）作为键，同时有把对象本身当作这个表的值。</p>
+<h3 id="Q60"><a href="#Q60" class="headerlink" title="Q60"></a>Q60</h3><blockquote>
+<p>问题：通过代理表示对象的对偶表示有什么优点和缺点？</p>
+</blockquote>
+<h3 id="Q61"><a href="#Q61" class="headerlink" title="Q61"></a>Q61</h3><blockquote>
+<p>问题：Lua语言是如何模拟全局变量的？</p>
+</blockquote>
+<p>Lua将所有的全局变量保存在名为全局环境（global environment）的普通表（全局变量_G）中。</p>
+<h3 id="Q62"><a href="#Q62" class="headerlink" title="Q62"></a>Q62</h3><blockquote>
+<p>问题：Lua中的_ENV和_G有什么区别？</p>
+</blockquote>
+<p>_G是保存了全局环境的全局变量。在Lua中，没有关联到显式声明上的名称（即不出现在对应局部变量的范围内）叫做自由名称（free name）。_ENV是编译时预定义上值（外部的局部变量）。_ENV是一个局部变量，所有在代码段中对“全局变量”的访问实际上都是对_ENV的访问。</p>
+<h3 id="Q63"><a href="#Q63" class="headerlink" title="Q63"></a>Q63</h3><blockquote>
+<p>问题：Lua语言的内存管理（垃圾收集）机制？</p>
+</blockquote>
+<p>Lua中使用自动内存管理，程序可以创建对象，但删除对象是通过垃圾收集（garbage collection）自动进行的。Lua中辅助垃圾收集的机制主要有弱引用表（weak table）、析构器（finalizer）和函数collectgarbage。</p>
+<p>弱引用表允许收集Lua语言中还可以被程序访问的对象；析构器允许收集不在垃圾收集器直接控制下的外部对象；函数collectgarbage允许控制垃圾收集器的步长。</p>
+<h3 id="Q64"><a href="#Q64" class="headerlink" title="Q64"></a>Q64</h3><blockquote>
+<p>问题：什么是强/弱引用？</p>
+</blockquote>
+<p>垃圾收集器不会收回一个在可访问的表中作为键或值的对象(表或闭包)，通常一个表中对于键和值的引用都是强引用，会阻止其指向的对象被回收。而弱引用则是不在垃圾收集器考虑范围内的对象引用。弱引用表有三种类型：具有弱引用键的表（<strong>mode = “k”）、具有弱引用值的表(</strong>mode = “v”)、具有弱引用键和值的表(__mode = “kv”)。常用在对偶表示中。</p>
+<h3 id="Q65"><a href="#Q65" class="headerlink" title="Q65"></a>Q65</h3><blockquote>
+<p>问题：啥是瞬表（ephemeron table，直译蜉蝣表）？</p>
+</blockquote>
+<p>瞬表是具有弱引用键和强引用值的表。为解决一个具有弱引用键的表中又引用了对应的键作为值。瞬表的意义在于，表中的值只能通过弱引用的键来访问，即键的访问性控制了值的访问性。在例子中，通过表作为键，获得一个返回此表的闭包，虽然在闭包中保存了表的引用，但若其他外部引用不存在，gc仍然会收集作为弱引用键的对象，并从瞬表中移除。</p>
+<h3 id="Q66"><a href="#Q66" class="headerlink" title="Q66"></a>Q66</h3><blockquote>
+<p>问题：Lua中的对象析构器进行析构后为什么还可以访问？</p>
+</blockquote>
+<p>出现这种情况一般是在两次垃圾收集之间，对象<br>被析构器标记，但还没有被回收。Lua中的要进行析构的对象，设置的元表时要存在析构器（设置元表后为元表添加析构器是不行的）是对对象进行标记，当标记后，一旦该对象不可达，垃圾收集器就会在下次垃圾收集时将该对象放入析构队列中进行析构，而正在被析构的对象会临时复苏（transient resurrection），并将该对象标记为已被析构；当下一次垃圾收集器发现该对象不可达时，就会将该对象删除。</p>
+<h3 id="Q67"><a href="#Q67" class="headerlink" title="Q67"></a>Q67</h3><blockquote>
+<p>问题：进程，线程和协程？</p>
+</blockquote>
+<p>对于操作系统来说，线程是最小的执行单元，进程是最小的资源管理单元。进程是一个应用程序的启动实例，拥有代码和打开的文件资源、数据资源、独立的内存空间。线程从属于进程，是程序的实际执行者，有自己的栈空间，多个线程可以同时执行（并行性）。</p>
+<p>协程与线程类似也有自己的栈、局部变量、指令指针，并与其他线程共享全局变量和资源。协程需要彼此协作地运行（并发性），同一时刻只能有一个协程在运行，并且只有当正在运行的协程显式地要求挂起（suspend）时才暂停执行。生产者-消费者模型使用多线程实现，性能影响较大，使用轻量级的协程则很好的解决性能问题。</p>
+<p>协程不在操作系统管理，是在用户态执行，可以完全被程序所控制，因此切换协程不会消耗太多的性能。</p>
+<h3 id="Q68"><a href="#Q68" class="headerlink" title="Q68"></a>Q68</h3><blockquote>
+<p>问题：Lua语言协程的状态？</p>
+</blockquote>
+<p>挂起（suspended）、运行（running）、正常（normal）、死亡（dead）。<br>挂起是协程暂停运行，当一个协程被创建时，即为挂起状态，不会自动执行。运行为正在执行的状态。正常状态是一种较为特殊的状态，当协程A唤醒协程B时，协程B从挂起转为运行，而协程A此时非运行也非挂起，此时的状态被称为正常。死亡是执行完毕。</p>
+<h3 id="Q69"><a href="#Q69" class="headerlink" title="Q69"></a>Q69</h3><blockquote>
+<p>问题：Lua中如何使用协程模拟事件？实现事件驱动编程。</p>
+</blockquote>
+<h3 id="Q70"><a href="#Q70" class="headerlink" title="Q70"></a>Q70</h3><blockquote>
+<p>问题：什么是反射（Reflection）？</p>
+</blockquote>
+<p>诸如Java，C#和Lua语言都有反射的特性。总的来说，反射指的是程序在运行时（runtime）可以访问、检查和修改自身某些部分（状态或者行为）的能力。</p>
+<p>在概念上，反射通常与“内省（type introspection）”的概念进行区别。内省（或者自省，introspective facility）机制是指程序在运行时对自身信息（元数据）的检测。</p>
+<p>在Lua中主要支持以下几种反射机制：环境允许运行时观察全局变量；type以及pairs函数可以运行时检查和遍历未知数据结构；load和require函数可以在程序中追加和更新代码；通过调试库中的自省函数（introspective function）和钩子（hook），对活动函数的栈、正在执行的代码行、局部变量进行检查，以及跟踪程序的执行。</p>
+<h3 id="Q71"><a href="#Q71" class="headerlink" title="Q71"></a>Q71</h3><blockquote>
+<p>问题：什么是钩子（Hook）？</p>
+</blockquote>
+<p>调试库中的钩子是一种可以由用户注册在程序运行时的某特定事件发生时调用的钩子函数的机制。可以触发钩子的事件有：调用一个函数时产生call事件；函数返回时产生return事件；开始执行一行新代码时产生line事件；执行完指定数量的指令后产生count事件。</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E3%80%87"><span class="toc-number">1.</span> <span class="toc-text">0x00 〇</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E4%B8%80-%E9%97%AE%E9%A2%98%E7%9B%AE%E5%BD%95"><span class="toc-number">2.</span> <span class="toc-text">0x01 一 问题目录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80"><span class="toc-number">2.1.</span> <span class="toc-text">基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%80%BC"><span class="toc-number">2.2.</span> <span class="toc-text">数值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">2.3.</span> <span class="toc-text">字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8"><span class="toc-number">2.4.</span> <span class="toc-text">表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">2.5.</span> <span class="toc-text">函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="toc-number">2.6.</span> <span class="toc-text">输入输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-number">2.7.</span> <span class="toc-text">补充</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%8C%85"><span class="toc-number">2.8.</span> <span class="toc-text">闭包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D"><span class="toc-number">2.9.</span> <span class="toc-text">模式匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E5%92%8C%E5%AD%97%E8%8A%82"><span class="toc-number">2.10.</span> <span class="toc-text">位和字节</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">2.11.</span> <span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">2.12.</span> <span class="toc-text">数据文件和序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E3%80%81%E6%89%A7%E8%A1%8C%E5%92%8C%E9%94%99%E8%AF%AF"><span class="toc-number">2.13.</span> <span class="toc-text">编译、执行和错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85"><span class="toc-number">2.14.</span> <span class="toc-text">模块和包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E6%B3%9B%E5%9E%8B-for"><span class="toc-number">2.15.</span> <span class="toc-text">迭代器和泛型 for</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E8%A1%A8"><span class="toc-number">2.16.</span> <span class="toc-text">元表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B"><span class="toc-number">2.17.</span> <span class="toc-text">面向对象编程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">2.18.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86"><span class="toc-number">2.19.</span> <span class="toc-text">垃圾收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E7%A8%8B"><span class="toc-number">2.20.</span> <span class="toc-text">协程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84"><span class="toc-number">2.21.</span> <span class="toc-text">反射</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E4%BA%8C-%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94"><span class="toc-number">3.</span> <span class="toc-text">0x02 二 问题解答</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Q1"><span class="toc-number">3.1.</span> <span class="toc-text">Q1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q2"><span class="toc-number">3.2.</span> <span class="toc-text">Q2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q3"><span class="toc-number">3.3.</span> <span class="toc-text">Q3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q4"><span class="toc-number">3.4.</span> <span class="toc-text">Q4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q5"><span class="toc-number">3.5.</span> <span class="toc-text">Q5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q6"><span class="toc-number">3.6.</span> <span class="toc-text">Q6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q7"><span class="toc-number">3.7.</span> <span class="toc-text">Q7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q8"><span class="toc-number">3.8.</span> <span class="toc-text">Q8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q9"><span class="toc-number">3.9.</span> <span class="toc-text">Q9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q10"><span class="toc-number">3.10.</span> <span class="toc-text">Q10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q11"><span class="toc-number">3.11.</span> <span class="toc-text">Q11</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q12"><span class="toc-number">3.12.</span> <span class="toc-text">Q12</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q13"><span class="toc-number">3.13.</span> <span class="toc-text">Q13</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q14"><span class="toc-number">3.14.</span> <span class="toc-text">Q14</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q15"><span class="toc-number">3.15.</span> <span class="toc-text">Q15</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q16"><span class="toc-number">3.16.</span> <span class="toc-text">Q16</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q17"><span class="toc-number">3.17.</span> <span class="toc-text">Q17</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q18"><span class="toc-number">3.18.</span> <span class="toc-text">Q18</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q19"><span class="toc-number">3.19.</span> <span class="toc-text">Q19</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q20"><span class="toc-number">3.20.</span> <span class="toc-text">Q20</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q21"><span class="toc-number">3.21.</span> <span class="toc-text">Q21</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q22"><span class="toc-number">3.22.</span> <span class="toc-text">Q22</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q23"><span class="toc-number">3.23.</span> <span class="toc-text">Q23</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q24"><span class="toc-number">3.24.</span> <span class="toc-text">Q24</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q25"><span class="toc-number">3.25.</span> <span class="toc-text">Q25</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q26"><span class="toc-number">3.26.</span> <span class="toc-text">Q26</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q27"><span class="toc-number">3.27.</span> <span class="toc-text">Q27</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q28"><span class="toc-number">3.28.</span> <span class="toc-text">Q28</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q29"><span class="toc-number">3.29.</span> <span class="toc-text">Q29</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q30"><span class="toc-number">3.30.</span> <span class="toc-text">Q30</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q31"><span class="toc-number">3.31.</span> <span class="toc-text">Q31</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q32"><span class="toc-number">3.32.</span> <span class="toc-text">Q32</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q33"><span class="toc-number">3.33.</span> <span class="toc-text">Q33</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q34"><span class="toc-number">3.34.</span> <span class="toc-text">Q34</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q35"><span class="toc-number">3.35.</span> <span class="toc-text">Q35</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q36"><span class="toc-number">3.36.</span> <span class="toc-text">Q36</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q37"><span class="toc-number">3.37.</span> <span class="toc-text">Q37</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q38"><span class="toc-number">3.38.</span> <span class="toc-text">Q38</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q39"><span class="toc-number">3.39.</span> <span class="toc-text">Q39</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q40"><span class="toc-number">3.40.</span> <span class="toc-text">Q40</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q41"><span class="toc-number">3.41.</span> <span class="toc-text">Q41</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q42"><span class="toc-number">3.42.</span> <span class="toc-text">Q42</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q43"><span class="toc-number">3.43.</span> <span class="toc-text">Q43</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q44"><span class="toc-number">3.44.</span> <span class="toc-text">Q44</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q45"><span class="toc-number">3.45.</span> <span class="toc-text">Q45</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q46"><span class="toc-number">3.46.</span> <span class="toc-text">Q46</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q47"><span class="toc-number">3.47.</span> <span class="toc-text">Q47</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q48"><span class="toc-number">3.48.</span> <span class="toc-text">Q48</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q49"><span class="toc-number">3.49.</span> <span class="toc-text">Q49</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q50"><span class="toc-number">3.50.</span> <span class="toc-text">Q50</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q51"><span class="toc-number">3.51.</span> <span class="toc-text">Q51</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q52"><span class="toc-number">3.52.</span> <span class="toc-text">Q52</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q53"><span class="toc-number">3.53.</span> <span class="toc-text">Q53</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q54"><span class="toc-number">3.54.</span> <span class="toc-text">Q54</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q55"><span class="toc-number">3.55.</span> <span class="toc-text">Q55</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q56"><span class="toc-number">3.56.</span> <span class="toc-text">Q56</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q57"><span class="toc-number">3.57.</span> <span class="toc-text">Q57</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q58"><span class="toc-number">3.58.</span> <span class="toc-text">Q58</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q59"><span class="toc-number">3.59.</span> <span class="toc-text">Q59</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q60"><span class="toc-number">3.60.</span> <span class="toc-text">Q60</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q61"><span class="toc-number">3.61.</span> <span class="toc-text">Q61</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q62"><span class="toc-number">3.62.</span> <span class="toc-text">Q62</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q63"><span class="toc-number">3.63.</span> <span class="toc-text">Q63</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q64"><span class="toc-number">3.64.</span> <span class="toc-text">Q64</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q65"><span class="toc-number">3.65.</span> <span class="toc-text">Q65</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q66"><span class="toc-number">3.66.</span> <span class="toc-text">Q66</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q67"><span class="toc-number">3.67.</span> <span class="toc-text">Q67</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q68"><span class="toc-number">3.68.</span> <span class="toc-text">Q68</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q69"><span class="toc-number">3.69.</span> <span class="toc-text">Q69</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q70"><span class="toc-number">3.70.</span> <span class="toc-text">Q70</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q71"><span class="toc-number">3.71.</span> <span class="toc-text">Q71</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2020/01/27/lua.questions/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2020/01/27/lua.questions/&text=关于 Lua 的那些问题（长期更新）"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2020/01/27/lua.questions/&is_video=false&description=关于 Lua 的那些问题（长期更新）"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于 Lua 的那些问题（长期更新）&body=Check out this article: http://shiheuan.github.io/2020/01/27/lua.questions/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2020/01/27/lua.questions/&title=关于 Lua 的那些问题（长期更新）"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2020/01/27/lua.questions/&name=关于 Lua 的那些问题（长期更新）&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2020/01/27/lua.questions/&t=关于 Lua 的那些问题（长期更新）"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

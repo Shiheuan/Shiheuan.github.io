@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00 Ludum Dare是一个经常性以推进个人游戏开发为目的的开发竞赛。参与者需要在48小时内针对所设定的主题创作游戏。Ludum Dare是Geoff Howland一手建立的，第一次举办在2002年4月。 参与者来自世界各地，行业各异。学生、爱好者、专业开发者（大型游戏公司），以及独立游戏开发者。  我假装参加了好几次，结果都是没有提交。所以说我就像是根本没有开始，但是上次的 booom">
+<meta property="og:type" content="article">
+<meta property="og:title" content="看一看历届Ludum Dare的主题">
+<meta property="og:url" content="http://shiheuan.github.io/2019/11/26/ludumdare/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00 Ludum Dare是一个经常性以推进个人游戏开发为目的的开发竞赛。参与者需要在48小时内针对所设定的主题创作游戏。Ludum Dare是Geoff Howland一手建立的，第一次举办在2002年4月。 参与者来自世界各地，行业各异。学生、爱好者、专业开发者（大型游戏公司），以及独立游戏开发者。  我假装参加了好几次，结果都是没有提交。所以说我就像是根本没有开始，但是上次的 booom">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-11-26T08:59:39.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:08.117Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="game develop">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>看一看历届Ludum Dare的主题</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/11/26/CommandPattern/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/11/20/Apple.Developer/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/11/26/ludumdare/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/11/26/ludumdare/&text=看一看历届Ludum Dare的主题"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/11/26/ludumdare/&is_video=false&description=看一看历届Ludum Dare的主题"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=看一看历届Ludum Dare的主题&body=Check out this article: http://shiheuan.github.io/2019/11/26/ludumdare/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/11/26/ludumdare/&name=看一看历届Ludum Dare的主题&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/11/26/ludumdare/&t=看一看历届Ludum Dare的主题"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        看一看历届Ludum Dare的主题
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-11-26T08:59:39.000Z" class="dt-published" itemprop="datePublished">2019-11-26</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/game-develop/" rel="tag">game develop</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><blockquote>
+<p>Ludum Dare是一个经常性以推进个人游戏开发为目的的开发竞赛。参与者需要在48小时内针对所设定的主题创作游戏。Ludum Dare是Geoff Howland一手建立的，第一次举办在2002年4月。</p>
+<p>参与者来自世界各地，行业各异。学生、爱好者、专业开发者（大型游戏公司），以及独立游戏开发者。</p>
+</blockquote>
+<p>我假装参加了好几次，结果都是没有提交。所以说我就像是根本没有开始，但是上次的 booom 主题提醒了我，我应该做什么，我虽然没有完成，但上传到了 itch.io 上，是时候补课了。</p>
+<p>我觉得需要定下一个原则，就是一定要是一个完整的游戏，可以简陋，可以有缺陷有bug，可以从游戏模式出发，从游戏性出发，甚至是从体验出发。但必须呈现出来。</p>
+<h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><p>需要补课的主题。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>No.</th>
+<th>Month</th>
+<th>Theme(bonus)</th>
+<th>Mine </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>April 2002</td>
+<td>Indirect interaction</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>July 2002</td>
+<td>Guardian</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>November 2002</td>
+<td>Construction/destruction(sheep)</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>April 2003</td>
+<td>Preparation - Set it up, let it go</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>April 2004</td>
+<td>Infection</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>October 2004</td>
+<td>Random</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>April 2005</td>
+<td>Light and darkness</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>December 2005</td>
+<td>Growth</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>April 2006</td>
+<td>Swarms</td>
+<td></td>
+</tr>
+<tr>
+<td>8.5</td>
+<td>January 2007</td>
+<td>Moon/anti-text</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td>April 2007</td>
+<td>Build the level you play</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>December 2007</td>
+<td>Chain reaction</td>
+<td></td>
+</tr>
+<tr>
+<td>10.5</td>
+<td>February 2008</td>
+<td>Weird/unexpected/surprise</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>April 2008</td>
+<td>Minimalist</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>August 2008</td>
+<td>The tower</td>
+<td></td>
+</tr>
+<tr>
+<td>13</td>
+<td>December 2008</td>
+<td>Roads</td>
+<td></td>
+</tr>
+<tr>
+<td>14</td>
+<td>April 2009</td>
+<td>Advancing wall of doom</td>
+<td></td>
+</tr>
+<tr>
+<td>15</td>
+<td>August 2009</td>
+<td>Caverns</td>
+<td></td>
+</tr>
+<tr>
+<td>16</td>
+<td>December 2009</td>
+<td>Exploration</td>
+<td></td>
+</tr>
+<tr>
+<td>17</td>
+<td>April 2010</td>
+<td>Islands</td>
+<td></td>
+</tr>
+<tr>
+<td>18</td>
+<td>August 2010</td>
+<td>Enemies as weapons</td>
+<td></td>
+</tr>
+<tr>
+<td>19</td>
+<td>December 2010</td>
+<td>Discovery</td>
+<td></td>
+</tr>
+<tr>
+<td>20</td>
+<td>April 2011</td>
+<td>It’s dangerous to go alone! Take this!</td>
+<td></td>
+</tr>
+<tr>
+<td>21</td>
+<td>August 2011</td>
+<td>Escape</td>
+<td></td>
+</tr>
+<tr>
+<td>22</td>
+<td>December 2011</td>
+<td>Alone(kitten challenge)</td>
+<td></td>
+</tr>
+<tr>
+<td>23</td>
+<td>April 2012</td>
+<td>Tiny world</td>
+<td></td>
+</tr>
+<tr>
+<td>24</td>
+<td>August 2012</td>
+<td>Evolution</td>
+<td></td>
+</tr>
+<tr>
+<td>25</td>
+<td>December 2012</td>
+<td>You are the villain(goat)</td>
+<td></td>
+</tr>
+<tr>
+<td>26</td>
+<td>April 2013</td>
+<td>Minimalism(potato)</td>
+<td></td>
+</tr>
+<tr>
+<td>27</td>
+<td>August 2013</td>
+<td>10 seconds</td>
+<td></td>
+</tr>
+<tr>
+<td>28</td>
+<td>December 2013</td>
+<td>You only get one</td>
+<td></td>
+</tr>
+<tr>
+<td>29</td>
+<td>April 2014</td>
+<td>Beneath the surface</td>
+<td></td>
+</tr>
+<tr>
+<td>30</td>
+<td>August 2014</td>
+<td>Connected Worlds</td>
+<td></td>
+</tr>
+<tr>
+<td>31</td>
+<td>December 2014</td>
+<td>Entire Game on One Screen</td>
+<td></td>
+</tr>
+<tr>
+<td>32</td>
+<td>April 2015</td>
+<td>An Unconventional Weapon</td>
+<td></td>
+</tr>
+<tr>
+<td>33</td>
+<td>August 2015</td>
+<td>You are the Monster</td>
+<td></td>
+</tr>
+<tr>
+<td>34</td>
+<td>December 2015</td>
+<td>Growing/two button controls</td>
+<td></td>
+</tr>
+<tr>
+<td>35</td>
+<td>April 2016</td>
+<td>Shapeshift</td>
+<td></td>
+</tr>
+<tr>
+<td>36</td>
+<td>August 2016</td>
+<td>Ancient Technology</td>
+<td></td>
+</tr>
+<tr>
+<td>37</td>
+<td>December 2016</td>
+<td>One Room</td>
+<td></td>
+</tr>
+<tr>
+<td>38</td>
+<td>April 2017</td>
+<td>A Small World</td>
+<td></td>
+</tr>
+<tr>
+<td>39</td>
+<td>July 2017</td>
+<td>Running out of Power</td>
+<td></td>
+</tr>
+<tr>
+<td>40</td>
+<td>December 2017</td>
+<td>The more you have, the worse it is</td>
+<td></td>
+</tr>
+<tr>
+<td>41</td>
+<td>April 2018</td>
+<td>Combine two incompatible genres</td>
+<td></td>
+</tr>
+<tr>
+<td>42</td>
+<td>August 2018</td>
+<td>Running out of space</td>
+<td></td>
+</tr>
+<tr>
+<td>43</td>
+<td>December 2018</td>
+<td>Sacrifices must be made</td>
+<td></td>
+</tr>
+<tr>
+<td>44</td>
+<td>April 2019</td>
+<td>Your life is currency</td>
+<td></td>
+</tr>
+<tr>
+<td>45</td>
+<td>October 2019</td>
+<td>Start with nothing</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">2.</span> <span class="toc-text">0x01</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/11/26/ludumdare/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/11/26/ludumdare/&text=看一看历届Ludum Dare的主题"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/11/26/ludumdare/&is_video=false&description=看一看历届Ludum Dare的主题"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=看一看历届Ludum Dare的主题&body=Check out this article: http://shiheuan.github.io/2019/11/26/ludumdare/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/11/26/ludumdare/&title=看一看历届Ludum Dare的主题"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/11/26/ludumdare/&name=看一看历届Ludum Dare的主题&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/11/26/ludumdare/&t=看一看历届Ludum Dare的主题"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

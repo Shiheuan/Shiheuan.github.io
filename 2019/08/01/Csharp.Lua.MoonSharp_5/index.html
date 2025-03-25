@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00官网的教程 请配合我的代码食用Github 一知半解系列最后一篇，撒花。 ps：零散的知识点 - Asset 使用。 0x01 Coroutines学习过 Lua 的语法的小伙伴们都知道，在 Lua 中原生提供了协程，开箱即用。除非你在“sandbox”模式下故意移除 coroutines 模块…… UsagesCLR 代码创建协程，可以通过 script 对象的 CreateCorout">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoonSharp 从一知到半解（5）">
+<meta property="og:url" content="http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00官网的教程 请配合我的代码食用Github 一知半解系列最后一篇，撒花。 ps：零散的知识点 - Asset 使用。 0x01 Coroutines学习过 Lua 的语法的小伙伴们都知道，在 Lua 中原生提供了协程，开箱即用。除非你在“sandbox”模式下故意移除 coroutines 模块…… UsagesCLR 代码创建协程，可以通过 script 对象的 CreateCorout">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-01T09:51:20.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.769Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="c#">
+<meta property="article:tag" content="MoonSharp">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>MoonSharp 从一知到半解（5）</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/08/06/Attribute.and.Reflection/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/08/01/Csharp.Lua.MoonSharp_4/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&text=MoonSharp 从一知到半解（5）"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&is_video=false&description=MoonSharp 从一知到半解（5）"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（5）&body=Check out this article: http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&name=MoonSharp 从一知到半解（5）&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&t=MoonSharp 从一知到半解（5）"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Coroutines"><span class="toc-number">2.</span> <span class="toc-text">0x01 Coroutines</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Usages"><span class="toc-number">2.1.</span> <span class="toc-text">Usages</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Caveats"><span class="toc-number">2.2.</span> <span class="toc-text">Caveats</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-hardwire-descriptors"><span class="toc-number">3.</span> <span class="toc-text">0x02 hardwire descriptors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Sandboxing"><span class="toc-number">4.</span> <span class="toc-text">0x03 Sandboxing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-Unity3d-tips-amp-tricks"><span class="toc-number">5.</span> <span class="toc-text">0x04 Unity3d tips &amp; tricks</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">6.</span> <span class="toc-text">0xff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95I"><span class="toc-number">6.1.</span> <span class="toc-text">附录I</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95II"><span class="toc-number">6.2.</span> <span class="toc-text">附录II</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        MoonSharp 从一知到半解（5）
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-08-01T09:51:20.000Z" class="dt-published" itemprop="datePublished">2019-08-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Lua/" rel="tag">Lua</a>, <a class="p-category" href="/tags/MoonSharp/" rel="tag">MoonSharp</a>, <a class="p-category" href="/tags/c/" rel="tag">c#</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p><a target="_blank" rel="noopener" href="https://www.moonsharp.org/getting_started.html">官网的教程</a></p>
+<p>请配合我的代码食用<a target="_blank" rel="noopener" href="https://github.com/Shiheuan/MoonSharpTutorial">Github</a></p>
+<p>一知半解系列最后一篇，撒花。</p>
+<p>ps：零散的知识点 - Asset 使用。</p>
+<h2 id="0x01-Coroutines"><a href="#0x01-Coroutines" class="headerlink" title="0x01 Coroutines"></a>0x01 Coroutines</h2><p>学习过 Lua 的语法的小伙伴们都知道，在 Lua 中原生提供了协程，开箱即用。除非你在“sandbox”模式下故意移除 coroutines 模块……</p>
+<h3 id="Usages"><a href="#Usages" class="headerlink" title="Usages"></a>Usages</h3><p>CLR 代码创建协程，可以通过 script 对象的 CreateCoroutine 方法创建，参数只需要为 function 的 DynValue。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> code = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">    return function()</span></span><br><span class="line"><span class="string">        local x = 0</span></span><br><span class="line"><span class="string">        while true do</span></span><br><span class="line"><span class="string">            x = x + 1</span></span><br><span class="line"><span class="string">            coroutine.yield(x)</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string">    end</span></span><br><span class="line"><span class="string">&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Load the code and get the returned function</span></span><br><span class="line">Script script = <span class="keyword">new</span> Script();</span><br><span class="line">DynValue function = script.DoString(code);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create the coroutine in C#</span></span><br><span class="line">DynValue coroutine = script.CreateCoroutine(function);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Resume the coroutine forever and ever..</span></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    DynValue x = coroutine.Coroutine.Resume();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;&#123;0&#125;&quot;</span>, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>平时的我会说，我看的懂这个程序，我给大家理理，但是现在的我矜持，你肯定看得懂这是一个怎样的流程：从 string 脚本中载入了一个协程函数，之后，在 C# 中创建这个协程，并在循环中打印返回的数字……所以我就不说了~</p>
+<p>也可以写像迭代器一样调用协程：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> code = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">    return function()</span></span><br><span class="line"><span class="string">        local x = 0</span></span><br><span class="line"><span class="string">        while true do</span></span><br><span class="line"><span class="string">            x = x + 1</span></span><br><span class="line"><span class="string">            coroutine.yield(x)</span></span><br><span class="line"><span class="string">            if (x &gt; 5) then</span></span><br><span class="line"><span class="string">                return 7</span></span><br><span class="line"><span class="string">            end</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string">    end</span></span><br><span class="line"><span class="string">&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Load the code and get the returned function</span></span><br><span class="line">Script script = <span class="keyword">new</span> Script();</span><br><span class="line">DynValue function = script.DoString(code);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create the coroutine in C#</span></span><br><span class="line">DynValue coroutine = script.CreateCoroutine(function);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Loop the coroutine </span></span><br><span class="line"><span class="built_in">string</span> ret = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (DynValue x <span class="keyword">in</span> coroutine.Coroutine.AsTypedEnumerable())</span><br><span class="line">&#123;</span><br><span class="line">    ret = ret + x.ToString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Assert.AreEqual(<span class="string">&quot;1234567&quot;</span>, ret);</span><br></pre></td></tr></table></figure>
+<p>这里在得到 lua 中带有 yield 返回的方法后，以迭代器的方式调用。</p>
+<p>这里最后一行的断言代码，是使用了 Microsoft 的 MSTEst.TestFramework 框架，来检测最终结果，如果不符将会抛出异常，使用的方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">PM&gt; </span><span class="language-bash">Install-Package MSTest.TestFramework</span></span><br></pre></td></tr></table></figure>
+<p>安装包，即可使用（好敷衍……），<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.testtools.unittesting.assert?view=mstest-net-1.2.0">文档</a></p>
+<p>当然也可以使用 Debug.Asset…参数是条件和失败消息。</p>
+<h3 id="Caveats"><a href="#Caveats" class="headerlink" title="Caveats"></a>Caveats</h3><p>原生 Lua 中，协程不能产生嵌套调用。</p>
+<p>如果在 Lua 中调用了一个 C# 函数，而在这个 C# 函数中又调用脚本，这时就不能使用 yield 恢复到这个 C# 调用外部的协程（等会……Emmm）。</p>
+<p>有一个解决方法是返回 TailCallRequest DynValue</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> DynValue.NewTailCallReq(luafunction, arg1, arg2...);</span><br></pre></td></tr></table></figure>
+<p>这只在你需要自己实现 load，pcall 或者 coroutine.resume 等 API 时需要注意。</p>
+<p>在 MoonSharp 中，即使没有调用 coroutine.yeild 也可以暂停协程（如果要限制脚本的 CPU 时间，又不破坏脚本执行），栗子环节：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">PreemptiveCoroutines</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> code = <span class="string">@&quot;</span></span><br><span class="line"><span class="string">        function fib(n)</span></span><br><span class="line"><span class="string">            if (n == 0 or n == 1) then</span></span><br><span class="line"><span class="string">                return 1;</span></span><br><span class="line"><span class="string">            else</span></span><br><span class="line"><span class="string">                return fib(n - 1) + fib(n - 2);</span></span><br><span class="line"><span class="string">            end</span></span><br><span class="line"><span class="string">        end</span></span><br><span class="line"><span class="string">    &quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Load the code and get the returned function</span></span><br><span class="line">    Script script = <span class="keyword">new</span> Script(CoreModules.None);</span><br><span class="line">    script.DoString(code);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// get the function</span></span><br><span class="line">    DynValue function = script.Globals.Get(<span class="string">&quot;fib&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create the coroutine in C#</span></span><br><span class="line">    DynValue coroutine = script.CreateCoroutine(function);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set the automatic yield counter every 10 instructions. </span></span><br><span class="line">    <span class="comment">// 10 is likely too small! Use a much bigger value in your code to avoid interrupting too often!</span></span><br><span class="line">    coroutine.Coroutine.AutoYieldCounter = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> cycles = <span class="number">0</span>;</span><br><span class="line">    DynValue result = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Cycle until we get that the coroutine has returned something useful and not an automatic yield..</span></span><br><span class="line">    <span class="keyword">for</span> (result = coroutine.Coroutine.Resume(<span class="number">8</span>);</span><br><span class="line">        result.Type == DataType.YieldRequest;</span><br><span class="line">        result = coroutine.Coroutine.Resume())</span><br><span class="line">    &#123;</span><br><span class="line">        cycles += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Console.WriteLine(cycles);</span><br><span class="line">    Console.WriteLine(result.Number);</span><br><span class="line">    <span class="comment">// Check the values of the operation</span></span><br><span class="line">    Assert.AreEqual(DataType.Number, result.Type);</span><br><span class="line">    Assert.AreEqual(<span class="number">34</span>, result.Number);</span><br><span class="line">    Console.ReadKey();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里使用没有 yield 指令的函数创建了一个协程，通过参数 AutoYieldCounter 设置一个大于 0 的数（官推 1000 开调），指的是执行的指令数量。这里使用一个 for 循环判断返回值是否为我们需要的，调用 coroutine.Coroutine.Resume(…) 或 coroutine.Coroutine.Resume() 方法继续执行协程，直到得到真正的返回值。</p>
+<h2 id="0x02-hardwire-descriptors"><a href="#0x02-hardwire-descriptors" class="headerlink" title="0x02 hardwire descriptors"></a>0x02 hardwire descriptors</h2><p>就是通过一些手段避免使用反射。</p>
+<h2 id="0x03-Sandboxing"><a href="#0x03-Sandboxing" class="headerlink" title="0x03 Sandboxing"></a>0x03 Sandboxing</h2><p>用来限制 Lua 脚本能做的事情。如果在运行时加载脚本，就存在安全性问题，而沙盒（sandboxing）可以理解为对 Lua 可以使用的功能的剪裁，比如作为 mod 语言，开发者应该不想让用户可以访问“os”、“io”或是“file”模块。</p>
+<p>像上面说的“os”、“io”以及“file”模块是危险的，当然根据代码的不同也可能包含更多。</p>
+<p>一条中要的建议是永远不要使用 InteropRegistrationPolicy.Automatic。</p>
+<p>对不应暴露的类型或成员进行检查，避免直接暴露 .NET 框架类型或是 Unity 类型，如果需要应该使用 Proxy objects。</p>
+<p>删除危险 API 的方法，是使用接受 CoreModules 枚举的 Script 构造函数，CoreModules 的例子放在附录中。</p>
+<h2 id="0x04-Unity3d-tips-amp-tricks"><a href="#0x04-Unity3d-tips-amp-tricks" class="headerlink" title="0x04 Unity3d tips &amp; tricks"></a>0x04 Unity3d tips &amp; tricks</h2><p>支持平台：旨在支持全部平台，但……</p>
+<ul>
+<li>全面支持的：Standalone Windows, Linux and OS/X, Android, iOS, tvOS</li>
+<li>会尽量支持的（可能会有小问题，不支持的功能）：WebGL, Windows Store Applications, Windows Phone</li>
+</ul>
+<p>另外，不要暴露 Unity 类型，如果需要请用 Proxy Objects；</p>
+<p>在使用 IL2CPP 或在 AOT 平台上运行时使用 hardwire；</p>
+<p>不要暴露 struct。</p>
+<p>最后，使用一个更明确的构造函数初始化脚本加载器，比如 UnityAssetsScriptLoader 的显式构造函数来注册所有脚本文件。通过在项目的最开始执行，就不需要将 Unity 自己的库添加到 link.xml 以在 IL2CPP 平台上运行。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; scripts = <span class="keyword">new</span>  Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt;();</span><br><span class="line"></span><br><span class="line"><span class="built_in">object</span>[] result = Resources.LoadAll(<span class="string">&quot;Lua&quot;</span>, <span class="keyword">typeof</span>(TextAsset));</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(TextAsset ta <span class="keyword">in</span> result.OfType&lt;TextAsset&gt;())</span><br><span class="line">&#123;</span><br><span class="line">    scripts.Add(ta.name, ta.text);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Script.DefaultOptions.ScriptLoader = <span class="keyword">new</span> MoonSharp.Interpreter.Loaders.UnityAssetsScriptLoader(scripts);</span><br></pre></td></tr></table></figure>
+<hr>
+<hr>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><h3 id="附录I"><a href="#附录I" class="headerlink" title="附录I"></a>附录I</h3><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> Enumeration (combinable as flags) of all the standard library modules</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">[<span class="meta">Flags</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="built_in">enum</span> CoreModules</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Value used to specify no modules to be loaded (equals 0).</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    None = <span class="number">0</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The basic methods. Includes &quot;assert&quot;, &quot;collectgarbage&quot;, &quot;error&quot;, &quot;print&quot;, &quot;select&quot;, &quot;type&quot;, &quot;tonumber&quot; and &quot;tostring&quot;.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Basic = <span class="number">0x40</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The global constants: &quot;_G&quot;, &quot;_VERSION&quot; and &quot;_MOONSHARP&quot;.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    GlobalConsts = <span class="number">0x1</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The table iterators: &quot;next&quot;, &quot;ipairs&quot; and &quot;pairs&quot;.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    TableIterators = <span class="number">0x2</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The metatable methods : &quot;setmetatable&quot;, &quot;getmetatable&quot;, &quot;rawset&quot;, &quot;rawget&quot;, &quot;rawequal&quot; and &quot;rawlen&quot;.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Metatables = <span class="number">0x4</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The string package</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    String = <span class="number">0x8</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The load methods: &quot;load&quot;, &quot;loadsafe&quot;, &quot;loadfile&quot;, &quot;loadfilesafe&quot;, &quot;dofile&quot; and &quot;require&quot;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    LoadMethods = <span class="number">0x10</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The table package </span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Table = <span class="number">0x20</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The error handling methods: &quot;pcall&quot; and &quot;xpcall&quot;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    ErrorHandling = <span class="number">0x80</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The math package</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Math = <span class="number">0x100</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The coroutine package</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Coroutine = <span class="number">0x200</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The bit32 package</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Bit32 = <span class="number">0x400</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The time methods of the &quot;os&quot; package: &quot;clock&quot;, &quot;difftime&quot;, &quot;date&quot; and &quot;time&quot;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    OS_Time = <span class="number">0x800</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The methods of &quot;os&quot; package excluding those listed for OS_Time. These are not supported under Unity.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    OS_System = <span class="number">0x1000</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The methods of &quot;io&quot; and &quot;file&quot; packages. These are not supported under Unity.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    IO = <span class="number">0x2000</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The &quot;debug&quot; package (it has limited support)</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Debug = <span class="number">0x4000</span>,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The &quot;dynamic&quot; package (introduced by MoonSharp).</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Dynamic = <span class="number">0x8000</span>,</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> A sort of &quot;hard&quot; sandbox preset, including string, math, table, bit32 packages, constants and table iterators.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Preset_HardSandbox = GlobalConsts | TableIterators | String | Table | Basic | Math   Bit32,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> A softer sandbox preset, adding metatables support, error handling, coroutine,  time functions and dynamic evaluations.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Preset_SoftSandbox = Preset_HardSandbox | Metatables | ErrorHandling | Coroutine |  OS_Time | Dynamic,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The default preset. Includes everything except &quot;debug&quot; as now.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Beware that using this preset allows scripts unlimited access to the system.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Preset_Default = Preset_SoftSandbox | LoadMethods | OS_System | IO,</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> The complete package.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Beware that using this preset allows scripts unlimited access to the system.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    Preset_Complete = Preset_Default | Debug,</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="附录II"><a href="#附录II" class="headerlink" title="附录II"></a>附录II</h3><ul>
+<li>How can I redirect the output of the print function ?<br>  <code>script.Options.DebugPrint = s =&gt; &#123; Console.WriteLine(s); &#125;</code></li>
+<li>How can I redirect the input to the Lua program ?<br>  <code>script.Options.DebugInput = () =&gt; &#123; return Console.ReadLine(); &#125;</code></li>
+<li>How can I redirect the IO streams of a Lua program ?<br>  <code>IoModule.SetDefaultFile(script, Platforms.StandardFileType.StdIn, myInputStream);</code><br>  <code>IoModule.SetDefaultFile(script, Platforms.StandardFileType.StdOut, myOutputStream);</code><br>  <code>IoModule.SetDefaultFile(script, Platforms.StandardFileType.StdErr, myErrorStream);</code></li>
+</ul>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-Coroutines"><span class="toc-number">2.</span> <span class="toc-text">0x01 Coroutines</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Usages"><span class="toc-number">2.1.</span> <span class="toc-text">Usages</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Caveats"><span class="toc-number">2.2.</span> <span class="toc-text">Caveats</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-hardwire-descriptors"><span class="toc-number">3.</span> <span class="toc-text">0x02 hardwire descriptors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Sandboxing"><span class="toc-number">4.</span> <span class="toc-text">0x03 Sandboxing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-Unity3d-tips-amp-tricks"><span class="toc-number">5.</span> <span class="toc-text">0x04 Unity3d tips &amp; tricks</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">6.</span> <span class="toc-text">0xff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95I"><span class="toc-number">6.1.</span> <span class="toc-text">附录I</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95II"><span class="toc-number">6.2.</span> <span class="toc-text">附录II</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&text=MoonSharp 从一知到半解（5）"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&is_video=false&description=MoonSharp 从一知到半解（5）"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MoonSharp 从一知到半解（5）&body=Check out this article: http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&title=MoonSharp 从一知到半解（5）"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&name=MoonSharp 从一知到半解（5）&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/08/01/Csharp.Lua.MoonSharp_5/&t=MoonSharp 从一知到半解（5）"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

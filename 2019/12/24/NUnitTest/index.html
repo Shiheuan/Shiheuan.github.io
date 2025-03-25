@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="参考 0x00这里是参考文献中的单元测试的规则，后面我们会使用可执行代码来替换这些示例代码，来做更进一步的说明。 为什么？与功能测试相比，进行单元测试成本更低，耗费时间更短，完全由程序进行。 可以防止回归缺陷，修改缺陷引入新的缺陷。 验证给定输入下方法的预期输出（需要一套命名正确易懂的单元测试）。 减少代码耦合，紧密耦合的代码很难进行单元测试。测试驱动开发会自然而然地解耦代码。 什么是好的单元测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NUnit 进行单元测试的一般方法">
+<meta property="og:url" content="http://shiheuan.github.io/2019/12/24/NUnitTest/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="参考 0x00这里是参考文献中的单元测试的规则，后面我们会使用可执行代码来替换这些示例代码，来做更进一步的说明。 为什么？与功能测试相比，进行单元测试成本更低，耗费时间更短，完全由程序进行。 可以防止回归缺陷，修改缺陷引入新的缺陷。 验证给定输入下方法的预期输出（需要一套命名正确易懂的单元测试）。 减少代码耦合，紧密耦合的代码很难进行单元测试。测试驱动开发会自然而然地解耦代码。 什么是好的单元测试">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-24T08:29:30.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.849Z">
+<meta property="article:author" content="Shiheuan">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>NUnit 进行单元测试的一般方法</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2020/01/27/lua.questions/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/12/12/ObjectPoolPattern/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/24/NUnitTest/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&text=NUnit 进行单元测试的一般方法"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&is_video=false&description=NUnit 进行单元测试的一般方法"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=NUnit 进行单元测试的一般方法&body=Check out this article: http://shiheuan.github.io/2019/12/24/NUnitTest/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&name=NUnit 进行单元测试的一般方法&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/24/NUnitTest/&t=NUnit 进行单元测试的一般方法"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">为什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%A5%BD%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">什么是好的单元测试？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">术语？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">命名？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%9A%84%E5%86%99%E6%B3%95%EF%BC%9F"><span class="toc-number">1.5.</span> <span class="toc-text">测试用例的写法？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%B2%BE%E7%AE%80%E7%9A%84%E8%BE%93%E5%85%A5%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">1.6.</span> <span class="toc-text">最精简的输入进行测试？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%AD%E9%81%BF%E5%85%8D%E9%80%BB%E8%BE%91%E4%BB%A3%E7%A0%81%EF%BC%9F"><span class="toc-number">1.7.</span> <span class="toc-text">测试中避免逻辑代码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Helper%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF-Setup%EF%BC%8CTeardown%EF%BC%9F"><span class="toc-number">1.8.</span> <span class="toc-text">Helper，而不是 Setup，Teardown？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E5%9C%A8%E6%B5%8B%E8%AF%95%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AA%E6%96%AD%E8%A8%80%EF%BC%9F"><span class="toc-number">1.9.</span> <span class="toc-text">避免在测试中使用多个断言？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%85%AC%E5%85%B1%E6%96%B9%E6%B3%95%E9%AA%8C%E8%AF%81%E4%B8%93%E6%9C%89%E6%96%B9%E6%B3%95%EF%BC%9F"><span class="toc-number">1.10.</span> <span class="toc-text">通过单元测试公共方法验证专有方法？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stub-%E9%9D%99%E6%80%81%E5%BC%95%E7%94%A8%EF%BC%9F"><span class="toc-number">1.11.</span> <span class="toc-text">Stub 静态引用？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">2.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        NUnit 进行单元测试的一般方法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-12-24T08:29:30.000Z" class="dt-published" itemprop="datePublished">2019-12-24</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/core/testing/unit-testing-with-nunit">参考</a></p>
+<h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>这里是参考文献中的单元测试的规则，后面我们会使用可执行代码来替换这些示例代码，来做更进一步的说明。</p>
+<h3 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h3><p>与功能测试相比，进行单元测试成本更低，耗费时间更短，完全由程序进行。</p>
+<p>可以防止回归缺陷，修改缺陷引入新的缺陷。</p>
+<p>验证给定输入下方法的预期输出（需要一套命名正确易懂的单元测试）。</p>
+<p>减少代码耦合，紧密耦合的代码很难进行单元测试。测试驱动开发会自然而然地解耦代码。</p>
+<h3 id="什么是好的单元测试？"><a href="#什么是好的单元测试？" class="headerlink" title="什么是好的单元测试？"></a>什么是好的单元测试？</h3><p>快速，大量单元测试，毫秒级。</p>
+<p>独立，单元测试可以单独运行，不依赖文件系统或数据库等外部因素。</p>
+<p>可重复，单元测试的结果应该保持一致，总是返回相同的结果。</p>
+<p>自检查，在没有人工交互的情况下，自动检查是否通过测试。</p>
+<p>及时，与需要测试的代码相比，不应该在测试代码上花费过多不必要的时间（是否代码难以测试）。</p>
+<h3 id="术语？"><a href="#术语？" class="headerlink" title="术语？"></a>术语？</h3><p>Fake：是一个通用术语，可以用来描述 Mock 或 Stub 对象，具体是描述哪一种对象取决于上下文。</p>
+<p>Mock：是系统中的 fake 对象，用来确定单元测试是否通过。</p>
+<p>Stub：是系统中现有依赖项的可控制代替项。通过使用 Stub，可以在无需使用依赖项的情况下直接测试代码。</p>
+<p>为了进行单元测试，我们将定义了一个 FakeOrder 类，此类只实现 Order 必须的接口即可。简单来说，Mock 是会用来进行断言的 Fake，Stub 是不进行断言的 Fake。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> stubOrder = <span class="keyword">new</span> FakeOrder();</span><br><span class="line"><span class="keyword">var</span> purchase = <span class="keyword">new</span> Purchase(stubOrder);</span><br><span class="line"></span><br><span class="line">purchase.ValidateOrders();</span><br><span class="line"></span><br><span class="line">Assert.True(purchase.CanBeShipped);</span><br></pre></td></tr></table></figure>
+<p>在此示例中，FakeOrder 类是 Purchase 类的依赖项，需要满足 Purchase 类的构造函数的要求，作为参数传递并创建 purchase 对象，最终，通过 purchase 来确定是否通过单元测试，所以这里是将 FakeOrder 用作 Stub。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mockOrder = <span class="keyword">new</span> FakeOrder()</span><br><span class="line"><span class="keyword">var</span> purchase = <span class="keyword">new</span> Purchase(mockOrder);</span><br><span class="line"></span><br><span class="line">purchase.ValidateOrders();</span><br><span class="line"></span><br><span class="line">Assert.True(mockOrder.Validated);</span><br></pre></td></tr></table></figure>
+<p>此例中需要检查 FakeOrder 上的成员属性（对其进行断言），因此 FakeOrder 是 Mock。</p>
+<h3 id="命名？"><a href="#命名？" class="headerlink" title="命名？"></a>命名？</h3><p>良好的测试名称应该包含以下三个部分：</p>
+<ul>
+<li>要测试的方法名称</li>
+<li>测试的方案</li>
+<li>调用方案时的预期行为</li>
+</ul>
+<p>这样的命名方式可以清楚的表达测试的意图，不仅确保代码有效，还可以提供文档。这样的命名可以在不查看代码的情况下就推断出代码的行为。在测试失败时，也可以马上知道哪些方案不符合预期。</p>
+<p>例如：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> *public void Test_Single() // bad name</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_SingleNumber_ReturnsSameNumber</span>() <span class="comment">// functionName_TestMethod_ExpectedBehaviour</span></span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> stringCalculator = <span class="keyword">new</span> StringCalculator();</span><br><span class="line">    <span class="keyword">var</span> actual = stringCalculator.Add(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">    Assert.Equal(<span class="number">0</span>, actual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="测试用例的写法？"><a href="#测试用例的写法？" class="headerlink" title="测试用例的写法？"></a>测试用例的写法？</h3><p>三步走：<a href="https://shiheuan.github.io/2019/12/09/HumbleObjectPattern/">Arrange、Act、Assert</a></p>
+<p>Arrange：准备对象，根据需要进行创建和必要的设置<br>Act：作用于对象，产生一些结果<br>Assert：断言某些结果是否符合预期</p>
+<p>这样做可以<strong>提高可读性</strong>，这些彼此分离的操作，可以明确突出调用代码所需的依赖项，调用方式，断言的内容。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_EmptyString_ReturnsZero</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//Arrange</span></span><br><span class="line">    <span class="keyword">var</span> stringCalculator = <span class="keyword">new</span> StringCalculator();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Act</span></span><br><span class="line">    <span class="keyword">var</span> actual = stringCalculator.Add(<span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Assert</span></span><br><span class="line">    Assert.Equal(<span class="number">0</span>, actual)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Act + Assert</span></span><br><span class="line">    <span class="comment">//Assert.Equal(0, stringCalculator.Add(&quot;&quot;))</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="最精简的输入进行测试？"><a href="#最精简的输入进行测试？" class="headerlink" title="最精简的输入进行测试？"></a>最精简的输入进行测试？</h3><p>使用最简单的输入进行测试，使测试在未来修改代码时更具弹性，测试的行为也表现得更像“测试”。同时，包含信息过多容易导致测试意图不明确。</p>
+<p>比如上面的例子，将“0”值修改为更加复杂的输入，便不是最精简的输入。</p>
+<p>避免魔幻字符串？</p>
+<p>避免使用意义不明的常量值，将其赋值给意图明确的常量。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_BigNumber_ThrowsException</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> stringCalculator = <span class="keyword">new</span> StringCalculator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">string</span> MAXIMUM_RESULT = <span class="string">&quot;1001&quot;</span>;</span><br><span class="line">    Action actual = () =&gt; stringCalculator.Add(MAXIMUM_RESULT);</span><br><span class="line">    <span class="comment">//Action actual = () =&gt; stringCalculator.Add(&quot;1001&quot;);</span></span><br><span class="line"></span><br><span class="line">    Assert.Throws&lt;OverflowException&gt;(actual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="测试中避免逻辑代码？"><a href="#测试中避免逻辑代码？" class="headerlink" title="测试中避免逻辑代码？"></a>测试中避免逻辑代码？</h3><p>编写单元测试时，应该避免逻辑条件。降低测试代码中出现缺陷的可能，如果一定要在测试中使用逻辑，更好的方法是将测试拆分成几个。</p>
+<p>无法被信任的测试不会带来任何价值。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Fact</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_MultipleNumbers_ReturnsCorrectResults</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> stringCalculator = <span class="keyword">new</span> StringCalculator();</span><br><span class="line">    <span class="keyword">var</span> expected = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> testCases = <span class="keyword">new</span>[]</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;0,0,0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;0,1,2&quot;</span>,</span><br><span class="line">        <span class="string">&quot;1,2,3&quot;</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> test <span class="keyword">in</span> testCases)</span><br><span class="line">    &#123;</span><br><span class="line">        Assert.Equal(expected, stringCalculator.Add(test));</span><br><span class="line">        expected += <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Theory</span>]</span><br><span class="line">[<span class="meta">InlineData(<span class="string">&quot;0,0,0&quot;</span>, 0)</span>]</span><br><span class="line">[<span class="meta">InlineData(<span class="string">&quot;0,1,2&quot;</span>, 3)</span>]</span><br><span class="line">[<span class="meta">InlineData(<span class="string">&quot;1,2,3&quot;</span>, 6)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_MultipleNumbers_ReturnsSumOfNumbers</span>(<span class="params"><span class="built_in">string</span> input, <span class="built_in">int</span> expected</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> stringCalculator = <span class="keyword">new</span> StringCalculator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> actual = stringCalculator.Add(input);</span><br><span class="line"></span><br><span class="line">    Assert.Equal(expected, actual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Helper，而不是-Setup，Teardown？"><a href="#Helper，而不是-Setup，Teardown？" class="headerlink" title="Helper，而不是 Setup，Teardown？"></a>Helper，而不是 Setup，Teardown？</h3><p>测试时如果需要类似的对象或者状态，最好使用 helper 方法而不是使用 Setup 和 Teardown 属性。（在一套单元测试中使用相同的 Setup 看似有用，但会强制使每个测试使用相同的条件。）</p>
+<p>首先是可读性，在每个测试中看到全部代码，更有利于理解代码。同时，也可以降低在测试之间共享状态的可能性。</p>
+<p>共享相同的对象。<br><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> StringCalculator stringCalculator;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringCalculatorTests</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    stringCalculator = <span class="keyword">new</span> StringCalculator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// more tests...</span></span><br><span class="line"></span><br><span class="line">[<span class="meta">Fact</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_TwoNumbers_ReturnsSumOfNumbers</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> result = stringCalculator.Add(<span class="string">&quot;0,1&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Assert.Equal(<span class="number">1</span>, result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用 helper 方法。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Fact</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_TwoNumbers_ReturnsSumOfNumbers</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> stringCalculator = CreateDefaultStringCalculator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> actual = stringCalculator.Add(<span class="string">&quot;0,1&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Assert.Equal(<span class="number">1</span>, actual);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// more tests...</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> StringCalculator <span class="title">CreateDefaultStringCalculator</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StringCalculator();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="避免在测试中使用多个断言？"><a href="#避免在测试中使用多个断言？" class="headerlink" title="避免在测试中使用多个断言？"></a>避免在测试中使用多个断言？</h3><p>在一个断言失败后，将不会进行其他断言，因此每个测试只包含一个断言。依然是可读性，当测试失败，从多个断言中寻找失败原因不是进行单元测试的初衷。</p>
+<blockquote>
+<p>此规则的一个常见例外是对对象进行断言。 在这种情况下，通常可以对每个属性进行多次断言，以确保对象处于所预期的状态。</p>
+</blockquote>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Fact</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_EdgeCases_ThrowsArgumentExceptions</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Assert.Throws&lt;ArgumentException&gt;(() =&gt; stringCalculator.Add(<span class="literal">null</span>));</span><br><span class="line">    Assert.Throws&lt;ArgumentException&gt;(() =&gt; stringCalculator.Add(<span class="string">&quot;a&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>更好的实现:</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Theory</span>]</span><br><span class="line">[<span class="meta">InlineData(null)</span>]</span><br><span class="line">[<span class="meta">InlineData(<span class="string">&quot;a&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Add_InputNullOrAlphabetic_ThrowsArgumentException</span>(<span class="params"><span class="built_in">string</span> input</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> stringCalculator = <span class="keyword">new</span> StringCalculator();</span><br><span class="line"></span><br><span class="line">    Action actual = () =&gt; stringCalculator.Add(input);</span><br><span class="line"></span><br><span class="line">    Assert.Throws&lt;ArgumentException&gt;(actual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="通过单元测试公共方法验证专有方法？"><a href="#通过单元测试公共方法验证专有方法？" class="headerlink" title="通过单元测试公共方法验证专有方法？"></a>通过单元测试公共方法验证专有方法？</h3><p>在大多数情况下，我们不需要测试专用方法。 </p>
+<p>专用方法是实现细节。可以认为：专用方法永远不会孤立存在。</p>
+<p>在某些时候，存在调用专用方法作为其实现的一部分的面向公共的方法。你应关心的是调用到专用方法的公共方法的最终结果。</p>
+<p>请考虑下列情形<br><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">ParseLogLine</span>(<span class="params"><span class="built_in">string</span> input</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> sanitizedInput = TrimInput(input);</span><br><span class="line">    <span class="keyword">return</span> sanitizedInput;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="built_in">string</span> <span class="title">TrimInput</span>(<span class="params"><span class="built_in">string</span> input</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> input.Trim();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>你的第一反应可能是为 TrimInput 编写测试，因为想要确保该方法按预期工作。但是，ParseLogLine 完全有可能以一种你所不期望的方式操纵 sanitizedInput，使得对 TrimInput 的测试变得毫无用处。</p>
+<p>真正的测试应该针对面向公共的方法 ParseLogLine 进行，因为这是你最终应该关心的。<br><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ParseLogLine_ByDefault_ReturnsTrimmedResult</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> parser = <span class="keyword">new</span> Parser();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> result = parser.ParseLogLine(<span class="string">&quot; a &quot;</span>);</span><br><span class="line"></span><br><span class="line">    Assert.Equals(<span class="string">&quot;a&quot;</span>, result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由此，如果看到一个专用方法，可以找到公共方法并针对该方法编写测试。 不能仅仅因为专用方法返回预期结果就认为最终调用专用方法的系统正确地使用结果。</p>
+<h3 id="Stub-静态引用？"><a href="#Stub-静态引用？" class="headerlink" title="Stub 静态引用？"></a>Stub 静态引用？</h3><p>单元测试的原则之一是必须完全控制待测试系统。当生产代码中包含对静态引用的调用时，就可能存在一些问题。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">GetDiscountedPrice</span>(<span class="params"><span class="built_in">int</span> price</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> price / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetDiscountedPrice_ByDefault_ReturnsFullPrice</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> priceCalculator = <span class="keyword">new</span> PriceCalculator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> actual = priceCalculator.GetDiscountedPrice(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    Assert.Equals(<span class="number">2</span>, actual)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetDiscountedPrice_OnTuesday_ReturnsHalfPrice</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> priceCalculator = <span class="keyword">new</span> PriceCalculator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> actual = priceCalculator.GetDiscountedPrice(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    Assert.Equals(<span class="number">1</span>, actual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果直接对其进行测试，很容易写出测试结果不可重复的代码，周二运行的结果，和其他时候运行的结果不同。</p>
+<p>我们可以在接口中包装需要控制的代码，让生产代码依赖这个接口：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IDateTimeProvider</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">DayOfWeek <span class="title">DayOfWeek</span>()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">GetDisconterdPrice</span>(<span class="params"><span class="built_in">int</span> price, IDateTimeProvider dateTimeProvider</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dateTimeProvider.DayOfWeek() == DayOfWeek.Tuesday)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> price / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetDiscountedPrice_ByDefault_ReturnsFullPrice</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> priceCalculator = <span class="keyword">new</span> PriceCalculator()</span><br><span class="line">    <span class="keyword">var</span> dateTimeProviderStub = <span class="keyword">new</span> Mock&lt;IDateTimeProvider&gt;();</span><br><span class="line">    dateTimeProviderStub.Setup(dtp =&gt; dtp.DayOfWeek()).Returns(DayOfWeek.Monday);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> actual = priceCalculator.GetDiscountedPrice(<span class="number">2</span>, dateTimeProviderStub);</span><br><span class="line"></span><br><span class="line">    Assert.Equals(<span class="number">2</span>, actual);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetDiscountedPrice_OnTuesday_ReturnsHalfPrice</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> priceCalculator = <span class="keyword">new</span> PriceCalculator();</span><br><span class="line">    <span class="keyword">var</span> dateTimeProviderStub = <span class="keyword">new</span> Mock&lt;IDateTimeProvider&gt;();</span><br><span class="line">    dateTimeProviderStub.Setup(dtp =&gt; dtp.DayOfWeek()).Returns(DayOfWeek.Tuesday);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> actual = priceCalculator.GetDiscountedPrice(<span class="number">2</span>, dateTimeProviderStub);</span><br><span class="line"></span><br><span class="line">    Assert.Equals(<span class="number">1</span>, actual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="0xff"><a href="#0xff" class="headerlink" title="0xff"></a>0xff</h2><p>理解规则！</p>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">为什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%A5%BD%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">什么是好的单元测试？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">术语？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">命名？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%9A%84%E5%86%99%E6%B3%95%EF%BC%9F"><span class="toc-number">1.5.</span> <span class="toc-text">测试用例的写法？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%B2%BE%E7%AE%80%E7%9A%84%E8%BE%93%E5%85%A5%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">1.6.</span> <span class="toc-text">最精简的输入进行测试？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%AD%E9%81%BF%E5%85%8D%E9%80%BB%E8%BE%91%E4%BB%A3%E7%A0%81%EF%BC%9F"><span class="toc-number">1.7.</span> <span class="toc-text">测试中避免逻辑代码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Helper%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF-Setup%EF%BC%8CTeardown%EF%BC%9F"><span class="toc-number">1.8.</span> <span class="toc-text">Helper，而不是 Setup，Teardown？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E5%9C%A8%E6%B5%8B%E8%AF%95%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AA%E6%96%AD%E8%A8%80%EF%BC%9F"><span class="toc-number">1.9.</span> <span class="toc-text">避免在测试中使用多个断言？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%85%AC%E5%85%B1%E6%96%B9%E6%B3%95%E9%AA%8C%E8%AF%81%E4%B8%93%E6%9C%89%E6%96%B9%E6%B3%95%EF%BC%9F"><span class="toc-number">1.10.</span> <span class="toc-text">通过单元测试公共方法验证专有方法？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stub-%E9%9D%99%E6%80%81%E5%BC%95%E7%94%A8%EF%BC%9F"><span class="toc-number">1.11.</span> <span class="toc-text">Stub 静态引用？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xff"><span class="toc-number">2.</span> <span class="toc-text">0xff</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/24/NUnitTest/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&text=NUnit 进行单元测试的一般方法"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&is_video=false&description=NUnit 进行单元测试的一般方法"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=NUnit 进行单元测试的一般方法&body=Check out this article: http://shiheuan.github.io/2019/12/24/NUnitTest/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&title=NUnit 进行单元测试的一般方法"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/24/NUnitTest/&name=NUnit 进行单元测试的一般方法&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/24/NUnitTest/&t=NUnit 进行单元测试的一般方法"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>

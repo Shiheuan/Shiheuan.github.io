@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x00新坑《游戏编程模式》（作者 Robert Nystrom）。 在 Unity 下，用 C# 做了简单的实现，传送门： 链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1ovnk9v1PjaE7qfAj1Mm8vg提取码：vvw6 这里并没有特别去区分涉及到的这两个模式。 其他模式传送门： 命令模式 观察者模式 今天是两个我觉得比较抽象的模式，原型模式和类型对象模式。 在 github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏编程模式 - 原型模式、类型对象模式">
+<meta property="og:url" content="http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/index.html">
+<meta property="og:site_name" content="Yuan Shi&#39;s Blog">
+<meta property="og:description" content="0x00新坑《游戏编程模式》（作者 Robert Nystrom）。 在 Unity 下，用 C# 做了简单的实现，传送门： 链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1ovnk9v1PjaE7qfAj1Mm8vg提取码：vvw6 这里并没有特别去区分涉及到的这两个模式。 其他模式传送门： 命令模式 观察者模式 今天是两个我觉得比较抽象的模式，原型模式和类型对象模式。 在 github">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/fig1_prototype.gif">
+<meta property="og:image" content="https://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/fig2_typeobject.png">
+<meta property="article:published_time" content="2019-12-06T08:05:39.000Z">
+<meta property="article:modified_time" content="2025-03-24T07:45:07.858Z">
+<meta property="article:author" content="Shiheuan">
+<meta property="article:tag" content="design pattern">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/fig1_prototype.gif">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/new_favicon.png">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/new_favicon.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/new_favicon.png">
+        
+      
+    
+    <!-- title -->
+    <title>游戏编程模式 - 原型模式、类型对象模式</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2019/12/09/HumbleObjectPattern/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2019/12/04/ObserverPattern/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&text=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&is_video=false&description=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏编程模式 - 原型模式、类型对象模式&body=Check out this article: http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&name=游戏编程模式 - 原型模式、类型对象模式&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&t=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">0x01 原型模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E7%B1%BB%E5%9E%8B%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">0x02 类型对象模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%83%85%E6%99%AF"><span class="toc-number">3.1.</span> <span class="toc-text">使用情景</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        游戏编程模式 - 原型模式、类型对象模式
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Shiheuan</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-12-06T08:05:39.000Z" class="dt-published" itemprop="datePublished">2019-12-06</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/design-pattern/" rel="tag">design pattern</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h2><p>新坑《游戏编程模式》（作者 Robert Nystrom）。</p>
+<p>在 Unity 下，用 C# 做了简单的实现，传送门：</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ovnk9v1PjaE7qfAj1Mm8vg">https://pan.baidu.com/s/1ovnk9v1PjaE7qfAj1Mm8vg</a><br>提取码：vvw6</p>
+<p>这里并没有特别去区分涉及到的这两个模式。</p>
+<p>其他模式传送门：</p>
+<p><a href="https://shiheuan.github.io/2019/11/26/CommandPattern/">命令模式</a></p>
+<p><a href="https://shiheuan.github.io/2019/12/04/ObserverPattern/">观察者模式</a></p>
+<p>今天是两个我觉得比较抽象的模式，原型模式和类型对象模式。</p>
+<p>在 github 看到大佬的代码库，这里码住，也给大家 <a target="_blank" rel="noopener" href="https://github.com/QianMo/Unity-Design-Pattern">https://github.com/QianMo/Unity-Design-Pattern</a> 学习，大致看了一下，这里的示例与书中介绍的案例更类似。</p>
+<h2 id="0x01-原型模式"><a href="#0x01-原型模式" class="headerlink" title="0x01 原型模式"></a>0x01 原型模式</h2><p>“使用特定原型实例来创建特定种类的对象，并且通过拷贝原型来创建新的对象。”</p>
+<p><img src="https://Shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/fig1_prototype.gif" alt=""></p>
+<p>原型模式属于创建型模式的一种，通过复制一个已经存在的实例（原型）来获得新的实例，而非新建实例。当创建一个复杂对象实例更加耗时，通过复制原型将使程序更加高效。</p>
+<p>前段时间听到“原型”这个词还是在看 Lua 的时候，Lua 语言使用内置数据结构表来实现面向对象的方法，就是参考了基于原型的语言（prototype-based language），比如 Self 语言，JavaScript 语言等。这种组织方式是当一个对象（类的实例）在遇到一个未知操作时，都会在这个对象的原型中查找。</p>
+<p>“类”和“原型”都是组织多个对象之间共享行为的方式。在基于原型的语言中，对象并不是类的实例，而是每个对象都包含一个原型（prototype），而且，每个对象也都可以作为其他对象的原型存在。在 Self 中，通过 clone() 方法来的得到一个完全相同的新对象，并可以在新对象上添加附加的属性和方法（在“原型”中属性和方法（代表行为）更相似，而“类”中属性是属于对象的，而方法是属于类的）。但是这种使用 clone() 方法的组织方式用起来并不顺手，因此呢同样是基于原型的语言，Javascript 在语法方面使用了基于类的方式，所以用起来会更顺手。</p>
+<p>原型模式在数据方面也有相应的应用，在创建如 json 数据文件时，对相同的数组字段，完全可以使用原型来处理，将所有重复的部分作为一个单一原型来重用。</p>
+<h2 id="0x02-类型对象模式"><a href="#0x02-类型对象模式" class="headerlink" title="0x02 类型对象模式"></a>0x02 类型对象模式</h2><p>“通过创建一个类来支持新类型的灵活创建，其每一个实例都代表一个不同的对象类型。”</p>
+<p><img src="https://Shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/fig2_typeobject.png" alt=""></p>
+<p>类型对象使用两个类，就可以表示无限的种类。它通过“引用一个表示类型的对象”来代替“类继承关系”。这种将类型的定义从语言层面转移到保存在内存中的对象中，更为灵活但弱化了行为。</p>
+<p>也就是这种模式在定义数据时更灵活方便了，但相应的要定义行为就变得困难了。简单的解决办法是使用预定义集合，通过类型对象中的数据选择预定义行为。更彻底的解决办法就是通过可以编译代表行为的对象的模式。</p>
+<h3 id="使用情景"><a href="#使用情景" class="headerlink" title="使用情景"></a>使用情景</h3><p>当需要定义一系列不同“种类”的东西，但又不想把那些种类硬编码到类型系统中时，尤其在：</p>
+<ul>
+<li><p>不知道将来会有什么类型。</p>
+</li>
+<li><p>需要在不重新编译或修改代码的情况下，修改或添加新的类型。</p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+    <div class="blog-post-comments">
+        <div id="utterances_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00"><span class="toc-number">1.</span> <span class="toc-text">0x00</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">0x01 原型模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E7%B1%BB%E5%9E%8B%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">0x02 类型对象模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%83%85%E6%99%AF"><span class="toc-number">3.1.</span> <span class="toc-text">使用情景</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&text=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&is_video=false&description=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=游戏编程模式 - 原型模式、类型对象模式&body=Check out this article: http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&title=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&name=游戏编程模式 - 原型模式、类型对象模式&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://shiheuan.github.io/2019/12/06/PrototypeAndTypeObjectPattern/&t=游戏编程模式 - 原型模式、类型对象模式"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Shiheuan
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+    <script type="text/javascript">
+      var utterances_repo = 'Shiheuan/Shiheuan.github.io';
+      var utterances_issue_term = 'pathname';
+      var utterances_label = 'comment';
+      var utterances_theme = 'photon-dark';
+
+      (function(){
+          var script = document.createElement('script');
+
+          script.src = 'https://utteranc.es/client.js';
+          script.setAttribute('repo', utterances_repo);
+          script.setAttribute('issue-term', 'pathname');
+          script.setAttribute('label', utterances_label);
+          script.setAttribute('theme', utterances_theme);
+          script.setAttribute('crossorigin', 'anonymous');
+          script.async = true;
+          (document.getElementById('utterances_thread')).appendChild(script);
+      }());
+  </script>
+
+</body>
+</html>
